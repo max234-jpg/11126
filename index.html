@@ -4,10 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Central Rénovation Montreuil</title>
-<meta name="description" content="Central Rénovation : rénovation intérieure à Montreuil et dans l'Est parisien. Rénovation complète, salle de bain, cuisine, plâtrerie, peinture, électricité. Devis détaillé.">
+<meta name="description" content="Central Rénovation : rénovation intérieure à Montreuil et dans l'Est parisien. Rénovation complète, salle de bain, cuisine, peinture, sols, électricité. Visite et devis gratuits.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Manrope:wght@400;500;600;700&display=swap">
+<link rel="preload" as="image" href="assets/img/hero.jpg">
 <link rel="stylesheet" href="assets/css/styles.css">
 <script type="application/ld+json">
 {
@@ -15,7 +16,7 @@
   "@type": "HomeAndConstructionBusiness",
   "name": "Central Rénovation",
   "description": "Entreprise de rénovation intérieure à Montreuil (93).",
-  "areaServed": ["Montreuil", "Bagnolet", "Romainville", "Rosny-sous-Bois", "Vincennes", "Fontenay-sous-Bois", "Paris"],
+  "areaServed": ["Montreuil", "Bagnolet", "Romainville", "Rosny-sous-Bois", "Noisy-le-Sec", "Vincennes", "Fontenay-sous-Bois", "Paris"],
   "address": { "@type": "PostalAddress", "addressLocality": "Montreuil", "postalCode": "93100", "addressCountry": "FR" }
 }
 </script>
@@ -24,270 +25,226 @@
 <!--SITE-START-->
 <a class="skip" href="#contenu">Aller au contenu</a>
 
-<header class="site-header" id="haut">
+<header class="site-header" id="site-header">
   <div class="wrap header-row">
     <a class="brand" href="#haut" aria-label="Central Rénovation, retour en haut">
-      <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 32 32" width="32" height="32"><rect x="2" y="2" width="28" height="28" rx="3" class="bm-bg"/><path d="M9 23V12l7-4 7 4v11" class="bm-line"/><path d="M13 23v-6h6v6" class="bm-line"/></svg>
-      </span>
-      <span class="brand-text">Central<b>Rénovation</b></span>
+      <svg class="brand-mark" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" focusable="false">
+        <rect x="1" y="1" width="38" height="38" rx="2" class="bm-frame"/>
+        <path d="M10 29V17.5L20 11l10 6.5V29" class="bm-roof"/>
+        <path d="M16 29v-7h8v7" class="bm-door"/>
+      </svg>
+      <span class="brand-name"><span>Central</span><span>Rénovation</span></span>
     </a>
-    <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav">
-      <span class="nav-toggle-bars" aria-hidden="true"></span>
-      <span class="nav-toggle-label">Menu</span>
-    </button>
     <nav class="nav" id="nav" aria-label="Navigation principale">
       <a href="#prestations">Prestations</a>
-      <a href="#bati">Bâti montreuillois</a>
       <a href="#methode">Méthode</a>
+      <a href="#bati">Bâti local</a>
       <a href="#zone">Zone</a>
-      <a href="#faq">Questions</a>
-      <a class="btn btn-ink btn-sm" href="#contact">Demander un devis</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn-accent btn-sm nav-cta" href="#contact">Devis gratuit</a>
     </nav>
+    <div class="header-actions">
+      <a class="header-phone" href="tel:+33100000000"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg><span>01 XX XX XX XX</span></a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Ouvrir le menu">
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+      </button>
+    </div>
   </div>
 </header>
 
 <main id="contenu">
 
   <!-- HERO -->
-  <section class="hero">
-    <div class="wrap hero-grid">
+  <section class="hero" id="haut" aria-labelledby="hero-titre">
+    <img class="hero-img" src="assets/img/hero.jpg" alt="Séjour rénové, parquet clair, mur habillé de bois et grandes baies vitrées" width="1920" height="1200" fetchpriority="high">
+    <div class="hero-veil" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
       <div class="hero-copy">
-        <p class="eyebrow">Entreprise de rénovation · Montreuil 93100</p>
-        <h1>Rénover votre intérieur à Montreuil, du&nbsp;plan à la dernière couche.</h1>
-        <p class="lead">Appartements, pavillons, lofts d'atelier&nbsp;: Central Rénovation coordonne tous les corps de métier de votre chantier. Un seul interlocuteur, un devis poste par poste, un planning tenu.</p>
+        <p class="eyebrow eyebrow-light">Rénovation intérieure · Montreuil</p>
+        <h1 id="hero-titre">Votre intérieur, rénové de A à Z.</h1>
+        <p class="hero-lead">Appartements, maisons et lofts à Montreuil&nbsp;: Central Rénovation pilote tous les corps de métier de votre chantier, avec un seul interlocuteur et un devis détaillé poste par poste.</p>
         <div class="hero-actions">
-          <a class="btn btn-peach" href="#contact">Demander un devis gratuit</a>
-          <a class="btn btn-line" href="#prestations">Voir les prestations</a>
+          <a class="btn btn-accent btn-lg" href="#contact">Demander un devis gratuit
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn-glass btn-lg" href="#prestations">Nos prestations</a>
         </div>
-        <ul class="hero-facts" aria-label="Nos engagements">
-          <li><span class="mono">01</span> Visite et métré sur place</li>
-          <li><span class="mono">02</span> Devis détaillé par lot</li>
-          <li><span class="mono">03</span> Chantier protégé et nettoyé</li>
-        </ul>
       </div>
-
-      <figure class="hero-plan" aria-label="Élévation d'une pièce en rénovation avec ses cotes et ses lots de travaux">
-        <svg viewBox="0 0 640 470" role="img" aria-hidden="true" focusable="false">
-          <defs>
-            <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-              <rect width="8" height="8" class="p-hatch-bg"/>
-              <line x1="0" y1="0" x2="0" y2="8" class="p-hatch-line"/>
-            </pattern>
-            <clipPath id="wall-clip"><rect x="70" y="40" width="400" height="320"/></clipPath>
-          </defs>
-
-          <!-- mur -->
-          <rect x="70" y="40" width="400" height="320" class="p-wall"/>
-          <g clip-path="url(#wall-clip)">
-            <rect x="70" y="40" width="400" height="320" class="p-paint"/>
-          </g>
-          <!-- corniche -->
-          <path d="M70 40h400M70 52h400" class="p-thin"/>
-          <!-- fenêtre -->
-          <rect x="120" y="96" width="120" height="176" class="p-window"/>
-          <path d="M180 96v176M120 166h120" class="p-thin"/>
-          <path d="M112 272h136" class="p-strong"/>
-          <!-- porte -->
-          <rect x="340" y="140" width="84" height="220" class="p-door"/>
-          <circle cx="412" cy="256" r="3" class="p-knob"/>
-          <!-- plinthe + parquet -->
-          <path d="M70 348h270M424 348h46" class="p-thin"/>
-          <rect x="40" y="360" width="460" height="16" fill="url(#hatch)" class="p-floor"/>
-          <path d="M40 360h460" class="p-strong"/>
-          <!-- prise -->
-          <rect x="282" y="318" width="20" height="14" rx="2" class="p-socket"/>
-
-          <!-- cote horizontale -->
-          <g class="cote">
-            <path d="M70 410h400M70 400v20M470 400v20"/>
-            <path d="M64 416l12-12M464 416l12-12"/>
-            <text x="270" y="432" text-anchor="middle">4,50 m</text>
-          </g>
-          <!-- cote verticale -->
-          <g class="cote">
-            <path d="M30 40v320M20 40h20M20 360h20"/>
-            <path d="M24 46l12-12M24 366l12-12"/>
-            <text x="22" y="204" text-anchor="middle" transform="rotate(-90 22 204)">2,80 m</text>
-          </g>
-
-          <!-- renvois -->
-          <g class="callout">
-            <circle cx="300" cy="90" r="4"/>
-            <path d="M300 90h190"/>
-            <text x="494" y="86">Enduit plâtre</text>
-            <text x="494" y="102" class="callout-sub">lot plâtrerie</text>
-          </g>
-          <g class="callout">
-            <circle cx="292" cy="325" r="4"/>
-            <path d="M292 325l40-40h158"/>
-            <text x="494" y="281">Prise 16 A</text>
-            <text x="494" y="297" class="callout-sub">NF C 15-100</text>
-          </g>
-          <g class="callout">
-            <circle cx="200" cy="368" r="4"/>
-            <path d="M200 368v22h-60"/>
-            <text x="136" y="394" text-anchor="end">Parquet chêne</text>
-          </g>
-        </svg>
-        <figcaption class="mono">Élévation type · séjour, immeuble faubourien</figcaption>
-      </figure>
+      <aside class="hero-card" aria-label="Nos garanties">
+        <p class="hero-card-title">Nos garanties</p>
+        <ul class="checks">
+          <li>Visite et devis gratuits</li>
+          <li>Devis détaillé par lot</li>
+          <li>Assurance décennale</li>
+          <li>Chantier protégé et nettoyé</li>
+        </ul>
+      </aside>
     </div>
   </section>
 
-  <!-- ENGAGEMENTS -->
-  <section class="strip" aria-label="Ce que vous pouvez attendre">
-    <ul class="wrap strip-list">
-      <li><strong>Un seul interlocuteur</strong><span>du premier rendez-vous à la réception</span></li>
-      <li><strong>Devis lisible</strong><span>chaque lot chiffré, fournitures comprises</span></li>
-      <li><strong>Chantier propre</strong><span>protections des sols et des parties communes</span></li>
-      <li><strong>Assurance décennale</strong><span>attestation fournie avec le devis</span></li>
-    </ul>
+  <!-- INTRO / COLLAGE -->
+  <section class="section intro" aria-labelledby="intro-titre">
+    <div class="wrap intro-grid">
+      <div class="collage" aria-hidden="true">
+        <img class="collage-a" src="assets/img/plans.jpg" alt="" width="900" height="1100" loading="lazy">
+        <img class="collage-b" src="assets/img/peinture.jpg" alt="" width="900" height="700" loading="lazy">
+        <div class="collage-tag"><span class="collage-tag-k">Montreuil</span><span class="collage-tag-v">93100</span></div>
+      </div>
+      <div class="intro-copy">
+        <p class="eyebrow">Notre approche</p>
+        <h2 id="intro-titre">Un seul interlocuteur, du premier plan à la dernière couche</h2>
+        <p class="lead">Une rénovation réussie, c'est d'abord une bonne coordination. Nous organisons l'ordre des travaux, les commandes et les artisans pour que votre chantier avance sans temps mort.</p>
+        <ul class="feature-list">
+          <li>
+            <span class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg></span>
+            <div><h3>Tous corps d'état</h3><p>Démolition, plâtrerie, plomberie, électricité, sols et peinture.</p></div>
+          </li>
+          <li>
+            <span class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3h6l1 2h3v16H5V5h3zM9 12l2 2 4-4"/></svg></span>
+            <div><h3>Devis lisible</h3><p>Chaque lot chiffré séparément, quantités en m² et références de matériaux.</p></div>
+          </li>
+          <li>
+            <span class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM4 9h16M9 13h6"/></svg></span>
+            <div><h3>Planning tenu</h3><p>Dates d'intervention fixées à l'avance et point régulier avec photos.</p></div>
+          </li>
+        </ul>
+      </div>
+    </div>
   </section>
 
   <!-- PRESTATIONS -->
-  <section class="section" id="prestations" aria-labelledby="prestations-titre">
+  <section class="section services-section" id="prestations" aria-labelledby="prestations-titre">
     <div class="wrap">
-      <header class="section-head">
-        <p class="eyebrow">Prestations</p>
-        <h2 id="prestations-titre">Tous les corps de métier d'une rénovation intérieure</h2>
-        <p class="section-intro">Nous prenons en charge un chantier complet ou un seul lot. Dans les deux cas, le même chef de chantier suit vos travaux.</p>
+      <header class="section-head section-head-split">
+        <div>
+          <p class="eyebrow">Prestations</p>
+          <h2 id="prestations-titre">Ce que nous rénovons</h2>
+        </div>
+        <p class="section-intro">Un chantier complet ou une seule pièce&nbsp;: le même chef de chantier suit vos travaux du début à la fin.</p>
       </header>
 
-      <div class="services">
-        <article class="service service-lead">
-          <div class="service-lead-text">
-            <p class="service-tag mono">Tous corps d'état</p>
+      <div class="bento">
+        <a class="tile tile-big" href="#contact">
+          <img src="assets/img/renovation-complete.jpg" alt="" width="1200" height="1200" loading="lazy">
+          <div class="tile-body">
+            <span class="tile-tag">Tous corps d'état</span>
             <h3>Rénovation complète</h3>
-            <p>Appartement ou maison remis à neuf&nbsp;: démolition, redistribution des pièces, réseaux, finitions. Nous coordonnons chaque intervenant et l'ordre des travaux.</p>
+            <p>Appartement ou maison remis à neuf&nbsp;: redistribution des pièces, réseaux, isolation, finitions.</p>
+            <span class="tile-link">Demander un devis <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
-          <ul class="ticks">
-            <li>Dépose et évacuation des gravats</li>
-            <li>Cloisons, faux plafonds, isolation</li>
-            <li>Électricité, plomberie, chauffage</li>
-            <li>Sols, peinture, menuiseries intérieures</li>
+        </a>
+        <a class="tile tile-sdb" href="#contact">
+          <img src="assets/img/salle-de-bain.jpg" alt="" width="900" height="1100" loading="lazy">
+          <div class="tile-body"><span class="tile-tag">Salle d'eau</span><h3>Salle de bain</h3><p>Douche à l'italienne, baignoire, étanchéité, ventilation.</p></div>
+        </a>
+        <a class="tile tile-cui" href="#contact">
+          <img src="assets/img/cuisine.jpg" alt="" width="900" height="700" loading="lazy">
+          <div class="tile-body"><span class="tile-tag">Pose et agencement</span><h3>Cuisine</h3></div>
+        </a>
+        <a class="tile tile-pei" href="#contact">
+          <img src="assets/img/peinture.jpg" alt="" width="900" height="700" loading="lazy">
+          <div class="tile-body"><span class="tile-tag">Finitions</span><h3>Peinture</h3></div>
+        </a>
+        <a class="tile tile-sol" href="#contact">
+          <img src="assets/img/sols.jpg" alt="" width="900" height="1100" loading="lazy">
+          <div class="tile-body"><span class="tile-tag">Revêtements</span><h3>Parquet et sols</h3></div>
+        </a>
+        <a class="tile tile-ele" href="#contact">
+          <img src="assets/img/electricite.jpg" alt="" width="900" height="700" loading="lazy">
+          <div class="tile-body"><span class="tile-tag">Réseaux</span><h3>Électricité</h3></div>
+        </a>
+        <div class="tile tile-more">
+          <p class="tile-tag">Et aussi</p>
+          <ul class="more-list">
+            <li>Plâtrerie, cloisons, faux plafonds</li>
+            <li>Isolation intérieure</li>
+            <li>Plomberie et chauffage</li>
+            <li>Menuiseries intérieures, dressings</li>
           </ul>
-        </article>
-        <article class="service">
-          <p class="service-tag mono">Lot salle d'eau</p>
-          <h3>Salle de bain</h3>
-          <p>Douche à l'italienne, baignoire, WC suspendu. Étanchéité sous carrelage et ventilation dimensionnées.</p>
-        </article>
-        <article class="service">
-          <p class="service-tag mono">Lot cuisine</p>
-          <h3>Cuisine</h3>
-          <p>Pose de cuisine, crédence, plan de travail, alimentation et évacuations, circuits spécialisés pour l'électroménager.</p>
-        </article>
-        <article class="service">
-          <p class="service-tag mono">Lot plâtrerie</p>
-          <h3>Plâtrerie et isolation</h3>
-          <p>Cloisons, doublages isolants, faux plafonds, reprise d'enduits sur murs anciens.</p>
-        </article>
-        <article class="service">
-          <p class="service-tag mono">Lot finitions</p>
-          <h3>Peinture et sols</h3>
-          <p>Préparation des supports, peintures, papiers peints, parquet, carrelage, sols souples.</p>
-        </article>
-        <article class="service">
-          <p class="service-tag mono">Lot réseaux</p>
-          <h3>Électricité et plomberie</h3>
-          <p>Mise en conformité NF C 15-100, tableau électrique, remplacement de canalisations.</p>
-        </article>
-        <article class="service">
-          <p class="service-tag mono">Lot menuiserie</p>
-          <h3>Menuiseries intérieures</h3>
-          <p>Portes, placards et dressings sur mesure, escaliers, habillages et rangements intégrés.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- BÂTI LOCAL -->
-  <section class="section section-alt" id="bati" aria-labelledby="bati-titre">
-    <div class="wrap">
-      <header class="section-head">
-        <p class="eyebrow">Bâti montreuillois</p>
-        <h2 id="bati-titre">Chaque type de logement a ses points de vigilance</h2>
-        <p class="section-intro">À Montreuil, un même quartier mêle pavillons en meulière, immeubles du début du siècle et anciens ateliers. Nous adaptons la méthode au bâti.</p>
-      </header>
-
-      <div class="bati">
-        <article class="bati-item">
-          <p class="bati-era mono">1880 – 1930</p>
-          <h3>Pavillon en meulière</h3>
-          <p>Murs épais et poreux&nbsp;: on privilégie les enduits à la chaux et une ventilation efficace pour éviter l'humidité.</p>
-        </article>
-        <article class="bati-item">
-          <p class="bati-era mono">1900 – 1940</p>
-          <h3>Immeuble faubourien</h3>
-          <p>Planchers bois, murs en plâtre, peintures anciennes&nbsp;: un constat de risque d'exposition au plomb est requis avant 1949.</p>
-        </article>
-        <article class="bati-item">
-          <p class="bati-era mono">Ateliers</p>
-          <h3>Loft du Bas-Montreuil</h3>
-          <p>Grands volumes à chauffer et à isoler, verrières, acoustique, électricité à reprendre entièrement.</p>
-        </article>
-        <article class="bati-item">
-          <p class="bati-era mono">1950 – 1997</p>
-          <h3>Appartement d'après-guerre</h3>
-          <p>Réseaux vieillissants, menuiseries peu isolantes. Un repérage amiante précède toute démolition.</p>
-        </article>
+          <a class="btn btn-accent" href="#contact">Parler de mon projet</a>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- MÉTHODE -->
-  <section class="section" id="methode" aria-labelledby="methode-titre">
-    <div class="wrap method-grid">
-      <header class="section-head method-head">
-        <p class="eyebrow">Méthode</p>
-        <h2 id="methode-titre">Cinq étapes, du rendez-vous à la remise des clés</h2>
+  <section class="section section-dark" id="methode" aria-labelledby="methode-titre">
+    <div class="wrap">
+      <header class="section-head section-head-split">
+        <div>
+          <p class="eyebrow eyebrow-light">Méthode</p>
+          <h2 id="methode-titre">Cinq étapes, du rendez-vous à la remise des clés</h2>
+        </div>
         <p class="section-intro">Vous savez à tout moment où en est le chantier et ce qui vient ensuite.</p>
-        <a class="btn btn-ink" href="#contact">Prendre rendez-vous</a>
       </header>
-      <ol class="steps">
-        <li>
-          <span class="step-n mono">1</span>
-          <div><h3>Visite sur place</h3><p>Nous écoutons le projet, relevons les cotes et vérifions l'état des réseaux et des supports.</p></div>
-        </li>
-        <li>
-          <span class="step-n mono">2</span>
-          <div><h3>Devis détaillé</h3><p>Chaque lot est chiffré séparément, avec quantités en m² ou en unités et références de matériaux.</p></div>
-        </li>
-        <li>
-          <span class="step-n mono">3</span>
-          <div><h3>Planning</h3><p>Dates d'intervention de chaque corps de métier, commandes de matériaux, démarches de copropriété.</p></div>
-        </li>
-        <li>
-          <span class="step-n mono">4</span>
-          <div><h3>Chantier suivi</h3><p>Protections posées dès le premier jour, point régulier avec photos, nettoyage en fin de journée.</p></div>
-        </li>
-        <li>
-          <span class="step-n mono">5</span>
-          <div><h3>Réception</h3><p>Visite de fin de travaux ensemble, levée des réserves, remise des notices et garanties.</p></div>
-        </li>
+      <ol class="timeline">
+        <li><span class="t-n">1</span><h3>Visite</h3><p>Écoute du projet, relevé des cotes, état des réseaux et des supports.</p></li>
+        <li><span class="t-n">2</span><h3>Devis détaillé</h3><p>Chaque lot chiffré, quantités et matériaux précisés.</p></li>
+        <li><span class="t-n">3</span><h3>Planning</h3><p>Dates de chaque corps de métier, commandes, démarches de copropriété.</p></li>
+        <li><span class="t-n">4</span><h3>Chantier suivi</h3><p>Protections dès le premier jour, point régulier, nettoyage quotidien.</p></li>
+        <li><span class="t-n">5</span><h3>Réception</h3><p>Visite de fin de travaux, levée des réserves, remise des garanties.</p></li>
       </ol>
     </div>
   </section>
 
-  <!-- ZONE -->
-  <section class="section section-ink" id="zone" aria-labelledby="zone-titre">
-    <div class="wrap zone-grid">
-      <header class="section-head">
-        <p class="eyebrow">Zone d'intervention</p>
-        <h2 id="zone-titre">Montreuil et l'Est parisien</h2>
-        <p class="section-intro">Nous intervenons dans tous les quartiers de Montreuil, du Bas-Montreuil aux Ramenas, et dans les communes limitrophes.</p>
+  <!-- BÂTI -->
+  <section class="section" id="bati" aria-labelledby="bati-titre">
+    <div class="wrap">
+      <header class="section-head section-head-split">
+        <div>
+          <p class="eyebrow">Bâti montreuillois</p>
+          <h2 id="bati-titre">Nous connaissons les logements de Montreuil</h2>
+        </div>
+        <p class="section-intro">Pavillons en meulière, immeubles anciens, ateliers reconvertis&nbsp;: chaque bâti a ses points de vigilance.</p>
       </header>
-      <ul class="towns">
-        <li class="town-main"><span>Montreuil</span><span class="mono">93100</span></li>
-        <li><span>Bagnolet</span><span class="mono">93170</span></li>
-        <li><span>Romainville</span><span class="mono">93230</span></li>
-        <li><span>Rosny-sous-Bois</span><span class="mono">93110</span></li>
-        <li><span>Noisy-le-Sec</span><span class="mono">93130</span></li>
-        <li><span>Vincennes</span><span class="mono">94300</span></li>
-        <li><span>Fontenay-sous-Bois</span><span class="mono">94120</span></li>
-        <li><span>Paris 12<sup>e</sup></span><span class="mono">75012</span></li>
-        <li><span>Paris 20<sup>e</sup></span><span class="mono">75020</span></li>
+      <div class="bati">
+        <article class="bati-item">
+          <p class="bati-era">1880 – 1930</p>
+          <h3>Pavillon en meulière</h3>
+          <p>Murs épais et poreux&nbsp;: enduits à la chaux et ventilation efficace contre l'humidité.</p>
+        </article>
+        <article class="bati-item">
+          <p class="bati-era">1900 – 1940</p>
+          <h3>Immeuble faubourien</h3>
+          <p>Planchers bois et murs en plâtre. Constat de risque d'exposition au plomb requis avant 1949.</p>
+        </article>
+        <article class="bati-item">
+          <p class="bati-era">Ateliers</p>
+          <h3>Loft du Bas-Montreuil</h3>
+          <p>Grands volumes à isoler et chauffer, verrières, acoustique, électricité à reprendre.</p>
+        </article>
+        <article class="bati-item">
+          <p class="bati-era">1950 – 1997</p>
+          <h3>Appartement d'après-guerre</h3>
+          <p>Réseaux vieillissants, menuiseries peu isolantes. Repérage amiante avant démolition.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ZONE + CTA -->
+  <section class="cta-band" id="zone" aria-labelledby="zone-titre">
+    <img class="cta-img" src="assets/img/sejour.jpg" alt="" width="1200" height="800" loading="lazy">
+    <div class="cta-veil" aria-hidden="true"></div>
+    <div class="wrap cta-grid">
+      <div class="cta-copy">
+        <p class="eyebrow eyebrow-light">Zone d'intervention</p>
+        <h2 id="zone-titre">Montreuil et les communes voisines</h2>
+        <p>Tous les quartiers de Montreuil, du Bas-Montreuil aux Ramenas, et l'Est parisien.</p>
+        <div class="hero-actions">
+          <a class="btn btn-accent btn-lg" href="#contact">Planifier une visite</a>
+        </div>
+      </div>
+      <ul class="towns" aria-label="Communes desservies">
+        <li class="town-main">Montreuil <span>93100</span></li>
+        <li>Bagnolet <span>93170</span></li>
+        <li>Romainville <span>93230</span></li>
+        <li>Rosny-sous-Bois <span>93110</span></li>
+        <li>Noisy-le-Sec <span>93130</span></li>
+        <li>Vincennes <span>94300</span></li>
+        <li>Fontenay-sous-Bois <span>94120</span></li>
+        <li>Paris 12<sup>e</sup> <span>75012</span></li>
+        <li>Paris 20<sup>e</sup> <span>75020</span></li>
       </ul>
     </div>
   </section>
@@ -298,6 +255,7 @@
       <header class="section-head">
         <p class="eyebrow">Questions fréquentes</p>
         <h2 id="faq-titre">Avant de vous lancer</h2>
+        <p class="section-intro">Une autre question&nbsp;? Appelez-nous ou écrivez-nous via le formulaire.</p>
       </header>
       <div class="faq">
         <details>
@@ -306,7 +264,7 @@
         </details>
         <details>
           <summary>Peut-on habiter le logement pendant les travaux&nbsp;?</summary>
-          <p>C'est souvent possible pour des travaux par pièce. Pour une rénovation complète, nous organisons le planning avec vous pour limiter la gêne, mais un relogement temporaire est parfois plus simple.</p>
+          <p>C'est souvent possible pour des travaux pièce par pièce. Pour une rénovation complète, nous organisons le planning avec vous pour limiter la gêne.</p>
         </details>
         <details>
           <summary>Faut-il l'accord de la copropriété&nbsp;?</summary>
@@ -321,21 +279,34 @@
   </section>
 
   <!-- CONTACT -->
-  <section class="section section-alt" id="contact" aria-labelledby="contact-titre">
+  <section class="section section-stone" id="contact" aria-labelledby="contact-titre">
     <div class="wrap contact-grid">
       <div class="contact-info">
         <p class="eyebrow">Contact</p>
         <h2 id="contact-titre">Parlons de votre projet</h2>
         <p class="section-intro">Décrivez vos travaux en quelques lignes. Nous vous rappelons pour fixer une visite.</p>
-        <dl class="coords">
-          <div><dt>Téléphone</dt><dd class="mono" id="coord-tel">01 XX XX XX XX</dd></div>
-          <div><dt>E-mail</dt><dd class="mono" id="coord-mail">contact@[domaine].fr</dd></div>
-          <div><dt>Adresse</dt><dd>Montreuil (93100)</dd></div>
-          <div><dt>Horaires</dt><dd>Du lundi au vendredi, 8&nbsp;h – 18&nbsp;h</dd></div>
-        </dl>
+        <ul class="coords">
+          <li>
+            <span class="coord-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg></span>
+            <div><p class="coord-k">Téléphone</p><p class="coord-v">01 XX XX XX XX</p></div>
+          </li>
+          <li>
+            <span class="coord-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5h18v14H3zM3 6l9 7 9-7"/></svg></span>
+            <div><p class="coord-k">E-mail</p><p class="coord-v">contact@[domaine].fr</p></div>
+          </li>
+          <li>
+            <span class="coord-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21zM12 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg></span>
+            <div><p class="coord-k">Adresse</p><p class="coord-v">Montreuil (93100)</p></div>
+          </li>
+          <li>
+            <span class="coord-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2"/></svg></span>
+            <div><p class="coord-k">Horaires</p><p class="coord-v">Lundi – vendredi, 8&nbsp;h – 18&nbsp;h</p></div>
+          </li>
+        </ul>
       </div>
 
       <form class="quote" id="quote-form" novalidate>
+        <p class="quote-title">Demande de devis gratuit</p>
         <div class="field-row">
           <div class="field">
             <label for="f-nom">Nom</label>
@@ -357,9 +328,10 @@
               <option>Rénovation complète</option>
               <option>Salle de bain</option>
               <option>Cuisine</option>
+              <option>Peinture</option>
+              <option>Parquet et sols</option>
+              <option>Électricité</option>
               <option>Plâtrerie et isolation</option>
-              <option>Peinture et sols</option>
-              <option>Électricité et plomberie</option>
               <option>Autre</option>
             </select>
           </div>
@@ -376,7 +348,7 @@
           <label for="f-msg">Votre projet</label>
           <textarea id="f-msg" name="message" rows="4" placeholder="Ex. : refaire la salle de bain d'un 3 pièces, remplacer la baignoire par une douche."></textarea>
         </div>
-        <button class="btn btn-peach btn-block" type="submit">Envoyer ma demande</button>
+        <button class="btn btn-accent btn-lg btn-block" type="submit">Envoyer ma demande</button>
         <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
       </form>
     </div>
@@ -385,10 +357,25 @@
 </main>
 
 <footer class="site-footer">
-  <div class="wrap footer-row">
-    <p class="brand-text">Central<b>Rénovation</b></p>
-    <p>Rénovation intérieure à Montreuil (93100) et dans l'Est parisien.</p>
-    <p class="footer-small">© <span id="year">2026</span> Central Rénovation · <a href="#haut">Retour en haut</a></p>
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <p class="brand-name brand-name-light"><span>Central</span><span>Rénovation</span></p>
+      <p>Rénovation intérieure à Montreuil (93100) et dans l'Est parisien.</p>
+    </div>
+    <nav class="footer-nav" aria-label="Pied de page">
+      <a href="#prestations">Prestations</a>
+      <a href="#methode">Méthode</a>
+      <a href="#zone">Zone d'intervention</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="footer-contact">
+      <p>01 XX XX XX XX</p>
+      <p>contact@[domaine].fr</p>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    <p>© <span id="year">2026</span> Central Rénovation</p>
+    <p>Photos d'illustration : Unsplash</p>
   </div>
 </footer>
 <!--SITE-END-->

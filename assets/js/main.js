@@ -2,12 +2,23 @@
   document.documentElement.classList.add("js");
 
   // Menu mobile
+  var header = document.getElementById("site-header");
   var toggle = document.getElementById("nav-toggle");
   var nav = document.getElementById("nav");
+
+  // En-tête transparent sur la photo du hero, opaque dès qu'on défile
+  if (header) {
+    var onScroll = function () { header.classList.toggle("is-scrolled", window.scrollY > 40); };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
   if (toggle && nav) {
     var setOpen = function (open) {
       nav.classList.toggle("is-open", open);
+      if (header) header.classList.toggle("is-open", open);
       toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
     };
     toggle.addEventListener("click", function () {
       setOpen(toggle.getAttribute("aria-expanded") !== "true");

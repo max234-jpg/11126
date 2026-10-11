@@ -1,45 +1,49 @@
-# Central Rénovation — 3 directions de design
+# Central Rénovation — 3 directions de design (v2)
 
-Cible : particuliers et petites copropriétés de Montreuil et des communes voisines qui préparent une rénovation intérieure.
-Rôle de la page d'accueil : donner confiance et obtenir une demande de devis.
+Sources :
+- **ui-ux-pro-max** (données `products.csv`, `colors.csv`, `ui-reasoning.csv`, `landing.csv`), profils
+  « Construction/Architecture », « Architecture / Interior » et « Home Services ».
+- **21st.dev**, catalogue de heroes : motifs « Editorial Collage Hero », « Split Hero With Image Cards », « Cinematic landing Hero ».
 
-Chaque direction part du même contenu (prestations, méthode, bâti local, zone, contact). Elles diffèrent par le ton.
+Ce que disent les données ui-ux-pro-max pour ce secteur :
+- Pattern : *Hero-Centric + Feature-Rich*, orienté conversion et confiance.
+- À éviter : « 2D-only layouts + poor image quality », « Hidden contact info + No certifications ».
+- À avoir : photos haute qualité, portfolio de projets, coordonnées visibles, assurances / certifications affichées.
+
+La v1 (« Mur à pêches », sans photo, tons olive) tombait précisément dans l'anti-pattern « 2D-only layout ». Elle est abandonnée.
 
 ---
 
-## A. « Mur à pêches » — retenue
+## 1. « Atelier Premium » — retenue
 
-Montreuil, ce sont les murs à pêches enduits au plâtre et les ateliers reconvertis. La direction reprend ces matières.
+Palette ui-ux-pro-max *Architecture / Interior* : monochrome + accent doré, imagerie forte.
 
-- **Couleurs** : enduit chaulé gris-vert (fond), encre olive foncée (texte), vert espalier (secondaire), pêche (accent, en aplat uniquement).
-- **Typo** : Bricolage Grotesque (titres, un peu artisanale), Instrument Sans (texte), IBM Plex Mono (cotes, m², références de normes).
-- **Signature** : une élévation de pièce dessinée comme un plan d'architecte, avec ses cotes (4,50 m × 2,80 m) et des renvois vers les lots (plâtrerie, électricité NF C 15-100, parquet). Le mur se « peint » en pêche au chargement.
-- **Mise en page** : grille asymétrique, titres alignés à gauche, filets épais au-dessus des blocs au lieu de cartes ombrées.
-- **Pour** : identité locale forte, se distingue des sites BTP génériques, inspire une image soignée et rassurante.
-- **Contre** : demande de vraies photos de chantier pour la suite (galerie de réalisations).
+- **Couleurs** : noir graphite `#171717`, blanc pierre `#F7F7F5`, pierre `#EFEDE8`, accent bronze `#A16207` (`#D4A24C` sur fond sombre).
+- **Typo** : Archivo élargi en capitales pour les titres (architectural, solide), Manrope pour le texte.
+- **Hero** : photo plein cadre d'un séjour rénové, voile sombre, titre très grand, deux CTA, téléphone visible, carte flottante « garanties ».
+- **Sections** : collage éditorial 2 photos qui se chevauchent (motif 21st « Editorial Collage »), grille bento de prestations en photos, méthode sur fond noir, bâti montreuillois, bandeau d'appel, FAQ, formulaire.
+- **Pour** : haut de gamme, rassurant, met en valeur les chantiers. **Contre** : dépend de bonnes photos (à remplacer par les vraies réalisations).
 
-## B. « Cote & Niveau »
+## 2. « Chantier Pro »
 
-Le chantier vu comme un plan technique : précision et méthode.
+Palette ui-ux-pro-max *Construction/Architecture* : gris industriel + orange sécurité + bleu plan.
 
-- **Couleurs** : papier calque blanc bleuté, encre bleu nuit, rouge laser du niveau comme accent unique.
-- **Typo** : Archivo (largeurs variables, titres étendus), Archivo texte, JetBrains Mono pour toutes les annotations.
-- **Signature** : quadrillage millimétré discret, chaque section introduite par une ligne de cote ; trait laser rouge horizontal qui traverse le hero.
-- **Pour** : très crédible pour des travaux lourds (rénovation complète, redistribution).
-- **Contre** : plus froid, moins chaleureux pour une salle de bain ou une déco.
+- **Couleurs** : ardoise `#334155`, blanc `#F8FAFC`, orange `#EA580C`.
+- **Typo** : grotesque suisse très gras, chiffres et intitulés en mono.
+- **Hero** : split 50/50 (motif 21st « Split Hero With Image Cards ») texte / pile de 3 photos de chantier, bandeau orange avec téléphone.
+- **Pour** : énergique, très « pro du bâtiment ». **Contre** : plus commun dans le secteur, moins haut de gamme.
 
-## C. « Atelier brique »
+## 3. « Confiance Locale »
 
-L'héritage industriel du Bas-Montreuil : brique, acier, verrières.
+Palette ui-ux-pro-max *Home Services* : bleu confiance + orange d'action.
 
-- **Couleurs** : anthracite (fond sombre par défaut), rouge brique, acier gris, blanc cassé pour le texte.
-- **Typo** : Big Shoulders Display (titres condensés en capitales), Work Sans (texte).
-- **Signature** : hero plein écran façon verrière d'atelier (trame de montants noirs), chiffres et titres très grands.
-- **Pour** : impact fort, adapté aux lofts et aux projets haut de gamme.
-- **Contre** : peut paraître dur ou « chantier » pour une clientèle familiale ; lisibilité à surveiller en mode sombre.
+- **Couleurs** : bleu `#1E40AF`, fond `#EFF6FF`, orange `#EA580C` pour les CTA.
+- **Typo** : sans-serif ronde et lisible.
+- **Hero** : centré avec formulaire de devis directement dans le hero, badges d'assurance, avis Google.
+- **Pour** : conversion maximale, rassure une clientèle familiale. **Contre** : look « artisan dépannage », peu différenciant.
 
 ---
 
 ## Recommandation
 
-**Direction A.** Elle est la seule qui parle de Montreuil sans le dire, reste chaleureuse pour les petits travaux et crédible pour les gros grâce aux cotes techniques. La page d'accueil livrée (`index.html`) suit cette direction. B et C peuvent être déclinées si vous préférez un autre ton.
+**Direction 1, « Atelier Premium »**, avec les éléments de conversion de la direction 3 (téléphone toujours visible, garanties dans le hero, formulaire court). C'est la version livrée dans `index.html`.

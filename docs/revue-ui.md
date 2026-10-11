@@ -1,29 +1,39 @@
-# Revue UI — page d'accueil Central Rénovation
+# Revue UI — page d'accueil Central Rénovation (v2, « Atelier Premium »)
 
-Revue faite sur des captures pleine page : bureau 1366 px (clair et sombre) et mobile 390 px (clair).
-Aucun défilement horizontal ni erreur console aux trois tailles.
+Revue faite avec la grille de priorités **ui-ux-pro-max** (accessibilité → interaction → performance → style → responsive → typo/couleur → animation → formulaires → navigation),
+sur des captures pleine page : bureau 1440 px (clair et sombre), tablette 820 px, mobile 390 px (avec menu ouvert).
+Aucun défilement horizontal, aucune erreur console.
 
-## Corrigé dans cette version
+> 21st-ui-review n'a pas pu être utilisé : le plugin 21st n'est pas activé sur le compte et le code des composants 21st demande une clé API.
+> Les motifs 21st (Editorial Collage Hero, Split Hero With Image Cards) ont été repris d'après leurs descriptions sur 21st.dev.
 
-| # | Constat | Gravité | Correction |
-|---|---------|---------|------------|
-| 1 | Prestations : le bloc « Rénovation complète » occupait 2 lignes et laissait « Électricité et plomberie » seul sur une 3ᵉ ligne. | Moyenne | Le bloc principal passe en pleine largeur (texte à gauche, liste à droite) ; ajout du lot « Menuiseries intérieures » pour une grille régulière de 3 × 2. |
-| 2 | Hero bureau : le titre tenait sur 6 lignes dans une colonne trop étroite. | Moyenne | Colonne texte élargie et taille maximale du titre réduite (4 rem → 3,5 rem). |
-| 3 | Mode sombre : les bandeaux « engagements », « zone » et le pied de page s'inversaient en blanc cassé, avec un code postal pêche peu lisible sur fond clair. | Haute | Nouveaux jetons `--band` / `--on-band` : bandeaux en olive foncé légèrement surélevé dans les deux thèmes. |
-| 4 | Zone : 9 communes sur 2 colonnes, « Paris 20ᵉ » seul en dernière ligne. | Faible | Liste ramenée aux communes limitrophes + Paris 12ᵉ/20ᵉ (8 entrées). |
-| 5 | Plan du hero sur mobile : renvois (« Enduit plâtre », « Prise 16 A ») trop petits. | Faible | Taille des textes du dessin augmentée. |
+## Pourquoi la v1 ne fonctionnait pas
+
+ui-ux-pro-max classe pour ce secteur l'anti-pattern « 2D-only layouts + poor image quality » et exige
+des photos haute qualité et des coordonnées visibles. La v1 n'avait aucune photo et cachait le téléphone en bas de page.
+
+## Corrigé pendant la revue
+
+| # | Constat | Priorité ui-ux-pro-max | Correction |
+|---|---------|------------------------|------------|
+| 1 | Mobile : la fin du texte du hero passait sur la zone claire de la photo (contraste insuffisant). | 1 · Accessibilité | Voile vertical plus dense sous 560 px. |
+| 2 | Mobile : l'intitulé au-dessus du titre passait sur 3 lignes. | 5 · Responsive | Intitulé raccourci (« Rénovation intérieure · Montreuil »). |
+| 3 | Tuile « Cuisine » : étiquette et titre identiques. | 4 · Style | Étiquette « Pose et agencement ». |
 
 ## Points validés
 
-- **Contraste** : texte principal olive sur enduit > 12:1 ; accent texte `--peach-ink` ≈ 5:1 en clair. Le pêche n'est jamais utilisé en texte sur fond clair, seulement en aplat avec texte foncé.
-- **Accessibilité** : lien d'évitement, focus visible (contour pêche 3 px), menu mobile avec `aria-expanded` et fermeture par Échap, FAQ en `<details>` natifs, erreurs de formulaire reliées par `aria-describedby`, `prefers-reduced-motion` respecté.
-- **Mobile** : cibles tactiles ≥ 44 px, boutons du hero en pleine largeur, formulaire sur une colonne.
-- **SEO local** : `title` et `meta description` avec « Montreuil », données structurées `HomeAndConstructionBusiness`, titres hiérarchisés (un seul `h1`).
+- **Conversion** : téléphone visible en permanence dans l'en-tête, 4 boutons « devis » répartis, garanties dès le hero, formulaire court (2 champs obligatoires).
+- **Contraste** : texte blanc sur voile ≥ 0,6 d'opacité ; bronze `#A16207` sur fond clair ≈ 5:1 ; bouton bronze avec texte noir ≈ 8:1.
+- **Interaction** : cibles ≥ 44 px (boutons 48–56 px), menu mobile avec `aria-expanded`, fermeture par Échap, en-tête qui devient opaque au défilement.
+- **Performance** : photos redimensionnées (90–400 Ko), `width`/`height` sur chaque image (pas de décalage de mise en page), `loading="lazy"` hors hero, hero préchargé.
+- **Animation** : une seule séquence d'entrée (titre + carte) et un léger zoom de la photo ; tout est coupé avec `prefers-reduced-motion`.
+- **Thème sombre** : jetons dédiés, sections photo identiques dans les deux thèmes.
 
-## Reste à faire (hors design)
+## Reste à faire avant mise en ligne
 
-1. Remplacer les coordonnées provisoires : téléphone `01 XX XX XX XX`, e-mail `contact@[domaine].fr`, adresse exacte.
-2. Brancher le formulaire : ajouter `data-endpoint="https://…"` sur `<form id="quote-form">` (Formspree, Basin ou API maison). Sans cela, le formulaire affiche un message « démonstration ».
-3. Vérifier les engagements affichés (assurance décennale, zone d'intervention, horaires) avec l'entreprise.
-4. Ajouter de vraies photos de chantiers (section « Réalisations ») et des avis clients authentiques (Google Business Profile) — aucun avis n'a été inventé.
-5. Créer les pages Mentions légales et Politique de confidentialité (obligatoires) et les lier dans le pied de page.
+1. **Photos** : ce sont des photos d'illustration Unsplash (licence libre). Les remplacer par de vrais chantiers de Central Rénovation dès que possible, et ajouter une section « Réalisations ».
+2. **Coordonnées** : téléphone `01 XX XX XX XX` (et le lien `tel:+33100000000` de l'en-tête), e-mail `contact@[domaine].fr`, adresse.
+3. **Formulaire** : ajouter `data-endpoint="https://…"` sur `<form id="quote-form">` (Formspree, Basin…).
+4. **À confirmer** : assurance décennale, zone d'intervention, horaires, gratuité de la visite.
+5. **Avis clients** : brancher de vrais avis Google (aucun n'a été inventé).
+6. **Mentions légales** et politique de confidentialité.
