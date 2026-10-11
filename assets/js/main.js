@@ -1,18 +1,20 @@
 (function () {
-  document.documentElement.classList.add("js");
+  var root = document.documentElement;
+  root.classList.add("js");
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Menu mobile
   var header = document.getElementById("site-header");
   var toggle = document.getElementById("nav-toggle");
   var nav = document.getElementById("nav");
 
-  // En-tête transparent sur la photo du hero, opaque dès qu'on défile
+  // En-tête transparent sur la photo du haut, opaque dès qu'on défile
   if (header) {
     var onScroll = function () { header.classList.toggle("is-scrolled", window.scrollY > 40); };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
   }
 
+  // Menu mobile
   if (toggle && nav) {
     var setOpen = function (open) {
       nav.classList.toggle("is-open", open);
@@ -37,11 +39,60 @@
   var year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
 
+  // Apparition douce des blocs au défilement
+  var revealEls = document.querySelectorAll("[data-reveal]");
+  if (revealEls.length && "IntersectionObserver" in window && !reduceMotion) {
+    root.classList.add("reveal-on");
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var el = entry.target;
+          el.classList.add("is-in");
+          io.unobserve(el);
+          // Une fois apparu, l'élément retrouve ses propres transitions (survol sans délai)
+          el.addEventListener("transitionend", function done(ev) {
+            if (ev.target !== el || ev.propertyName !== "opacity") return;
+            el.removeEventListener("transitionend", done);
+            el.removeAttribute("data-reveal");
+          });
+        }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.05 });
+    revealEls.forEach(function (el) { io.observe(el); });
+  }
+
+  // Page Prestations : pastille active selon la section visible
+  var chips = document.querySelectorAll(".chips a");
+  if (chips.length && "IntersectionObserver" in window) {
+    var byId = {};
+    chips.forEach(function (a) { byId[a.getAttribute("href").slice(1)] = a; });
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        chips.forEach(function (a) { a.classList.remove("is-active"); });
+        var chip = byId[entry.target.id];
+        if (chip) {
+          chip.classList.add("is-active");
+          chip.scrollIntoView({ block: "nearest", inline: "center", behavior: reduceMotion ? "auto" : "smooth" });
+        }
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    Object.keys(byId).forEach(function (id) {
+      var section = document.getElementById(id);
+      if (section) spy.observe(section);
+    });
+  }
+
   // Formulaire de devis.
   // Pour un envoi réel, renseigner data-endpoint sur le <form> (Formspree, Basin, API maison…).
   var form = document.getElementById("quote-form");
   var status = document.getElementById("form-status");
   if (!form || !status) return;
+
+  // Type de travaux présélectionné depuis la page Prestations (?type=sdb)
+  var type = new URLSearchParams(window.location.search).get("type");
+  var select = document.getElementById("f-type");
+  if (type && select && select.querySelector('option[value="' + type + '"]')) select.value = type;
 
   var rules = [
     { id: "f-nom", test: function (v) { return v.trim().length > 1; }, msg: "Indiquez votre nom." },

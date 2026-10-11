@@ -37,3 +37,12 @@ des photos haute qualité et des coordonnées visibles. La v1 n'avait aucune pho
 4. **À confirmer** : assurance décennale, zone d'intervention, horaires, gratuité de la visite.
 5. **Avis clients** : brancher de vrais avis Google (aucun n'a été inventé).
 6. **Mentions légales** et politique de confidentialité.
+
+## v3 — site multi-pages et animations
+
+- 6 pages : Accueil, Prestations, Méthode, Zone, FAQ, Contact. Les liens du menu ouvrent chaque page (plus de défilement vers le bas).
+- Lien de la page en cours souligné dans le menu, fil d'Ariane sur chaque page intérieure.
+- Les boutons « Demander un devis » de la page Prestations présélectionnent le type de travaux dans le formulaire.
+- Animations légères : apparition des blocs au défilement (en cascade), bandeau défilant des métiers, ligne de la frise qui se dessine, schéma de zone avec pulsation sur Montreuil, transition douce entre les pages (navigateurs compatibles), zoom lent des photos au survol.
+- Toutes les animations sont coupées si l'utilisateur a activé « réduire les animations ». Sans JavaScript, tout le contenu reste visible.
+- Vérifié sur les 6 pages en 1440 px et 390 px : aucun débordement horizontal, aucune erreur console, tous les blocs apparaissent.
