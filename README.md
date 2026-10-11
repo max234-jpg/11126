@@ -52,7 +52,7 @@ dans Snapchat** (majuscules et emojis compris) :
 | Option | Rôle |
 |---|---|
 | `amis` | Liste des amis à qui envoyer le snap |
-| `camera` | `"webcam"` = vraie webcam du PC · `"test"` = image de test (mire verte) · ou le chemin d'un fichier `.y4m`/`.mjpeg` pour envoyer toujours la même photo (voir plus bas) |
+| `camera` | `"webcam"` = vraie webcam du PC · `"noir"` = snap tout noir (PC sans caméra) · `"test"` = image de test (mire verte) · ou le chemin d'un fichier `.y4m`/`.mjpeg` pour envoyer toujours la même photo (voir plus bas) |
 | `navigateur` | `"chrome"`, `"msedge"`, ou `null` pour Chromium |
 | `chemin_navigateur` | Chemin d'un autre navigateur Chromium (Brave, etc.), sinon `null` |
 | `navigateur_invisible` | `true` = fenêtre cachée. Snapchat peut bloquer ce mode : laisse `false` si ça ne marche pas |
@@ -84,6 +84,12 @@ Une fenêtre Chrome s'ouvre : connecte-toi à Snapchat (code de vérification co
 
 ```bash
 python flammes_web.py run --now
+```
+
+Pour envoyer à une seule personne (sans toucher au config) :
+
+```bash
+python flammes_web.py run --now --ami "Nom affiché de l'ami"
 ```
 
 Regarde la fenêtre : chaque ami doit recevoir un snap. Le résultat est dans `flammes_web.log`.

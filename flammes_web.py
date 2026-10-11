@@ -5,6 +5,7 @@ Usage :
     python flammes_web.py login          # 1re fois : ouvre le navigateur pour te connecter
     python flammes_web.py run            # envoie les snaps
     python flammes_web.py run --now      # sans le delai aleatoire
+    python flammes_web.py run --now --ami "Nom"   # un seul ami
     python flammes_web.py inspect        # ouvre l'inspecteur Playwright (calibrage)
 """
 
@@ -77,12 +78,26 @@ class Introuvable(Exception):
 
 # ---------------------------------------------------------------- Navigateur
 
+def black_video(path, w=720, h=1280):
+    """Cree une video .y4m d'une image noire (camera factice pour un PC sans webcam)."""
+    if path.exists():
+        return path
+    with open(path, "wb") as f:
+        f.write(f"YUV4MPEG2 W{w} H{h} F30:1 Ip A1:1 C420jpeg\n".encode())
+        f.write(b"FRAME\n")
+        f.write(bytes([16]) * (w * h))             # luminance : noir
+        f.write(bytes([128]) * (w * h // 2))       # chrominance : neutre
+    return path
+
+
 def launch(pw, cfg, headless):
     args = ["--use-fake-ui-for-media-stream"]  # accepte la camera sans popup
     camera = cfg.get("camera", "webcam")
     if camera != "webcam":
         args.append("--use-fake-device-for-media-stream")
-        if camera != "test":
+        if camera == "noir":
+            args.append(f"--use-file-for-fake-video-capture={black_video(ROOT / 'noir.y4m')}")
+        elif camera != "test":
             path = (ROOT / camera).resolve()
             if not path.exists():
                 sys.exit(f"Fichier camera introuvable : {path}")
@@ -225,11 +240,11 @@ class Bot:
 
 # ------------------------------------------------------------------------ CLI
 
-def load_config():
+def load_config(need_friends=True):
     if not CONFIG_PATH.exists():
         sys.exit("config_web.json introuvable. Copie config_web.example.json en config_web.json et remplis-le.")
     cfg = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
-    if not cfg.get("amis"):
+    if need_friends and not cfg.get("amis"):
         sys.exit("Ajoute au moins un ami dans \"amis\" (config_web.json).")
     return cfg
 
@@ -241,6 +256,8 @@ def main():
     sub.add_parser("login", help="se connecter a Snapchat (a faire une fois)")
     p_run = sub.add_parser("run", help="envoyer les snaps")
     p_run.add_argument("--now", action="store_true", help="ignorer le delai aleatoire")
+    p_run.add_argument("--ami", action="append", metavar="NOM",
+                       help="envoyer seulement a cet ami (remplace la liste du config)")
     sub.add_parser("inspect", help="ouvrir l'inspecteur Playwright pour trouver les selecteurs")
     args = parser.parse_args()
 
@@ -250,7 +267,9 @@ def main():
         handlers=[logging.StreamHandler(),
                   logging.FileHandler(LOG_PATH, encoding="utf-8")],
     )
-    cfg = load_config()
+    cfg = load_config(need_friends=not getattr(args, "ami", None))
+    if getattr(args, "ami", None):
+        cfg["amis"] = args.ami
 
     if args.cmd == "run":
         jitter = cfg.get("delai_aleatoire_max_minutes", 0)
