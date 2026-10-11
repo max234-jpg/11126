@@ -1,3 +1,6 @@
 config.json
 *.log
 __pycache__/
+config_web.json
+profil_navigateur/
+captures/

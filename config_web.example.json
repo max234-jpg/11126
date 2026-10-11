@@ -1,0 +1,17 @@
+{
+  "amis": ["Prénom Ami 1", "Prénom Ami 2"],
+
+  "camera": "webcam",
+  "navigateur": "chrome",
+  "chemin_navigateur": null,
+  "navigateur_invisible": false,
+  "langue": "fr-FR",
+
+  "delai_entre_actions": 1.5,
+  "attente_chargement": 6,
+  "attente_camera": 3,
+  "timeout_secondes": 10,
+  "delai_aleatoire_max_minutes": 0,
+
+  "selecteurs": {}
+}
