@@ -3,11 +3,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&display=swap">
 <style>
 .CodeMirror{font-family:monospace;height:300px;color:#000;direction:ltr}.CodeMirror-lines{padding:4px 0}.CodeMirror pre.CodeMirror-line,.CodeMirror pre.CodeMirror-line-like{padding:0 4px}.CodeMirror-gutter-filler,.CodeMirror-scrollbar-filler{background-color:#fff}.CodeMirror-gutters{border-right:1px solid #ddd;background-color:#f7f7f7;white-space:nowrap}.CodeMirror-linenumber{padding:0 3px 0 5px;min-width:20px;text-align:right;color:#999;white-space:nowrap}.CodeMirror-guttermarker{color:#000}.CodeMirror-guttermarker-subtle{color:#999}.CodeMirror-cursor{border-left:1px solid #000;border-right:none;width:0}.CodeMirror div.CodeMirror-secondarycursor{border-left:1px solid silver}.cm-fat-cursor .CodeMirror-cursor{width:auto;border:0!important;background:#7e7}.cm-fat-cursor div.CodeMirror-cursors{z-index:1}.cm-fat-cursor .CodeMirror-line::selection,.cm-fat-cursor .CodeMirror-line>span::selection,.cm-fat-cursor .CodeMirror-line>span>span::selection{background:0 0}.cm-fat-cursor .CodeMirror-line::-moz-selection,.cm-fat-cursor .CodeMirror-line>span::-moz-selection,.cm-fat-cursor .CodeMirror-line>span>span::-moz-selection{background:0 0}.cm-fat-cursor{caret-color:transparent}@-moz-keyframes blink{50%{background-color:transparent}}@-webkit-keyframes blink{50%{background-color:transparent}}@keyframes blink{50%{background-color:transparent}}.cm-tab{display:inline-block;text-decoration:inherit}.CodeMirror-rulers{position:absolute;left:0;right:0;top:-50px;bottom:0;overflow:hidden}.CodeMirror-ruler{border-left:1px solid #ccc;top:0;bottom:0;position:absolute}.cm-s-default .cm-header{color:#00f}.cm-s-default .cm-quote{color:#090}.cm-negative{color:#d44}.cm-positive{color:#292}.cm-header,.cm-strong{font-weight:700}.cm-em{font-style:italic}.cm-link{text-decoration:underline}.cm-strikethrough{text-decoration:line-through}.cm-s-default .cm-keyword{color:#708}.cm-s-default .cm-atom{color:#219}.cm-s-default .cm-number{color:#164}.cm-s-default .cm-def{color:#00f}.cm-s-default .cm-variable-2{color:#05a}.cm-s-default .cm-type,.cm-s-default .cm-variable-3{color:#085}.cm-s-default .cm-comment{color:#a50}.cm-s-default .cm-string{color:#a11}.cm-s-default .cm-string-2{color:#f50}.cm-s-default .cm-meta{color:#555}.cm-s-default .cm-qualifier{color:#555}.cm-s-default .cm-builtin{color:#30a}.cm-s-default .cm-bracket{color:#997}.cm-s-default .cm-tag{color:#170}.cm-s-default .cm-attribute{color:#00c}.cm-s-default .cm-hr{color:#999}.cm-s-default .cm-link{color:#00c}.cm-s-default .cm-error{color:red}.cm-invalidchar{color:red}.CodeMirror-composing{border-bottom:2px solid}div.CodeMirror span.CodeMirror-matchingbracket{color:#0b0}div.CodeMirror span.CodeMirror-nonmatchingbracket{color:#a22}.CodeMirror-matchingtag{background:rgba(255,150,0,.3)}.CodeMirror-activeline-background{background:#e8f2ff}.CodeMirror{position:relative;overflow:hidden;background:#fff}.CodeMirror-scroll{overflow:scroll!important;margin-bottom:-50px;margin-right:-50px;padding-bottom:50px;height:100%;outline:0;position:relative;z-index:0}.CodeMirror-sizer{position:relative;border-right:50px solid transparent}.CodeMirror-gutter-filler,.CodeMirror-hscrollbar,.CodeMirror-scrollbar-filler,.CodeMirror-vscrollbar{position:absolute;z-index:6;display:none;outline:0}.CodeMirror-vscrollbar{right:0;top:0;overflow-x:hidden;overflow-y:scroll}.CodeMirror-hscrollbar{bottom:0;left:0;overflow-y:hidden;overflow-x:scroll}.CodeMirror-scrollbar-filler{right:0;bottom:0}.CodeMirror-gutter-filler{left:0;bottom:0}.CodeMirror-gutters{position:absolute;left:0;top:0;min-height:100%;z-index:3}.CodeMirror-gutter{white-space:normal;height:100%;display:inline-block;vertical-align:top;margin-bottom:-50px}.CodeMirror-gutter-wrapper{position:absolute;z-index:4;background:0 0!important;border:none!important}.CodeMirror-gutter-background{position:absolute;top:0;bottom:0;z-index:4}.CodeMirror-gutter-elt{position:absolute;cursor:default;z-index:4}.CodeMirror-gutter-wrapper ::selection{background-color:transparent}.CodeMirror-gutter-wrapper ::-moz-selection{background-color:transparent}.CodeMirror-lines{cursor:text;min-height:1px}.CodeMirror pre.CodeMirror-line,.CodeMirror pre.CodeMirror-line-like{-moz-border-radius:0;-webkit-border-radius:0;border-radius:0;border-width:0;background:0 0;font-family:inherit;font-size:inherit;margin:0;white-space:pre;word-wrap:normal;line-height:inherit;color:inherit;z-index:2;position:relative;overflow:visible;-webkit-tap-highlight-color:transparent;-webkit-font-variant-ligatures:contextual;font-variant-ligatures:contextual}.CodeMirror-wrap pre.CodeMirror-line,.CodeMirror-wrap pre.CodeMirror-line-like{word-wrap:break-word;white-space:pre-wrap;word-break:normal}.CodeMirror-linebackground{position:absolute;left:0;right:0;top:0;bottom:0;z-index:0}.CodeMirror-linewidget{position:relative;z-index:2;padding:.1px}.CodeMirror-rtl pre{direction:rtl}.CodeMirror-code{outline:0}.CodeMirror-gutter,.CodeMirror-gutters,.CodeMirror-linenumber,.CodeMirror-scroll,.CodeMirror-sizer{-moz-box-sizing:content-box;box-sizing:content-box}.CodeMirror-measure{position:absolute;width:100%;height:0;overflow:hidden;visibility:hidden}.CodeMirror-cursor{position:absolute;pointer-events:none}.CodeMirror-measure pre{position:static}div.CodeMirror-cursors{visibility:hidden;position:relative;z-index:3}div.CodeMirror-dragcursors{visibility:visible}.CodeMirror-focused div.CodeMirror-cursors{visibility:visible}.CodeMirror-selected{background:#d9d9d9}.CodeMirror-focused .CodeMirror-selected{background:#d7d4f0}.CodeMirror-crosshair{cursor:crosshair}.CodeMirror-line::selection,.CodeMirror-line>span::selection,.CodeMirror-line>span>span::selection{background:#d7d4f0}.CodeMirror-line::-moz-selection,.CodeMirror-line>span::-moz-selection,.CodeMirror-line>span>span::-moz-selection{background:#d7d4f0}.cm-searching{background-color:#ffa;background-color:rgba(255,255,0,.4)}.cm-force-border{padding-right:.1px}@media print{.CodeMirror div.CodeMirror-cursors{visibility:hidden}}.cm-tab-wrap-hack:after{content:''}span.CodeMirror-selectedtext{background:0 0}
-/* Layout: classroom IDE look, deliberately light-only. Top icon bar, editor with file tab on the left, grip splitter, output on the right. */
+/* Layout: classroom IDE look, deliberately light-only. Top icon bar, file tabs + editor on the left, grip splitter, output on the right. */
 :root{
   color-scheme:light;
   --bg:#ffffff; --fg:#222222; --label:#525252; --muted:#8a8a8a;
   --rule:#d4d4d4; --rule-soft:#d9d9d9; --tab-off:#e6e6e6; --strip:#f5f5f5;
+  --hot:#008aff; --hot-fg:#ffffff;
   --gutter:#e8e8e8; --gutter-fg:#333333; --active:rgba(0,0,0,.07); --sel:#b5d5ff;
   --menu:#333333; --menu-head:#444444; --menu-fg:rgba(255,255,255,.7); --menu-rule:#262626;
   --tk-kw:rgb(200,0,164); --tk-com:rgb(0,142,0); --tk-str:rgb(223,0,2); --tk-num:rgb(58,0,220); --tk-fn:rgb(69,0,132);
@@ -20,24 +21,37 @@ html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--font-ui);font-size:16px;overflow:hidden}
 *{box-sizing:border-box}
 .ico{width:1em;height:1em;fill:currentColor;flex:none;display:block}
+button{font:inherit}
+:focus-visible{outline:2px solid var(--hot);outline-offset:-2px}
 
 .app{height:100%;display:flex;flex-direction:column;border:1px solid var(--rule)}
 
 /* Barre du haut */
-.topbar{display:flex;align-items:stretch;height:36px;border-bottom:1px solid var(--rule);background:var(--bg);flex:none}
-.tb-btn{font:inherit;font-size:16px;color:var(--label);background:var(--bg);border:0;border-right:1px solid var(--rule);padding:0 16px;display:flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap}
+.topbar{display:flex;align-items:stretch;height:36px;border-bottom:1px solid var(--rule);background:var(--bg);flex:none;position:relative;z-index:20}
+.tb-btn{font-size:16px;color:var(--label);background:var(--bg);border:0;border-right:1px solid var(--rule);padding:0 14px;display:flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap}
 .tb-btn .lbl{font-size:14px}
-.tb-btn:hover:not(:disabled){background:#f3f3f3;color:var(--fg)}
+.tb-btn:hover:not(:disabled),.tb-btn[aria-expanded="true"]{background:var(--hot);color:var(--hot-fg)}
 .tb-btn:disabled{color:#b8b8b8;cursor:not-allowed}
-.tb-btn:focus-visible,.tab-link:focus-visible,.menu a:focus-visible,.err-box button:focus-visible,.tab-tool:focus-visible{outline:2px solid #2a6ad3;outline-offset:-2px}
+.tb-caret{width:40px;padding:0;justify-content:center;border-left:0}
+.split-group{display:flex;border-left:1px solid var(--rule)}
+.split-group .tb-btn:first-child{min-width:47px;justify-content:center}
+.split-group:hover .tb-btn:not(:disabled){background:var(--hot);color:var(--hot-fg)}
 .tb-menu{width:47px;justify-content:center;padding:0}
-.brand{display:flex;align-items:center;gap:7px;padding:0 12px 0 8px;border-right:1px solid var(--rule);color:#000000;white-space:nowrap}
+.brand{display:flex;align-items:center;gap:7px;padding:0 12px 0 8px;color:#000000;white-space:nowrap}
 .logo-mark{height:26px;width:auto;flex:none;display:block}
 .logo-word{font-family:var(--font-ui);font-weight:900;font-size:21px;letter-spacing:-.01em;line-height:1;padding-bottom:2px}
 .tb-right{margin-left:auto;display:flex}
 .tb-right .tb-btn{border-right:0;border-left:1px solid var(--rule)}
+.tb-save{font-weight:700}
+.tb-save .lbl{border-bottom:1px dotted #cccccc;font-weight:400}
 .tb-claude .ico{color:#7a4cc2}
+.tb-claude:hover:not(:disabled) .ico{color:inherit}
 .tb-claude:disabled .ico{color:inherit}
+
+.dropdown{position:absolute;top:37px;background:var(--bg);border:1px solid #cccccc;min-width:170px;z-index:30;padding:4px 0;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.dropdown button{display:flex;align-items:center;gap:10px;width:100%;background:transparent;border:0;color:var(--label);padding:8px 14px;font-size:15px;text-align:left;cursor:pointer;white-space:nowrap}
+.dropdown button:hover{background:#eeeeee;color:var(--fg)}
+.dropdown .ico{font-size:14px}
 
 /* Panneaux */
 .panes{flex:1;min-height:0;display:flex}
@@ -46,12 +60,22 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font-ui);font-size:1
 .split::before{content:"";width:2px;height:22px;border-left:1px solid #a8a8a8;border-right:1px solid #a8a8a8}
 .right{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--bg)}
 
-.tabbar{display:flex;align-items:flex-end;height:36px;border-bottom:1px solid var(--rule-soft);padding-left:6px;gap:4px;flex:none}
-.tab{background:var(--bg);border-top:4px solid #000000;height:38px;margin-bottom:-1px;display:flex;align-items:center;padding:0 8px}
-.tab-link{color:var(--label);font-size:16px;text-decoration:none;padding:0 0 2px}
-.tab-tools{margin-left:auto;align-self:center;display:flex;gap:2px;padding-right:6px}
-.tab-tool{font:inherit;font-size:13px;color:var(--label);background:var(--tab-off);border:0;border-bottom:1px solid var(--rule-soft);padding:6px 10px;display:flex;align-items:center;gap:6px;cursor:pointer}
-.tab-tool:hover{color:var(--fg);background:#dcdcdc}
+/* Onglets */
+.tabbar{display:flex;align-items:flex-end;height:36px;border-bottom:1px solid var(--rule-soft);flex:none}
+.tab-nav{display:flex;align-items:center;gap:4px;padding:0 6px 0 4px;align-self:center}
+.tab-btn{background:transparent;border:0;color:#333333;padding:4px 2px;font-size:16px;cursor:pointer;display:flex}
+.tab-btn:hover{color:#000000}
+.tabs{display:flex;align-items:flex-end;gap:4px;overflow:hidden;flex:1;min-width:0;height:100%;scroll-behavior:smooth}
+.tab{flex:none;background:var(--tab-off);height:35px;display:flex;align-items:center;gap:6px;padding:0 8px;border-bottom:1px solid var(--rule-soft);cursor:pointer}
+.tab.active{background:var(--bg);border-top:4px solid #000000;height:38px;border-bottom:0;margin-bottom:-1px;cursor:default}
+.tab-name{color:var(--label);font-size:16px;background:transparent;border:0;padding:0 0 2px;cursor:inherit;white-space:nowrap}
+.tab-close{background:transparent;border:0;color:#999999;font-size:11px;padding:3px;cursor:pointer;display:flex}
+.tab-close:hover{color:var(--err-fg)}
+.tab input{font:inherit;font-size:15px;width:9em;border:1px solid #cccccc;padding:2px 4px;color:var(--fg)}
+.tab-tools{display:flex;align-items:center;gap:8px;padding:0 10px 0 8px;align-self:center}
+.tab-tools .tab-btn{font-size:17px}
+.tab-undo{font-size:13px;color:var(--label);background:var(--tab-off);border:0;padding:5px 9px;display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap}
+.tab-undo:hover{background:#dcdcdc;color:var(--fg)}
 
 .editor-wrap{position:relative;flex:1;min-height:0}
 .CodeMirror{position:absolute;inset:0;height:auto;font-family:var(--font-code);font-size:13px;line-height:1.35;color:#000000;background:var(--bg)}
@@ -76,7 +100,7 @@ div.CodeMirror span.CodeMirror-matchingbracket{color:#000000;outline:1px solid #
 .thinking .ico{animation:wave 1.2s infinite ease-in-out}
 @keyframes wave{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
 @media (prefers-reduced-motion: reduce){.thinking .ico{animation:none}}
-.thinking button{font:inherit;font-size:12px;background:transparent;color:var(--menu-fg);border:1px solid #666666;padding:3px 8px;cursor:pointer}
+.thinking button{font-size:12px;background:transparent;color:var(--menu-fg);border:1px solid #666666;padding:3px 8px;cursor:pointer}
 
 .strip{flex:none;background:var(--strip);border-top:1px solid var(--rule-soft);padding:6px 10px;font-size:12px;color:var(--label);line-height:1.5}
 .strip strong{color:var(--fg);font-weight:700}
@@ -89,8 +113,9 @@ div.CodeMirror span.CodeMirror-matchingbracket{color:#000000;outline:1px solid #
 .err-box{margin:8px;padding:8px 10px;background:var(--err-bg);color:var(--err-fg);border:1px solid var(--err-rule);font-size:13px;display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
 .err-box .ico{margin-top:2px}
 .err-box p{margin:0;flex:1;min-width:12em;font-family:var(--font-code);line-height:1.45;word-break:break-word}
-.err-box button{font:inherit;font-size:13px;color:var(--label);background:var(--bg);border:1px solid var(--rule);padding:4px 10px;display:flex;align-items:center;gap:6px;cursor:pointer}
-.err-box button .ico{margin:0;color:#7a4cc2}
+.err-box button{font-size:13px;color:var(--label);background:var(--bg);border:1px solid var(--rule);padding:4px 10px;display:flex;align-items:center;gap:6px;cursor:pointer}
+.err-box button:hover{background:var(--hot);color:var(--hot-fg);border-color:var(--hot)}
+.err-box button .ico{margin:0}
 .turtle{flex:none;margin:8px auto 0;border:1px solid #000000;background:#f8f8f8;overflow:hidden;max-width:100%}
 .console{flex:1;font-family:var(--font-code);font-size:13px;line-height:1.45;color:var(--fg);padding:8px 10px;white-space:pre-wrap;word-break:break-word;outline:0}
 .console .dim{color:var(--muted)}
@@ -106,6 +131,9 @@ div.CodeMirror span.CodeMirror-matchingbracket{color:#000000;outline:1px solid #
 .menu a:hover{background:#2a2a2a;color:#ffffff}
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:40}
 
+.toast{position:fixed;top:44px;left:50%;transform:translateX(-50%);background:var(--menu);color:#ffffff;font-size:14px;padding:8px 14px;z-index:60;display:flex;gap:8px;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.25);max-width:calc(100% - 32px)}
+
+@media (max-width: 1100px){ .tb-btn .lbl.lg{display:none} }
 @media (max-width: 760px){
   body{overflow:auto}
   .app{height:auto;min-height:100%}
@@ -114,42 +142,70 @@ div.CodeMirror span.CodeMirror-matchingbracket{color:#000000;outline:1px solid #
   .editor-wrap{height:340px;flex:none}
   .split{display:none}
   .right{border-top:1px solid var(--rule);min-height:300px}
-  .tb-btn .lbl.hide-sm,.brand .txt{display:none}
-  .tb-btn{padding:0 13px}
+  .brand .logo-word{display:none}
+  .tb-btn .lbl{display:none}
+  .tb-btn{padding:0 12px}
 }
-@media (max-width: 420px){ .tb-btn .lbl{display:none} }
 </style>
 
-<svg xmlns="http://www.w3.org/2000/svg" style="display:none"><symbol id="i-times" viewBox="0 -1536 1408 1792"><path transform="scale(1,-1)" d="M1298 214q0 -40 -28 -68l-136 -136q-28 -28 -68 -28t-68 28l-294 294l-294 -294q-28 -28 -68 -28t-68 28l-136 136q-28 28 -28 68t28 68l294 294l-294 294q-28 28 -28 68t28 68l136 136q28 28 68 28t68 -28l294 -294l294 294q28 28 68 28t68 -28l136 -136q28 -28 28 -68
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none"><symbol id="i-check" viewBox="0 -1536 1792 1792"><path transform="scale(1,-1)" d="M1671 970q0 -40 -28 -68l-724 -724l-136 -136q-28 -28 -68 -28t-68 28l-136 136l-362 362q-28 28 -28 68t28 68l136 136q28 28 68 28t68 -28l294 -295l656 657q28 28 68 28t68 -28l136 -136q28 -28 28 -68z"/></symbol><symbol id="i-times" viewBox="0 -1536 1408 1792"><path transform="scale(1,-1)" d="M1298 214q0 -40 -28 -68l-136 -136q-28 -28 -68 -28t-68 28l-294 294l-294 -294q-28 -28 -68 -28t-68 28l-136 136q-28 28 -28 68t28 68l294 294l-294 294q-28 28 -28 68t28 68l136 136q28 28 68 28t68 -28l294 -294l294 294q28 28 68 28t68 -28l136 -136q28 -28 28 -68
 t-28 -68l-294 -294l294 -294q28 -28 28 -68z"/></symbol><symbol id="i-file-o" viewBox="0 -1536 1536 1792"><path transform="scale(1,-1)" d="M1468 1156q28 -28 48 -76t20 -88v-1152q0 -40 -28 -68t-68 -28h-1344q-40 0 -68 28t-28 68v1600q0 40 28 68t68 28h896q40 0 88 -20t76 -48zM1024 1400v-376h376q-10 29 -22 41l-313 313q-12 12 -41 22zM1408 -128v1024h-416q-40 0 -68 28t-28 68v416h-768v-1536h1280z
 "/></symbol><symbol id="i-refresh" viewBox="0 -1536 1536 1792"><path transform="scale(1,-1)" d="M1511 480q0 -5 -1 -7q-64 -268 -268 -434.5t-478 -166.5q-146 0 -282.5 55t-243.5 157l-129 -129q-19 -19 -45 -19t-45 19t-19 45v448q0 26 19 45t45 19h448q26 0 45 -19t19 -45t-19 -45l-137 -137q71 -66 161 -102t187 -36q134 0 250 65t186 179q11 17 53 117
 q8 23 30 23h192q13 0 22.5 -9.5t9.5 -22.5zM1536 1280v-448q0 -26 -19 -45t-45 -19h-448q-26 0 -45 19t-19 45t19 45l138 138q-148 137 -349 137q-134 0 -250 -65t-186 -179q-11 -17 -53 -117q-8 -23 -30 -23h-199q-13 0 -22.5 9.5t-9.5 22.5v7q65 268 270 434.5t480 166.5
-q146 0 284 -55.5t245 -156.5l130 129q19 19 45 19t45 -19t19 -45z"/></symbol><symbol id="i-play" viewBox="0 -1536 1408 1792"><path transform="scale(1,-1)" d="M1384 609l-1328 -738q-23 -13 -39.5 -3t-16.5 36v1472q0 26 16.5 36t39.5 -3l1328 -738q23 -13 23 -31t-23 -31z"/></symbol><symbol id="i-stop" viewBox="0 -1536 1536 1792"><path transform="scale(1,-1)" d="M1536 1344v-1408q0 -26 -19 -45t-45 -19h-1408q-26 0 -45 19t-19 45v1408q0 26 19 45t45 19h1408q26 0 45 -19t19 -45z"/></symbol><symbol id="i-chevron-left" viewBox="0 -1536 1280 1792"><path transform="scale(1,-1)" d="M1171 1235l-531 -531l531 -531q19 -19 19 -45t-19 -45l-166 -166q-19 -19 -45 -19t-45 19l-742 742q-19 19 -19 45t19 45l742 742q19 19 45 19t45 -19l166 -166q19 -19 19 -45t-19 -45z"/></symbol><symbol id="i-chevron-right" viewBox="0 -1536 1280 1792"><path transform="scale(1,-1)" d="M1107 659l-742 -742q-19 -19 -45 -19t-45 19l-166 166q-19 19 -19 45t19 45l531 531l-531 531q-19 19 -19 45t19 45l166 166q19 19 45 19t45 -19l742 -742q19 -19 19 -45t-19 -45z"/></symbol><symbol id="i-exclamation-circle" viewBox="0 -1536 1536 1792"><path transform="scale(1,-1)" d="M768 1408q209 0 385.5 -103t279.5 -279.5t103 -385.5t-103 -385.5t-279.5 -279.5t-385.5 -103t-385.5 103t-279.5 279.5t-103 385.5t103 385.5t279.5 279.5t385.5 103zM896 161v190q0 14 -9 23.5t-22 9.5h-192q-13 0 -23 -10t-10 -23v-190q0 -13 10 -23t23 -10h192
-q13 0 22 9.5t9 23.5zM894 505l18 621q0 12 -10 18q-10 8 -24 8h-220q-14 0 -24 -8q-10 -6 -10 -18l17 -621q0 -10 10 -17.5t24 -7.5h185q14 0 23.5 7.5t10.5 17.5z"/></symbol><symbol id="i-wrench" viewBox="0 -1536 1664 1792"><path transform="scale(1,-1)" d="M384 64q0 26 -19 45t-45 19t-45 -19t-19 -45t19 -45t45 -19t45 19t19 45zM1028 484l-682 -682q-37 -37 -90 -37q-52 0 -91 37l-106 108q-38 36 -38 90q0 53 38 91l681 681q39 -98 114.5 -173.5t173.5 -114.5zM1662 919q0 -39 -23 -106q-47 -134 -164.5 -217.5
-t-258.5 -83.5q-185 0 -316.5 131.5t-131.5 316.5t131.5 316.5t316.5 131.5q58 0 121.5 -16.5t107.5 -46.5q16 -11 16 -28t-16 -28l-293 -169v-224l193 -107q5 3 79 48.5t135.5 81t70.5 35.5q15 0 23.5 -10t8.5 -25z"/></symbol><symbol id="i-bars" viewBox="0 -1536 1536 1792"><path transform="scale(1,-1)" d="M1536 192v-128q0 -26 -19 -45t-45 -19h-1408q-26 0 -45 19t-19 45v128q0 26 19 45t45 19h1408q26 0 45 -19t19 -45zM1536 704v-128q0 -26 -19 -45t-45 -19h-1408q-26 0 -45 19t-19 45v128q0 26 19 45t45 19h1408q26 0 45 -19t19 -45zM1536 1216v-128q0 -26 -19 -45
+q146 0 284 -55.5t245 -156.5l130 129q19 19 45 19t45 -19t19 -45z"/></symbol><symbol id="i-play" viewBox="0 -1536 1408 1792"><path transform="scale(1,-1)" d="M1384 609l-1328 -738q-23 -13 -39.5 -3t-16.5 36v1472q0 26 16.5 36t39.5 -3l1328 -738q23 -13 23 -31t-23 -31z"/></symbol><symbol id="i-stop" viewBox="0 -1536 1536 1792"><path transform="scale(1,-1)" d="M1536 1344v-1408q0 -26 -19 -45t-45 -19h-1408q-26 0 -45 19t-19 45v1408q0 26 19 45t45 19h1408q26 0 45 -19t19 -45z"/></symbol><symbol id="i-chevron-left" viewBox="0 -1536 1280 1792"><path transform="scale(1,-1)" d="M1171 1235l-531 -531l531 -531q19 -19 19 -45t-19 -45l-166 -166q-19 -19 -45 -19t-45 19l-742 742q-19 19 -19 45t19 45l742 742q19 19 45 19t45 -19l166 -166q19 -19 19 -45t-19 -45z"/></symbol><symbol id="i-chevron-right" viewBox="0 -1536 1280 1792"><path transform="scale(1,-1)" d="M1107 659l-742 -742q-19 -19 -45 -19t-45 19l-166 166q-19 19 -19 45t19 45l531 531l-531 531q-19 19 -19 45t19 45l166 166q19 19 45 19t45 -19l742 -742q19 -19 19 -45t-19 -45z"/></symbol><symbol id="i-plus" viewBox="0 -1536 1408 1792"><path transform="scale(1,-1)" d="M1408 800v-192q0 -40 -28 -68t-68 -28h-416v-416q0 -40 -28 -68t-68 -28h-192q-40 0 -68 28t-28 68v416h-416q-40 0 -68 28t-28 68v192q0 40 28 68t68 28h416v416q0 40 28 68t68 28h192q40 0 68 -28t28 -68v-416h416q40 0 68 -28t28 -68z"/></symbol><symbol id="i-exclamation-circle" viewBox="0 -1536 1536 1792"><path transform="scale(1,-1)" d="M768 1408q209 0 385.5 -103t279.5 -279.5t103 -385.5t-103 -385.5t-279.5 -279.5t-385.5 -103t-385.5 103t-279.5 279.5t-103 385.5t103 385.5t279.5 279.5t385.5 103zM896 161v190q0 14 -9 23.5t-22 9.5h-192q-13 0 -23 -10t-10 -23v-190q0 -13 10 -23t23 -10h192
+q13 0 22 9.5t9 23.5zM894 505l18 621q0 12 -10 18q-10 8 -24 8h-220q-14 0 -24 -8q-10 -6 -10 -18l17 -621q0 -10 10 -17.5t24 -7.5h185q14 0 23.5 7.5t10.5 17.5z"/></symbol><symbol id="i-upload" viewBox="0 -1536 1664 1792"><path transform="scale(1,-1)" d="M1280 64q0 26 -19 45t-45 19t-45 -19t-19 -45t19 -45t45 -19t45 19t19 45zM1536 64q0 26 -19 45t-45 19t-45 -19t-19 -45t19 -45t45 -19t45 19t19 45zM1664 288v-320q0 -40 -28 -68t-68 -28h-1472q-40 0 -68 28t-28 68v320q0 40 28 68t68 28h427q21 -56 70.5 -92
+t110.5 -36h256q61 0 110.5 36t70.5 92h427q40 0 68 -28t28 -68zM1339 936q-17 -40 -59 -40h-256v-448q0 -26 -19 -45t-45 -19h-256q-26 0 -45 19t-19 45v448h-256q-42 0 -59 40q-17 39 14 69l448 448q18 19 45 19t45 -19l448 -448q31 -30 14 -69z"/></symbol><symbol id="i-wrench" viewBox="0 -1536 1664 1792"><path transform="scale(1,-1)" d="M384 64q0 26 -19 45t-45 19t-45 -19t-19 -45t19 -45t45 -19t45 19t19 45zM1028 484l-682 -682q-37 -37 -90 -37q-52 0 -91 37l-106 108q-38 36 -38 90q0 53 38 91l681 681q39 -98 114.5 -173.5t173.5 -114.5zM1662 919q0 -39 -23 -106q-47 -134 -164.5 -217.5
+t-258.5 -83.5q-185 0 -316.5 131.5t-131.5 316.5t131.5 316.5t316.5 131.5q58 0 121.5 -16.5t107.5 -46.5q16 -11 16 -28t-16 -28l-293 -169v-224l193 -107q5 3 79 48.5t135.5 81t70.5 35.5q15 0 23.5 -10t8.5 -25z"/></symbol><symbol id="i-files-o" viewBox="0 -1536 1792 1792"><path transform="scale(1,-1)" d="M1696 1152q40 0 68 -28t28 -68v-1216q0 -40 -28 -68t-68 -28h-960q-40 0 -68 28t-28 68v288h-544q-40 0 -68 28t-28 68v672q0 40 20 88t48 76l408 408q28 28 76 48t88 20h416q40 0 68 -28t28 -68v-328q68 40 128 40h416zM1152 939l-299 -299h299v299zM512 1323l-299 -299
+h299v299zM708 676l316 316v416h-384v-416q0 -40 -28 -68t-68 -28h-416v-640h512v256q0 40 20 88t48 76zM1664 -128v1152h-384v-416q0 -40 -28 -68t-68 -28h-416v-640h896z"/></symbol><symbol id="i-floppy-o" viewBox="0 -1536 1536 1792"><path transform="scale(1,-1)" d="M384 0h768v384h-768v-384zM1280 0h128v896q0 14 -10 38.5t-20 34.5l-281 281q-10 10 -34 20t-39 10v-416q0 -40 -28 -68t-68 -28h-576q-40 0 -68 28t-28 68v416h-128v-1280h128v416q0 40 28 68t68 28h832q40 0 68 -28t28 -68v-416zM896 928v320q0 13 -9.5 22.5t-22.5 9.5
+h-192q-13 0 -22.5 -9.5t-9.5 -22.5v-320q0 -13 9.5 -22.5t22.5 -9.5h192q13 0 22.5 9.5t9.5 22.5zM1536 896v-928q0 -40 -28 -68t-68 -28h-1344q-40 0 -68 28t-28 68v1344q0 40 28 68t68 28h928q40 0 88 -20t76 -48l280 -280q28 -28 48 -76t20 -88z"/></symbol><symbol id="i-bars" viewBox="0 -1536 1536 1792"><path transform="scale(1,-1)" d="M1536 192v-128q0 -26 -19 -45t-45 -19h-1408q-26 0 -45 19t-19 45v128q0 26 19 45t45 19h1408q26 0 45 -19t19 -45zM1536 704v-128q0 -26 -19 -45t-45 -19h-1408q-26 0 -45 19t-19 45v128q0 26 19 45t45 19h1408q26 0 45 -19t19 -45zM1536 1216v-128q0 -26 -19 -45
 t-45 -19h-1408q-26 0 -45 19t-19 45v128q0 26 19 45t45 19h1408q26 0 45 -19t19 -45z"/></symbol><symbol id="i-magic" viewBox="0 -1536 1664 1792"><path transform="scale(1,-1)" d="M1190 955l293 293l-107 107l-293 -293zM1637 1248q0 -27 -18 -45l-1286 -1286q-18 -18 -45 -18t-45 18l-198 198q-18 18 -18 45t18 45l1286 1286q18 18 45 18t45 -18l198 -198q18 -18 18 -45zM286 1438l98 -30l-98 -30l-30 -98l-30 98l-98 30l98 30l30 98zM636 1276
 l196 -60l-196 -60l-60 -196l-60 196l-196 60l196 60l60 196zM1566 798l98 -30l-98 -30l-30 -98l-30 98l-98 30l98 30l30 98zM926 1438l98 -30l-98 -30l-30 -98l-30 98l-98 30l98 30l30 98z"/></symbol><symbol id="i-caret-down" viewBox="0 -1536 1024 1792"><path transform="scale(1,-1)" d="M1024 832q0 -26 -19 -45l-448 -448q-19 -19 -45 -19t-45 19l-448 448q-19 19 -19 45t19 45t45 19h896q26 0 45 -19t19 -45z"/></symbol><symbol id="i-undo" viewBox="0 -1536 1536 1792"><path transform="scale(1,-1)" d="M1536 640q0 -156 -61 -298t-164 -245t-245 -164t-298 -61q-172 0 -327 72.5t-264 204.5q-7 10 -6.5 22.5t8.5 20.5l137 138q10 9 25 9q16 -2 23 -12q73 -95 179 -147t225 -52q104 0 198.5 40.5t163.5 109.5t109.5 163.5t40.5 198.5t-40.5 198.5t-109.5 163.5
 t-163.5 109.5t-198.5 40.5q-98 0 -188 -35.5t-160 -101.5l137 -138q31 -30 14 -69q-17 -40 -59 -40h-448q-26 0 -45 19t-19 45v448q0 42 40 59q39 17 69 -14l130 -129q107 101 244.5 156.5t284.5 55.5q156 0 298 -61t245 -164t164 -245t61 -298z"/></symbol><symbol id="i-terminal" viewBox="0 -1536 1664 1792"><path transform="scale(1,-1)" d="M585 553l-466 -466q-10 -10 -23 -10t-23 10l-50 50q-10 10 -10 23t10 23l393 393l-393 393q-10 10 -10 23t10 23l50 50q10 10 23 10t23 -10l466 -466q10 -10 10 -23t-10 -23zM1664 96v-64q0 -14 -9 -23t-23 -9h-960q-14 0 -23 9t-9 23v64q0 14 9 23t23 9h960q14 0 23 -9
-t9 -23z"/></symbol><symbol id="i-eraser" viewBox="0 -1536 1920 1792"><path transform="scale(1,-1)" d="M896 128l336 384h-768l-336 -384h768zM1909 1205q15 -34 9.5 -71.5t-30.5 -65.5l-896 -1024q-38 -44 -96 -44h-768q-38 0 -69.5 20.5t-47.5 54.5q-15 34 -9.5 71.5t30.5 65.5l896 1024q38 44 96 44h768q38 0 69.5 -20.5t47.5 -54.5z"/></symbol></svg>
+t9 -23z"/></symbol><symbol id="i-eraser" viewBox="0 -1536 1920 1792"><path transform="scale(1,-1)" d="M896 128l336 384h-768l-336 -384h768zM1909 1205q15 -34 9.5 -71.5t-30.5 -65.5l-896 -1024q-38 -44 -96 -44h-768q-38 0 -69.5 20.5t-47.5 54.5q-15 34 -9.5 71.5t30.5 65.5l896 1024q38 44 96 44h768q38 0 69.5 -20.5t47.5 -54.5z"/></symbol><symbol id="i-share-alt" viewBox="0 -1536 1536 1792"><path transform="scale(1,-1)" d="M1216 512q133 0 226.5 -93.5t93.5 -226.5t-93.5 -226.5t-226.5 -93.5t-226.5 93.5t-93.5 226.5q0 12 2 34l-360 180q-92 -86 -218 -86q-133 0 -226.5 93.5t-93.5 226.5t93.5 226.5t226.5 93.5q126 0 218 -86l360 180q-2 22 -2 34q0 133 93.5 226.5t226.5 93.5
+t226.5 -93.5t93.5 -226.5t-93.5 -226.5t-226.5 -93.5q-126 0 -218 86l-360 -180q2 -22 2 -34t-2 -34l360 -180q92 86 218 86z"/></symbol></svg>
 
 <div class="app">
   <div class="topbar">
     <button class="tb-btn tb-menu" id="btn-menu" aria-label="Menu" aria-expanded="false"><svg class="ico"><use href="#i-bars"/></svg></button>
-    <div class="brand" aria-label="atelier python"><svg class="logo-mark" viewBox="0 0 56 36" aria-hidden="true"><circle cx="37" cy="18" r="17" fill="#ffd43b"/><circle cx="19" cy="18" r="17" fill="#3776ab"/><polyline points="11,11.5 18,18 11,24.5" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="20" y1="25" x2="28" y2="25" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round"/></svg><span class="txt logo-word">atelier python</span></div>
-    <button class="tb-btn" id="btn-run" title="Exécuter (Ctrl+Entrée)" aria-label="Exécuter"><svg class="ico"><use href="#i-play"/></svg><span class="lbl">Exécuter</span></button>
-    <button class="tb-btn" id="btn-stop" title="Arrêter le programme" aria-label="Arrêter" hidden><svg class="ico"><use href="#i-stop"/></svg><span class="lbl">Arrêter</span></button>
+    <div class="brand" aria-label="atelier python"><svg class="logo-mark" viewBox="0 0 56 36" aria-hidden="true"><circle cx="37" cy="18" r="17" fill="#ffd43b"/><circle cx="19" cy="18" r="17" fill="#3776ab"/><polyline points="11,11.5 18,18 11,24.5" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="20" y1="25" x2="28" y2="25" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round"/></svg><span class="logo-word">atelier python</span></div>
+    <div class="split-group">
+      <button class="tb-btn" id="btn-run" title="Exécuter (Ctrl+Entrée)" aria-label="Exécuter"><svg class="ico"><use href="#i-play"/></svg><span class="lbl lg">Exécuter</span></button>
+      <button class="tb-btn" id="btn-stop" title="Arrêter le programme" aria-label="Arrêter" hidden><svg class="ico"><use href="#i-stop"/></svg><span class="lbl lg">Arrêter</span></button>
+      <button class="tb-btn tb-caret" id="caret-run" aria-label="Plus d'options d'exécution" aria-expanded="false" aria-haspopup="true"><svg class="ico"><use href="#i-caret-down"/></svg></button>
+    </div>
+    <div class="split-group">
+      <button class="tb-btn" id="btn-share" title="Copier le code pour le partager" aria-label="Partager"><svg class="ico"><use href="#i-share-alt"/></svg><span class="lbl lg">Partager</span></button>
+      <button class="tb-btn tb-caret" id="caret-share" aria-label="Plus d'options de partage" aria-expanded="false" aria-haspopup="true"><svg class="ico"><use href="#i-caret-down"/></svg></button>
+    </div>
     <button class="tb-btn tb-claude" id="btn-claude" title="Demander à Claude (Ctrl+Maj+Entrée)" aria-label="Demander à Claude"><svg class="ico"><use href="#i-magic"/></svg><span class="lbl">Demander à Claude</span></button>
     <div class="tb-right">
-      <button class="tb-btn" id="btn-reset" title="Nouveau programme" aria-label="Nouveau programme"><svg class="ico"><use href="#i-file-o"/></svg><span class="lbl hide-sm">Nouveau</span></button>
+      <button class="tb-btn tb-save" id="btn-save" title="Enregistrer dans ce navigateur" aria-label="Enregistrer"><svg class="ico"><use href="#i-floppy-o"/></svg><span class="lbl">Enregistrer</span></button>
+    </div>
+
+    <div class="dropdown" id="dd-run" hidden>
+      <button data-act="run"><svg class="ico"><use href="#i-play"/></svg>Exécuter</button>
+      <button data-act="stop"><svg class="ico"><use href="#i-stop"/></svg>Arrêter</button>
+      <button data-act="clear"><svg class="ico"><use href="#i-eraser"/></svg>Effacer la sortie</button>
+    </div>
+    <div class="dropdown" id="dd-share" hidden>
+      <button data-act="copy-code"><svg class="ico"><use href="#i-files-o"/></svg>Copier le code</button>
+      <button data-act="copy-output"><svg class="ico"><use href="#i-terminal"/></svg>Copier la sortie</button>
     </div>
   </div>
 
   <div class="panes" id="panes">
     <section class="left" id="left" aria-label="Éditeur">
       <div class="tabbar">
-        <div class="tab"><a class="tab-link" href="#code" id="tab-main">main.py</a></div>
+        <div class="tab-nav">
+          <button class="tab-btn" id="tabs-prev" aria-label="Onglets précédents"><svg class="ico"><use href="#i-chevron-left"/></svg></button>
+          <button class="tab-btn" id="tabs-next" aria-label="Onglets suivants"><svg class="ico"><use href="#i-chevron-right"/></svg></button>
+        </div>
+        <div class="tabs" id="tabs" role="tablist"></div>
         <div class="tab-tools">
-          <button class="tab-tool" id="btn-undo" hidden><svg class="ico"><use href="#i-undo"/></svg>Revenir à ma demande</button>
+          <button class="tab-undo" id="btn-undo" hidden><svg class="ico"><use href="#i-undo"/></svg>Revenir à ma demande</button>
+          <button class="tab-btn" id="btn-add" title="Ajouter un fichier" aria-label="Ajouter un fichier"><svg class="ico"><use href="#i-plus"/></svg></button>
+          <button class="tab-btn" id="btn-upload" title="Ouvrir un fichier .py de ton ordinateur" aria-label="Ouvrir un fichier"><svg class="ico"><use href="#i-upload"/></svg></button>
+          <input type="file" id="file-input" accept=".py,.txt,text/plain,text/x-python" hidden>
         </div>
       </div>
       <div class="editor-wrap">
@@ -176,7 +232,7 @@ t9 -23z"/></symbol><symbol id="i-eraser" viewBox="0 -1536 1920 1792"><path trans
           <button id="btn-fix"><svg class="ico"><use href="#i-wrench"/></svg>Corriger avec Claude</button>
         </div>
         <div id="turtle" class="turtle" hidden></div>
-        <div id="console" class="console" tabindex="0" aria-live="polite"><span class="dim">Clique sur Exécuter pour lancer le programme.
+        <div id="console" class="console" tabindex="0" aria-live="polite"><span class="dim">Clique sur ▶ pour lancer le programme.
 </span></div>
       </div>
     </section>
@@ -197,6 +253,7 @@ t9 -23z"/></symbol><symbol id="i-eraser" viewBox="0 -1536 1920 1792"><path trans
   <a href="#" data-req="Une fonction qui dit si une année est bissextile, puis tester la fonction sur quelques années."><svg class="ico"><use href="#i-magic"/></svg>Année bissextile</a>
   <a href="#" data-req="Avec le module turtle, dessiner un carré, puis un triangle de couleur différente à côté."><svg class="ico"><use href="#i-magic"/></svg>Tortue : carré et triangle</a>
 </nav>
+<div id="toast" class="toast" role="status" hidden><svg class="ico"><use href="#i-check"/></svg><span id="toast-msg"></span></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
@@ -206,8 +263,8 @@ t9 -23z"/></symbol><symbol id="i-eraser" viewBox="0 -1536 1920 1792"><path trans
 <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
 <script>
 const EXEMPLE = `# Exemple : calcul de l'âge
-# Clique sur Exécuter, ou efface tout et écris ta demande en français
-# puis clique sur Demander à Claude.
+# Clique sur ▶ pour exécuter, ou efface tout et écris ta demande
+# en français puis clique sur Demander à Claude.
 
 prenom = input("Comment tu t'appelles ? ")
 annee_naissance = int(input("En quelle année es-tu né(e) ? "))
@@ -224,11 +281,31 @@ else:
 const VIDE = `# Écris ici, en français, le programme que tu veux.
 # Exemple : un programme qui convertit des degrés Celsius en Fahrenheit.
 `;
-const STORE = "atelier-python-code";
+const STORE = "atelier-python-fichiers";
+const OLD_STORE = "atelier-python-code";
 
 const $ = id => document.getElementById(id);
-let saved = null;
-try { saved = localStorage.getItem(STORE); } catch (e) {}
+
+/* ---------- Fichiers ---------- */
+function loadFiles() {
+  try {
+    const raw = localStorage.getItem(STORE);
+    if (raw) {
+      const list = JSON.parse(raw);
+      if (Array.isArray(list) && list.length && list[0].name === "main.py") return list;
+    }
+    const old = localStorage.getItem(OLD_STORE);
+    if (old) return [{ name: "main.py", content: old }];
+  } catch (e) {}
+  return [{ name: "main.py", content: EXEMPLE }];
+}
+const files = loadFiles().map(f => ({ name: String(f.name), doc: CodeMirror.Doc(String(f.content), { name: "python", version: 3 }) }));
+let active = 0;
+
+function saveFiles() {
+  try { localStorage.setItem(STORE, JSON.stringify(files.map(f => ({ name: f.name, content: f.doc.getValue() })))); return true; }
+  catch (e) { return false; }
+}
 
 const cm = CodeMirror.fromTextArea($("code"), {
   mode: { name: "python", version: 3 },
@@ -238,17 +315,187 @@ const cm = CodeMirror.fromTextArea($("code"), {
     "Shift-Tab": c => c.indentSelection("subtract"),
     "Ctrl-Enter": () => run(), "Cmd-Enter": () => run(),
     "Shift-Ctrl-Enter": () => askClaude(), "Shift-Cmd-Enter": () => askClaude(),
+    "Ctrl-S": () => saveNow(), "Cmd-S": () => saveNow(),
   },
 });
-cm.setValue(saved || EXEMPLE);
-cm.clearHistory();
+cm.swapDoc(files[0].doc);
 let saveTimer;
 cm.on("change", () => {
   clearErrorLine();
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => { try { localStorage.setItem(STORE, cm.getValue()); } catch (e) {} }, 400);
+  saveTimer = setTimeout(saveFiles, 400);
 });
-$("tab-main").onclick = e => { e.preventDefault(); cm.focus(); };
+
+function renderTabs(editIndex) {
+  const box = $("tabs");
+  box.textContent = "";
+  files.forEach((f, i) => {
+    const tab = document.createElement("div");
+    tab.className = "tab" + (i === active ? " active" : "");
+    tab.setAttribute("role", "tab");
+    tab.setAttribute("aria-selected", String(i === active));
+    if (i === editIndex) {
+      const input = document.createElement("input");
+      input.id = "tab-rename";
+      input.value = f.name;
+      input.setAttribute("aria-label", "Nom du fichier");
+      tab.appendChild(input);
+      setTimeout(() => { input.focus(); input.setSelectionRange(0, f.name.length - 3); });
+      const finish = ok => {
+        if (input.dataset.done) return;
+        input.dataset.done = "1";
+        let name = input.value.trim().replace(/\s+/g, "_");
+        if (name && !name.endsWith(".py")) name += ".py";
+        const valid = /^[A-Za-z_][A-Za-z0-9_]*\.py$/.test(name) && !files.some((g, j) => j !== i && g.name === name);
+        if (ok && valid) f.name = name;
+        else if (ok && !valid) toast("Nom invalide : lettres, chiffres et _ seulement, sans doublon.", true);
+        saveFiles();
+        renderTabs();
+        cm.focus();
+      };
+      input.addEventListener("keydown", e => {
+        if (e.key === "Enter") finish(true);
+        if (e.key === "Escape") finish(false);
+      });
+      input.addEventListener("blur", () => finish(true));
+    } else {
+      const name = document.createElement("button");
+      name.className = "tab-name";
+      name.textContent = f.name;
+      name.onclick = () => selectFile(i);
+      if (i > 0) name.ondblclick = () => renderTabs(i);
+      if (i > 0) name.title = "Double-clic pour renommer";
+      tab.appendChild(name);
+      if (i > 0 && i === active) {
+        const close = document.createElement("button");
+        close.className = "tab-close";
+        close.setAttribute("aria-label", "Supprimer " + f.name);
+        close.title = "Supprimer ce fichier";
+        close.innerHTML = '<svg class="ico"><use href="#i-times"/></svg>';
+        close.onclick = e => { e.stopPropagation(); removeFile(i); };
+        tab.appendChild(close);
+      }
+    }
+    box.appendChild(tab);
+  });
+}
+
+function selectFile(i) {
+  if (claudeBusy || i === active) return;
+  active = i;
+  cm.swapDoc(files[i].doc);
+  $("btn-undo").hidden = !(beforeClaude && beforeClaude.index === i);
+  renderTabs();
+  cm.focus();
+}
+
+function addFile(name, content) {
+  files.push({ name, doc: CodeMirror.Doc(content, { name: "python", version: 3 }) });
+  active = files.length - 1;
+  cm.swapDoc(files[active].doc);
+  saveFiles();
+}
+
+function uniqueName(base) {
+  let n = 1, name = base + ".py";
+  while (files.some(f => f.name === name)) name = base + (++n) + ".py";
+  return name;
+}
+
+function removeFile(i) {
+  if (i === 0 || claudeBusy) return;
+  const removed = files.splice(i, 1)[0];
+  active = 0;
+  cm.swapDoc(files[0].doc);
+  if (beforeClaude && beforeClaude.index >= i) beforeClaude = null;
+  $("btn-undo").hidden = true;
+  saveFiles();
+  renderTabs();
+  toast(removed.name + " supprimé.");
+}
+
+$("btn-add").onclick = () => {
+  if (claudeBusy) return;
+  const name = uniqueName("module");
+  addFile(name, "# Un fichier pour ranger des fonctions.\n# Dans main.py, écris : from " + name.slice(0, -3) + " import *\n\n");
+  renderTabs(active);
+};
+$("btn-upload").onclick = () => { if (!claudeBusy) $("file-input").click(); };
+$("file-input").onchange = async () => {
+  const file = $("file-input").files[0];
+  $("file-input").value = "";
+  if (!file) return;
+  if (file.size > 200000) { toast("Fichier trop gros.", true); return; }
+  const text = await file.text();
+  let name = file.name.replace(/\.txt$/, ".py").replace(/[^A-Za-z0-9_.]/g, "_");
+  if (!/^[A-Za-z_][A-Za-z0-9_]*\.py$/.test(name)) name = uniqueName("fichier");
+  const existing = files.findIndex(f => f.name === name);
+  if (existing >= 0) { selectFile(existing); beforeClaude = { index: existing, text: files[existing].doc.getValue() }; files[existing].doc.setValue(text); $("btn-undo").hidden = false; }
+  else addFile(name, text);
+  renderTabs();
+  toast(name + " ouvert.");
+};
+$("tabs-prev").onclick = () => $("tabs").scrollBy({ left: -120 });
+$("tabs-next").onclick = () => $("tabs").scrollBy({ left: 120 });
+
+/* ---------- Petits messages ---------- */
+let toastTimer;
+function toast(msg, isErr) {
+  $("toast-msg").textContent = msg;
+  $("toast").querySelector("use").setAttribute("href", isErr ? "#i-exclamation-circle" : "#i-check");
+  $("toast").hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { $("toast").hidden = true; }, 2600);
+}
+
+/* ---------- Menus déroulants ---------- */
+function closeDropdowns() {
+  ["run", "share"].forEach(k => { $("dd-" + k).hidden = true; $("caret-" + k).setAttribute("aria-expanded", "false"); });
+}
+function toggleDropdown(k) {
+  const dd = $("dd-" + k), caret = $("caret-" + k);
+  const open = dd.hidden;
+  closeDropdowns();
+  if (!open) return;
+  const group = caret.parentElement.getBoundingClientRect(), bar = caret.closest(".topbar").getBoundingClientRect();
+  dd.style.left = Math.max(0, Math.min(group.left - bar.left, bar.width - 180)) + "px";
+  dd.hidden = false;
+  caret.setAttribute("aria-expanded", "true");
+  dd.querySelector("button").focus();
+}
+$("caret-run").onclick = e => { e.stopPropagation(); toggleDropdown("run"); };
+$("caret-share").onclick = e => { e.stopPropagation(); toggleDropdown("share"); };
+document.addEventListener("click", e => { if (!e.target.closest(".dropdown")) closeDropdowns(); });
+document.querySelectorAll(".dropdown button").forEach(b => {
+  b.onclick = () => {
+    closeDropdowns();
+    const act = b.dataset.act;
+    if (act === "run") run();
+    else if (act === "stop") stop();
+    else if (act === "clear") { if (running) stop(); clearOutput(); }
+    else if (act === "copy-code") copyText(files[0].doc.getValue(), "Code de main.py copié. Tu peux le coller où tu veux.");
+    else if (act === "copy-output") copyText(out.innerText, "Sortie copiée.");
+  };
+});
+
+function copyText(text, okMsg) {
+  const fallback = () => {
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) {}
+    ta.remove();
+    toast(ok ? okMsg : "Impossible de copier automatiquement. Sélectionne le texte et fais Ctrl+C.", !ok);
+  };
+  try {
+    navigator.clipboard.writeText(text).then(() => toast(okMsg), fallback);
+  } catch (e) { fallback(); }
+}
+$("btn-share").onclick = () => copyText(files[0].doc.getValue(), "Code de main.py copié. Tu peux le coller où tu veux.");
+
+function saveNow() { toast(saveFiles() ? "Enregistré dans ce navigateur." : "Ce navigateur bloque l'enregistrement.", false); }
+$("btn-save").onclick = saveNow;
 
 /* ---------- Séparateur redimensionnable ---------- */
 (() => {
@@ -274,7 +521,11 @@ function openMenu(open) {
 }
 $("btn-menu").onclick = () => openMenu(!$("menu").classList.contains("open"));
 $("scrim").onclick = () => openMenu(false);
-document.addEventListener("keydown", e => { if (e.key === "Escape" && $("menu").classList.contains("open")) { openMenu(false); $("btn-menu").focus(); } });
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  closeDropdowns();
+  if ($("menu").classList.contains("open")) { openMenu(false); $("btn-menu").focus(); }
+});
 
 /* ---------- Sortie ---------- */
 const out = $("console");
@@ -293,9 +544,11 @@ function clearOutput() {
 }
 
 /* ---------- Exécution (Skulpt) ---------- */
-let running = false, stopRequested = false, pendingInput = null, lastError = null, errorLine = null;
+let running = false, stopRequested = false, pendingInput = null, lastError = null, errorMark = null;
 
 function builtinRead(x) {
+  const local = files.find(f => f.name === x.replace(/^\.\//, ""));
+  if (local) return local.doc.getValue();
   if (Sk.builtinFiles === undefined || Sk.builtinFiles.files[x] === undefined)
     throw new Error("Module introuvable : '" + x + "'");
   return Sk.builtinFiles.files[x];
@@ -331,19 +584,19 @@ function setRunning(on) {
 }
 
 function clearErrorLine() {
-  if (errorLine !== null) { cm.removeLineClass(errorLine, "background", "line-error"); errorLine = null; }
+  if (errorMark) { errorMark.doc.removeLineClass(errorMark.handle, "background", "line-error"); errorMark = null; }
 }
 
 async function run() {
   if (running || claudeBusy) return;
-  const code = cm.getValue();
+  const code = files[0].doc.getValue();
   if (Sk.TurtleGraphics && Sk.TurtleGraphics.reset) { try { Sk.TurtleGraphics.reset(); } catch (e) {} }
   clearOutput(); clearErrorLine();
   lastError = null;
   stopRequested = false;
   setRunning(true);
 
-  const usesTurtle = /^\s*(import\s+turtle|from\s+turtle\s+import)/m.test(code);
+  const usesTurtle = files.some(f => /^\s*(import\s+turtle|from\s+turtle\s+import)/m.test(f.doc.getValue()));
   const t = $("turtle");
   t.hidden = !usesTurtle;
   const size = Math.max(260, Math.min(400, $("output").clientWidth - 20));
@@ -368,17 +621,29 @@ async function run() {
     if (stopRequested) {
       write("\nProgramme arrêté.\n", "dim");
     } else {
-      const msg = (err && err.toString ? err.toString() : String(err)).replace(/ on line (\d+)$/, " à la ligne $1");
-      let line = null;
-      if (err && err.traceback && err.traceback.length) line = err.traceback[0].lineno;
-      lastError = { msg, line };
-      $("err-msg").textContent = msg + (line ? " de main.py" : "");
+      const raw = err && err.toString ? err.toString() : String(err);
+      let line = null, fileIndex = 0;
+      if (err && err.traceback && err.traceback.length) {
+        const tb = err.traceback[0];
+        line = tb.lineno;
+        const fname = String(tb.filename || "").replace(/^\.\//, "");
+        const k = files.findIndex(f => f.name === fname);
+        if (k > 0) fileIndex = k;
+      }
+      const fname = files[fileIndex].name;
+      const msg = raw.replace(/ on line (\d+)$/, "").replace(/ in .*\.py$/, "");
+      lastError = { msg: msg + (line ? " (ligne " + line + " de " + fname + ")" : ""), fileIndex };
+      $("err-msg").textContent = lastError.msg;
       $("btn-fix").hidden = !claudeReady;
       $("err-box").hidden = false;
       $("output").scrollTop = 0;
       if (line) {
-        errorLine = cm.addLineClass(line - 1, "background", "line-error");
-        cm.scrollIntoView({ line: line - 1, ch: 0 }, 80);
+        if (fileIndex !== active) selectFile(fileIndex);
+        const doc = files[fileIndex].doc;
+        if (line - 1 < doc.lineCount()) {
+          errorMark = { doc, handle: doc.addLineClass(line - 1, "background", "line-error") };
+          cm.scrollIntoView({ line: line - 1, ch: 0 }, 80);
+        }
       }
     }
   } finally {
@@ -445,10 +710,18 @@ function setClaudeBusy(on, label) {
   $("btn-run").disabled = on;
 }
 
+function otherFilesContext() {
+  const others = files.filter((f, i) => i !== active);
+  if (!others.length) return "";
+  return "\n\nPour information, le projet contient aussi ces fichiers (ne les réécris pas) :\n" +
+    others.map(f => "--- " + f.name + " ---\n" + f.doc.getValue().slice(0, 4000)).join("\n");
+}
+
 async function callClaude(prompt, label) {
   if (!claudeReady || claudeBusy) return;
   if (running) stop();
-  beforeClaude = cm.getValue();
+  const index = active;
+  beforeClaude = { index, text: cm.getValue() };
   notice("");
   $("err-box").hidden = true;
   $("btn-undo").hidden = true;
@@ -470,14 +743,14 @@ async function callClaude(prompt, label) {
     cm.scrollTo(0, 0);
     $("btn-undo").hidden = false;
     if (truncated) notice("La réponse a été coupée. Demande quelque chose de plus court.", "info");
-    else notice("C'est prêt. Clique sur Exécuter pour tester le programme.");
+    else notice("C'est prêt. Clique sur ▶ pour tester le programme.");
   } catch (e) {
     const code = e && e.code;
     if (code === "cancelled") {
-      cm.setValue(beforeClaude);
+      cm.setValue(beforeClaude.text);
       notice("");
     } else {
-      cm.setValue(e && e.text ? cleanCode(e.text) : beforeClaude);
+      cm.setValue(e && e.text ? cleanCode(e.text) : beforeClaude.text);
       if (e && e.text) $("btn-undo").hidden = false;
       if (HIDE_CODES.includes(code)) disableClaude(MESSAGES[code] || "Claude n'est pas disponible ici.");
       else notice(MESSAGES[code] || "La connexion à Claude a été interrompue. Réessaie.", "err");
@@ -492,16 +765,17 @@ function askClaude() {
   const content = cm.getValue().trim();
   if (!content) { notice("Écris d'abord ta demande dans l'éditeur.", "err"); cm.focus(); return; }
   callClaude(
-    REGLES + "\n\nVoici ce que l'étudiant a écrit dans son éditeur. C'est une description en français du programme voulu, ou du code avec une question ou une demande (souvent en commentaire), ou un mélange des deux. Écris le programme complet qui répond à sa demande :\n\n" + content,
+    REGLES + "\n\nVoici ce que l'étudiant a écrit dans son fichier " + files[active].name + ". C'est une description en français du programme voulu, ou du code avec une question ou une demande (souvent en commentaire), ou un mélange des deux. Écris le contenu complet de ce fichier qui répond à sa demande :\n\n" + content + otherFilesContext(),
     "Claude réfléchit…"
   );
 }
 
 function fixWithClaude() {
   if (!lastError) return;
+  if (lastError.fileIndex !== active) selectFile(lastError.fileIndex);
   callClaude(
-    REGLES + "\n\nLe programme de l'étudiant ci-dessous plante avec cette erreur :\n" + lastError.msg +
-    "\n\nRenvoie le programme corrigé en entier. Juste au-dessus de chaque ligne corrigée, ajoute un commentaire qui commence par « # Correction : » et explique simplement l'erreur. Ne change pas le reste du programme.\n\nProgramme :\n" + cm.getValue(),
+    REGLES + "\n\nLe programme de l'étudiant plante avec cette erreur :\n" + lastError.msg +
+    "\n\nRenvoie le fichier " + files[active].name + " corrigé en entier. Juste au-dessus de chaque ligne corrigée, ajoute un commentaire qui commence par « # Correction : » et explique simplement l'erreur. Ne change pas le reste.\n\nFichier " + files[active].name + " :\n" + cm.getValue() + otherFilesContext(),
     "Claude cherche l'erreur…"
   );
 }
@@ -514,11 +788,12 @@ function disableClaude(reason) {
   notice(reason, "info");
 }
 
-function replaceEditor(text, undoable) {
+function replaceEditor(text) {
   if (running) stop();
-  beforeClaude = cm.getValue();
+  if (active !== 0) selectFile(0);
+  beforeClaude = { index: 0, text: cm.getValue() };
   cm.setValue(text);
-  $("btn-undo").hidden = !undoable;
+  $("btn-undo").hidden = false;
   cm.focus();
   cm.setCursor(cm.lineCount(), 0);
 }
@@ -527,13 +802,13 @@ $("btn-claude").onclick = askClaude;
 $("btn-fix").onclick = fixWithClaude;
 $("btn-cancel").onclick = () => claudeCtl && claudeCtl.abort();
 $("btn-undo").onclick = () => {
-  if (beforeClaude === null) return;
-  cm.setValue(beforeClaude);
+  if (!beforeClaude) return;
+  files[beforeClaude.index].doc.setValue(beforeClaude.text);
+  beforeClaude = null;
   $("btn-undo").hidden = true;
   notice("");
   cm.focus();
 };
-$("btn-reset").onclick = () => { if (!claudeBusy) replaceEditor(VIDE, true); };
 
 document.querySelectorAll("#menu a").forEach(a => {
   a.onclick = e => {
@@ -542,14 +817,16 @@ document.querySelectorAll("#menu a").forEach(a => {
     if (claudeBusy) return;
     const act = a.dataset.act;
     if (a.dataset.req) {
-      replaceEditor("# " + a.dataset.req + "\n", true);
+      replaceEditor("# " + a.dataset.req + "\n");
       notice(claudeReady ? "Demande prête. Clique sur Demander à Claude." : "");
     } else if (act === "run") run();
-    else if (act === "reset") replaceEditor(VIDE, true);
-    else if (act === "example") replaceEditor(EXEMPLE, true);
+    else if (act === "reset") replaceEditor(VIDE);
+    else if (act === "example") replaceEditor(EXEMPLE);
     else if (act === "clear") { if (running) stop(); clearOutput(); }
   };
 });
+
+renderTabs();
 
 // Claude n'est disponible que si la page est ouverte sur claude.ai.
 $("btn-claude").disabled = true;
