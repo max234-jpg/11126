@@ -1,0 +1,519 @@
+<title>Atelier Python</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+.CodeMirror{font-family:monospace;height:300px;color:#000;direction:ltr}.CodeMirror-lines{padding:4px 0}.CodeMirror pre.CodeMirror-line,.CodeMirror pre.CodeMirror-line-like{padding:0 4px}.CodeMirror-gutter-filler,.CodeMirror-scrollbar-filler{background-color:#fff}.CodeMirror-gutters{border-right:1px solid #ddd;background-color:#f7f7f7;white-space:nowrap}.CodeMirror-linenumber{padding:0 3px 0 5px;min-width:20px;text-align:right;color:#999;white-space:nowrap}.CodeMirror-guttermarker{color:#000}.CodeMirror-guttermarker-subtle{color:#999}.CodeMirror-cursor{border-left:1px solid #000;border-right:none;width:0}.CodeMirror div.CodeMirror-secondarycursor{border-left:1px solid silver}.cm-fat-cursor .CodeMirror-cursor{width:auto;border:0!important;background:#7e7}.cm-fat-cursor div.CodeMirror-cursors{z-index:1}.cm-fat-cursor .CodeMirror-line::selection,.cm-fat-cursor .CodeMirror-line>span::selection,.cm-fat-cursor .CodeMirror-line>span>span::selection{background:0 0}.cm-fat-cursor .CodeMirror-line::-moz-selection,.cm-fat-cursor .CodeMirror-line>span::-moz-selection,.cm-fat-cursor .CodeMirror-line>span>span::-moz-selection{background:0 0}.cm-fat-cursor{caret-color:transparent}@-moz-keyframes blink{50%{background-color:transparent}}@-webkit-keyframes blink{50%{background-color:transparent}}@keyframes blink{50%{background-color:transparent}}.cm-tab{display:inline-block;text-decoration:inherit}.CodeMirror-rulers{position:absolute;left:0;right:0;top:-50px;bottom:0;overflow:hidden}.CodeMirror-ruler{border-left:1px solid #ccc;top:0;bottom:0;position:absolute}.cm-s-default .cm-header{color:#00f}.cm-s-default .cm-quote{color:#090}.cm-negative{color:#d44}.cm-positive{color:#292}.cm-header,.cm-strong{font-weight:700}.cm-em{font-style:italic}.cm-link{text-decoration:underline}.cm-strikethrough{text-decoration:line-through}.cm-s-default .cm-keyword{color:#708}.cm-s-default .cm-atom{color:#219}.cm-s-default .cm-number{color:#164}.cm-s-default .cm-def{color:#00f}.cm-s-default .cm-variable-2{color:#05a}.cm-s-default .cm-type,.cm-s-default .cm-variable-3{color:#085}.cm-s-default .cm-comment{color:#a50}.cm-s-default .cm-string{color:#a11}.cm-s-default .cm-string-2{color:#f50}.cm-s-default .cm-meta{color:#555}.cm-s-default .cm-qualifier{color:#555}.cm-s-default .cm-builtin{color:#30a}.cm-s-default .cm-bracket{color:#997}.cm-s-default .cm-tag{color:#170}.cm-s-default .cm-attribute{color:#00c}.cm-s-default .cm-hr{color:#999}.cm-s-default .cm-link{color:#00c}.cm-s-default .cm-error{color:red}.cm-invalidchar{color:red}.CodeMirror-composing{border-bottom:2px solid}div.CodeMirror span.CodeMirror-matchingbracket{color:#0b0}div.CodeMirror span.CodeMirror-nonmatchingbracket{color:#a22}.CodeMirror-matchingtag{background:rgba(255,150,0,.3)}.CodeMirror-activeline-background{background:#e8f2ff}.CodeMirror{position:relative;overflow:hidden;background:#fff}.CodeMirror-scroll{overflow:scroll!important;margin-bottom:-50px;margin-right:-50px;padding-bottom:50px;height:100%;outline:0;position:relative;z-index:0}.CodeMirror-sizer{position:relative;border-right:50px solid transparent}.CodeMirror-gutter-filler,.CodeMirror-hscrollbar,.CodeMirror-scrollbar-filler,.CodeMirror-vscrollbar{position:absolute;z-index:6;display:none;outline:0}.CodeMirror-vscrollbar{right:0;top:0;overflow-x:hidden;overflow-y:scroll}.CodeMirror-hscrollbar{bottom:0;left:0;overflow-y:hidden;overflow-x:scroll}.CodeMirror-scrollbar-filler{right:0;bottom:0}.CodeMirror-gutter-filler{left:0;bottom:0}.CodeMirror-gutters{position:absolute;left:0;top:0;min-height:100%;z-index:3}.CodeMirror-gutter{white-space:normal;height:100%;display:inline-block;vertical-align:top;margin-bottom:-50px}.CodeMirror-gutter-wrapper{position:absolute;z-index:4;background:0 0!important;border:none!important}.CodeMirror-gutter-background{position:absolute;top:0;bottom:0;z-index:4}.CodeMirror-gutter-elt{position:absolute;cursor:default;z-index:4}.CodeMirror-gutter-wrapper ::selection{background-color:transparent}.CodeMirror-gutter-wrapper ::-moz-selection{background-color:transparent}.CodeMirror-lines{cursor:text;min-height:1px}.CodeMirror pre.CodeMirror-line,.CodeMirror pre.CodeMirror-line-like{-moz-border-radius:0;-webkit-border-radius:0;border-radius:0;border-width:0;background:0 0;font-family:inherit;font-size:inherit;margin:0;white-space:pre;word-wrap:normal;line-height:inherit;color:inherit;z-index:2;position:relative;overflow:visible;-webkit-tap-highlight-color:transparent;-webkit-font-variant-ligatures:contextual;font-variant-ligatures:contextual}.CodeMirror-wrap pre.CodeMirror-line,.CodeMirror-wrap pre.CodeMirror-line-like{word-wrap:break-word;white-space:pre-wrap;word-break:normal}.CodeMirror-linebackground{position:absolute;left:0;right:0;top:0;bottom:0;z-index:0}.CodeMirror-linewidget{position:relative;z-index:2;padding:.1px}.CodeMirror-rtl pre{direction:rtl}.CodeMirror-code{outline:0}.CodeMirror-gutter,.CodeMirror-gutters,.CodeMirror-linenumber,.CodeMirror-scroll,.CodeMirror-sizer{-moz-box-sizing:content-box;box-sizing:content-box}.CodeMirror-measure{position:absolute;width:100%;height:0;overflow:hidden;visibility:hidden}.CodeMirror-cursor{position:absolute;pointer-events:none}.CodeMirror-measure pre{position:static}div.CodeMirror-cursors{visibility:hidden;position:relative;z-index:3}div.CodeMirror-dragcursors{visibility:visible}.CodeMirror-focused div.CodeMirror-cursors{visibility:visible}.CodeMirror-selected{background:#d9d9d9}.CodeMirror-focused .CodeMirror-selected{background:#d7d4f0}.CodeMirror-crosshair{cursor:crosshair}.CodeMirror-line::selection,.CodeMirror-line>span::selection,.CodeMirror-line>span>span::selection{background:#d7d4f0}.CodeMirror-line::-moz-selection,.CodeMirror-line>span::-moz-selection,.CodeMirror-line>span>span::-moz-selection{background:#d7d4f0}.cm-searching{background-color:#ffa;background-color:rgba(255,255,0,.4)}.cm-force-border{padding-right:.1px}@media print{.CodeMirror div.CodeMirror-cursors{visibility:hidden}}.cm-tab-wrap-hack:after{content:''}span.CodeMirror-selectedtext{background:0 0}
+/* Layout: two panes like a classroom IDE, editor left (ink on paper), console right; a slim toolbar on top. */
+:root{
+  --bg:#eef1f6; --panel:#ffffff; --fg:#17202e; --muted:#5b6678; --line:#d6dce7;
+  --ink:#2340b8; --ink-soft:#e4e9fb; --ink-fg:#ffffff;
+  --run:#147a4a; --run-fg:#ffffff;
+  --hi:#ffe46b; --hi-fg:#2a2300;
+  --err:#b42318; --err-soft:#fdecea;
+  --console:#141a24; --console-fg:#dfe6f2; --console-dim:#8793a8; --console-in:#9fe0b6;
+  --gutter:#f4f6fa; --sel:#d8e0fb; --active:#f0f4ff;
+  --tk-kw:#7b2fb5; --tk-str:#a3361a; --tk-num:#11756a; --tk-com:#6c7a8f; --tk-def:#2340b8; --tk-bi:#a05a00;
+  --font-ui:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-code:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --r:8px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f131b; --panel:#171c26; --fg:#e4e8f0; --muted:#9aa5b8; --line:#2a3242;
+  --ink:#7d95ff; --ink-soft:#232c48; --ink-fg:#0d1120;
+  --run:#3fbf7f; --run-fg:#06140c;
+  --hi:#ffd84a; --hi-fg:#1f1900;
+  --err:#ff8a80; --err-soft:#3a1d1d;
+  --console:#0a0d13; --console-fg:#dfe6f2; --console-dim:#7d889c; --console-in:#8fe0aa;
+  --gutter:#131822; --sel:#2c3757; --active:#1c2230;
+  --tk-kw:#d29bff; --tk-str:#ffa58a; --tk-num:#6fe0cf; --tk-com:#7d889c; --tk-def:#8fa5ff; --tk-bi:#f2b76b;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f131b; --panel:#171c26; --fg:#e4e8f0; --muted:#9aa5b8; --line:#2a3242;
+  --ink:#7d95ff; --ink-soft:#232c48; --ink-fg:#0d1120;
+  --run:#3fbf7f; --run-fg:#06140c;
+  --hi:#ffd84a; --hi-fg:#1f1900;
+  --err:#ff8a80; --err-soft:#3a1d1d;
+  --console:#0a0d13; --console-fg:#dfe6f2; --console-dim:#7d889c; --console-in:#8fe0aa;
+  --gutter:#131822; --sel:#2c3757; --active:#1c2230;
+  --tk-kw:#d29bff; --tk-str:#ffa58a; --tk-num:#6fe0cf; --tk-com:#7d889c; --tk-def:#8fa5ff; --tk-bi:#f2b76b;
+  color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-ui);font-size:15px;line-height:1.45}
+*{box-sizing:border-box}
+.app{height:100%;display:flex;flex-direction:column;gap:12px;padding-block:12px;padding-inline:16px;max-width:1400px;margin:0 auto}
+
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;margin-right:auto;min-width:0}
+.brand h1{font-size:1.25rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.brand h1 b{color:var(--ink)}
+.brand span{color:var(--muted);font-size:.85rem}
+
+button{font:inherit;cursor:pointer;border-radius:var(--r);border:1px solid var(--line);background:var(--panel);color:var(--fg);padding:8px 14px;display:inline-flex;align-items:center;gap:8px;font-weight:700;line-height:1.1;white-space:nowrap}
+button:hover:not(:disabled){border-color:var(--muted)}
+button:focus-visible,.chip:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+button:disabled{opacity:.5;cursor:not-allowed}
+.btn-run{background:var(--run);border-color:var(--run);color:var(--run-fg)}
+.btn-claude{background:var(--hi);border-color:var(--hi);color:var(--hi-fg)}
+.btn-ghost{background:transparent}
+.btn-sm{padding:5px 10px;font-size:.85rem}
+kbd{font-family:var(--font-code);font-size:.72rem;font-weight:500;opacity:.75;border:1px solid currentColor;border-radius:4px;padding:1px 4px}
+
+.panes{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:12px}
+.pane{min-width:0;min-height:0;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.pane-head{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.pane-title{font-family:var(--font-code);font-size:.8rem;color:var(--muted);letter-spacing:.04em;margin-right:auto}
+
+.editor-wrap{position:relative;flex:1;min-height:260px}
+.CodeMirror{position:absolute;inset:0;height:auto;font-family:var(--font-code);font-size:14.5px;line-height:1.55;background:var(--panel);color:var(--fg)}
+.CodeMirror-gutters{background:var(--gutter);border-right:1px solid var(--line)}
+.CodeMirror-linenumber{color:var(--muted)}
+.CodeMirror-cursor{border-left:2px solid var(--ink)}
+.CodeMirror-selected,.CodeMirror-focused .CodeMirror-selected{background:var(--sel)}
+.CodeMirror-line::selection,.CodeMirror-line>span::selection,.CodeMirror-line>span>span::selection{background:var(--sel)}
+.CodeMirror-scrollbar-filler,.CodeMirror-gutter-filler{background:var(--panel)}
+.cm-s-default .cm-keyword{color:var(--tk-kw);font-weight:600}
+.cm-s-default .cm-string,.cm-s-default .cm-string-2{color:var(--tk-str)}
+.cm-s-default .cm-number,.cm-s-default .cm-atom{color:var(--tk-num)}
+.cm-s-default .cm-comment{color:var(--tk-com);font-style:italic}
+.cm-s-default .cm-def{color:var(--tk-def);font-weight:600}
+.cm-s-default .cm-builtin{color:var(--tk-bi)}
+.cm-s-default .cm-variable,.cm-s-default .cm-variable-2,.cm-s-default .cm-property,.cm-s-default .cm-operator,.cm-s-default .cm-punctuation,.cm-s-default .cm-meta{color:var(--fg)}
+div.CodeMirror span.CodeMirror-matchingbracket{color:var(--run);font-weight:700}
+.line-error{background:var(--err-soft)}
+
+.thinking{position:absolute;right:12px;bottom:12px;z-index:10;display:flex;align-items:center;gap:10px;background:var(--hi);color:var(--hi-fg);border-radius:var(--r);padding:8px 8px 8px 12px;font-weight:700;box-shadow:0 4px 16px rgb(0 0 0 / .18)}
+.dots{display:inline-flex;gap:3px}
+.dots i{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 1s infinite ease-in-out}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
+@media (prefers-reduced-motion: reduce){.dots i{animation:none;opacity:.8}}
+.thinking button{background:var(--panel);color:var(--fg);border-color:transparent}
+
+.ask{border-top:1px solid var(--line);padding:10px;display:flex;flex-direction:column;gap:8px;background:var(--gutter)}
+.ask-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hint{font-size:.85rem;color:var(--muted);margin:0;max-width:70ch}
+.hint strong{color:var(--fg)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:inherit;font-size:.82rem;font-weight:400;border-radius:999px;padding:4px 10px;background:var(--panel);border:1px dashed var(--line);color:var(--fg);cursor:pointer}
+.chip:hover{border-color:var(--ink);color:var(--ink)}
+.notice{font-size:.85rem;margin:0;padding:6px 10px;border-radius:6px;background:var(--ink-soft);color:var(--fg)}
+.notice.err{background:var(--err-soft);color:var(--err)}
+
+.tabs{display:flex;gap:4px;margin-right:auto}
+.tab{background:transparent;border-color:transparent;padding:5px 10px;font-size:.85rem;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--ink-soft);color:var(--ink)}
+.console{flex:1;min-height:200px;overflow:auto;background:var(--console);color:var(--console-fg);font-family:var(--font-code);font-size:14px;line-height:1.55;padding:12px 14px;white-space:pre-wrap;word-break:break-word}
+.console .dim{color:var(--console-dim)}
+.console .err{color:#ff9b91}
+.console .typed{color:var(--console-in)}
+.console input{font:inherit;color:var(--console-in);background:transparent;border:0;border-bottom:1px dashed var(--console-dim);outline:0;min-width:8ch;width:24ch;max-width:100%;padding:0}
+.turtle{flex:1;min-height:260px;overflow:auto;background:#ffffff;display:block}
+.fixbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 10px;border-top:1px solid var(--line);background:var(--err-soft);color:var(--err);font-size:.88rem}
+.fixbar span{margin-right:auto;min-width:0}
+
+@media (max-width: 820px){
+  .app{height:auto;min-height:100%}
+  .panes{grid-template-columns:minmax(0,1fr)}
+  .editor-wrap{min-height:340px}
+  .brand span{display:none}
+  kbd{display:none}
+}
+</style>
+
+<div class="app">
+  <header>
+    <div class="brand">
+      <h1>Atelier <b>Python</b></h1>
+      <span>Écris, exécute, ou demande le programme à Claude</span>
+    </div>
+    <button id="btn-run" class="btn-run" title="Exécuter (Ctrl+Entrée)">▶ Exécuter <kbd>Ctrl ↵</kbd></button>
+    <button id="btn-stop" class="btn-ghost" disabled>■ Arrêter</button>
+    <button id="btn-claude" class="btn-claude" title="Demander à Claude (Ctrl+Maj+Entrée)">✦ Demander à Claude</button>
+  </header>
+
+  <div class="panes">
+    <section class="pane" aria-label="Éditeur">
+      <div class="pane-head">
+        <span class="pane-title">main.py</span>
+        <button id="btn-undo" class="btn-ghost btn-sm" hidden>↶ Revenir à ma demande</button>
+        <button id="btn-reset" class="btn-ghost btn-sm">Nouveau</button>
+      </div>
+      <div class="editor-wrap">
+        <textarea id="code"></textarea>
+        <div id="thinking" class="thinking" hidden>
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span id="thinking-label">Claude réfléchit…</span>
+          <button id="btn-cancel" class="btn-sm">Annuler</button>
+        </div>
+      </div>
+      <div class="ask">
+        <p class="hint"><strong>Comment ça marche :</strong> écris dans l'éditeur, en français, le programme que tu veux (ou une question sur ton code), puis clique sur <strong>✦ Demander à Claude</strong>. Le code Python remplace ta demande.</p>
+        <div class="chips" id="chips">
+          <button class="chip" data-req="Un programme qui demande trois notes sur 20 et affiche la moyenne, puis dit si l'élève a la moyenne ou non.">Moyenne de 3 notes</button>
+          <button class="chip" data-req="Le jeu du nombre mystère : l'ordinateur choisit un nombre entre 1 et 100, le joueur propose des nombres et le programme répond plus grand ou plus petit. Compter le nombre d'essais.">Nombre mystère</button>
+          <button class="chip" data-req="Demander un nombre à l'utilisateur et afficher sa table de multiplication de 1 à 10 avec une boucle for.">Table de multiplication</button>
+          <button class="chip" data-req="Une fonction qui dit si une année est bissextile, puis tester la fonction sur quelques années.">Année bissextile</button>
+          <button class="chip" data-req="Avec le module turtle, dessiner un carré, puis un triangle de couleur différente à côté.">Tortue : carré et triangle</button>
+        </div>
+        <p id="ask-notice" class="notice" hidden></p>
+      </div>
+    </section>
+
+    <section class="pane" aria-label="Résultat">
+      <div class="pane-head">
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" id="tab-console" aria-selected="true">Console</button>
+          <button class="tab" role="tab" id="tab-turtle" aria-selected="false">Tortue</button>
+        </div>
+        <button id="btn-clear" class="btn-ghost btn-sm">Effacer</button>
+      </div>
+      <div id="console" class="console" tabindex="0" aria-live="polite"><span class="dim">Clique sur ▶ Exécuter pour lancer le programme.
+</span></div>
+      <div id="turtle" class="turtle" hidden></div>
+      <div id="fixbar" class="fixbar" hidden>
+        <span id="fix-msg"></span>
+        <button id="btn-fix" class="btn-claude btn-sm">✦ Corriger avec Claude</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+<script>
+const EXEMPLE = `# Exemple : calcul de l'âge
+# Clique sur ▶ Exécuter, ou efface tout et écris ta demande en français
+# puis clique sur ✦ Demander à Claude.
+
+prenom = input("Comment tu t'appelles ? ")
+annee_naissance = int(input("En quelle année es-tu né(e) ? "))
+
+age = 2026 - annee_naissance
+print("Bonjour", prenom, "!")
+print("Cette année tu as", age, "ans.")
+
+if age >= 18:
+    print("Tu es majeur(e).")
+else:
+    print("Tu seras majeur(e) dans", 18 - age, "an(s).")
+`;
+const VIDE = `# Écris ici, en français, le programme que tu veux.
+# Exemple : un programme qui convertit des degrés Celsius en Fahrenheit.
+`;
+const STORE = "atelier-python-code";
+
+const $ = id => document.getElementById(id);
+let saved = null;
+try { saved = localStorage.getItem(STORE); } catch (e) {}
+
+const cm = CodeMirror.fromTextArea($("code"), {
+  mode: { name: "python", version: 3 },
+  lineNumbers: true, indentUnit: 4, tabSize: 4, matchBrackets: true, lineWrapping: false,
+  extraKeys: {
+    Tab: c => c.somethingSelected() ? c.indentSelection("add") : c.replaceSelection("    ", "end"),
+    "Shift-Tab": c => c.indentSelection("subtract"),
+    "Ctrl-Enter": () => run(), "Cmd-Enter": () => run(),
+    "Shift-Ctrl-Enter": () => askClaude(), "Shift-Cmd-Enter": () => askClaude(),
+  },
+});
+cm.setValue(saved || EXEMPLE);
+cm.clearHistory();
+let saveTimer;
+cm.on("change", () => {
+  clearErrorLine();
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => { try { localStorage.setItem(STORE, cm.getValue()); } catch (e) {} }, 400);
+});
+
+/* ---------- Console ---------- */
+const out = $("console");
+function write(text, cls) {
+  const span = document.createElement("span");
+  if (cls) span.className = cls;
+  span.textContent = text;
+  out.appendChild(span);
+  out.scrollTop = out.scrollHeight;
+}
+function clearConsole() { out.textContent = ""; }
+$("btn-clear").onclick = () => { clearConsole(); };
+
+function showTab(name) {
+  const isTurtle = name === "turtle";
+  $("tab-console").setAttribute("aria-selected", String(!isTurtle));
+  $("tab-turtle").setAttribute("aria-selected", String(isTurtle));
+  out.hidden = isTurtle;
+  $("turtle").hidden = !isTurtle;
+}
+$("tab-console").onclick = () => showTab("console");
+$("tab-turtle").onclick = () => showTab("turtle");
+
+/* ---------- Exécution (Skulpt) ---------- */
+let running = false, stopRequested = false, pendingInput = null, lastError = null, errorLine = null;
+
+function builtinRead(x) {
+  if (Sk.builtinFiles === undefined || Sk.builtinFiles.files[x] === undefined)
+    throw new Error("Module introuvable : '" + x + "'");
+  return Sk.builtinFiles.files[x];
+}
+
+function inputfun(prompt) {
+  return new Promise((resolve, reject) => {
+    if (prompt) write(String(prompt));
+    const field = document.createElement("input");
+    field.type = "text";
+    field.id = "console-input";
+    field.setAttribute("aria-label", "Réponse au programme");
+    field.autocomplete = "off";
+    out.appendChild(field);
+    out.scrollTop = out.scrollHeight;
+    if (out.hidden) showTab("console");
+    field.focus();
+    pendingInput = { reject };
+    field.addEventListener("keydown", e => {
+      if (e.key !== "Enter") return;
+      const v = field.value;
+      field.remove();
+      write(v + "\n", "typed");
+      pendingInput = null;
+      resolve(v);
+    });
+  });
+}
+
+function setRunning(on) {
+  running = on;
+  $("btn-run").disabled = on;
+  $("btn-stop").disabled = !on;
+}
+
+function clearErrorLine() {
+  if (errorLine !== null) { cm.removeLineClass(errorLine, "background", "line-error"); errorLine = null; }
+}
+
+async function run() {
+  if (running || claudeBusy) return;
+  const code = cm.getValue();
+  clearConsole(); clearErrorLine();
+  $("fixbar").hidden = true; lastError = null;
+  stopRequested = false;
+  setRunning(true);
+
+  const usesTurtle = /^\s*(import\s+turtle|from\s+turtle\s+import)/m.test(code);
+  if (Sk.TurtleGraphics && Sk.TurtleGraphics.reset) { try { Sk.TurtleGraphics.reset(); } catch (e) {} }
+  const t = $("turtle");
+  t.textContent = "";
+  showTab(usesTurtle ? "turtle" : "console");
+  Sk.TurtleGraphics = { target: "turtle", width: Math.max(300, t.clientWidth - 2), height: Math.max(300, t.clientHeight - 2) };
+
+  Sk.configure({
+    output: s => write(s),
+    read: builtinRead,
+    inputfun, inputfunTakesPrompt: true,
+    __future__: Sk.python3,
+    killableWhile: true, killableFor: true, yieldLimit: 100,
+    execLimit: Number.POSITIVE_INFINITY,
+  });
+
+  try {
+    await Sk.misceval.asyncToPromise(
+      () => Sk.importMainWithBody("<stdin>", false, code, true),
+      { "*": () => { if (stopRequested) throw new Error("__stop__"); } }
+    );
+    if (!usesTurtle) write("\n— Programme terminé —\n", "dim");
+  } catch (err) {
+    if (stopRequested) {
+      write("\n— Programme arrêté —\n", "dim");
+    } else {
+      const msg = err && err.toString ? err.toString() : String(err);
+      let line = null;
+      if (err && err.traceback && err.traceback.length) line = err.traceback[0].lineno;
+      write("\n" + msg + "\n", "err");
+      lastError = { msg, line };
+      if (line) {
+        errorLine = cm.addLineClass(line - 1, "background", "line-error");
+        cm.scrollIntoView({ line: line - 1, ch: 0 }, 80);
+      }
+      $("fix-msg").textContent = "Erreur" + (line ? " ligne " + line : "") + ". Claude peut t'expliquer et corriger.";
+      $("fixbar").hidden = !claudeReady;
+      if (out.hidden) showTab("console");
+    }
+  } finally {
+    setRunning(false);
+  }
+}
+
+function stop() {
+  if (!running) return;
+  stopRequested = true;
+  if (Sk.TurtleGraphics && Sk.TurtleGraphics.stop) { try { Sk.TurtleGraphics.stop(); } catch (e) {} }
+  if (pendingInput) { const p = pendingInput; pendingInput = null; const f = $("console-input"); if (f) f.remove(); p.reject(new Error("__stop__")); }
+}
+$("btn-run").onclick = run;
+$("btn-stop").onclick = stop;
+
+/* ---------- Claude ---------- */
+let sample = null, claudeReady = false, claudeBusy = false, claudeCtl = null, beforeClaude = null;
+
+const REGLES = `Tu aides un étudiant débutant (niveau lycée, première année de fac) à écrire un petit programme Python.
+
+Règles pour le code que tu écris :
+- Python 3 simple, niveau lycée : variables, input(), print(), int(), float(), if / elif / else, for avec range, while, listes, fonctions def avec return. Pas de classes, pas de bibliothèques externes. Modules autorisés si besoin : random, math, turtle, time.
+- Le code sera exécuté par Skulpt dans un navigateur : évite les fonctionnalités avancées (match/case, walrus :=, f-strings imbriquées, fichiers). Pour afficher, utilise print("texte", variable) ou des f-strings simples.
+- Noms de variables et de fonctions en français, clairs, sans accents (ex : note_moyenne, nombre_essais).
+- Commence par 1 ou 2 lignes de commentaire qui résument ce que fait le programme.
+- Ajoute des commentaires courts en français (# ...) pour expliquer les étapes importantes, sans en mettre sur chaque ligne.
+- Si l'étudiant pose une question, réponds-y en commentaires au début du programme, en quelques lignes simples.
+- Le programme doit fonctionner tel quel, sans erreur.
+
+Réponds UNIQUEMENT avec le code Python. Aucun texte avant ou après, pas de balises \`\`\`.`;
+
+function cleanCode(t) {
+  let s = t.replace(/^\s*```[a-zA-Z0-9_-]*[ \t]*\r?\n?/, "");
+  s = s.replace(/\r?\n?```\s*$/, "");
+  return s;
+}
+
+function notice(text, isErr) {
+  const n = $("ask-notice");
+  n.textContent = text || "";
+  n.className = "notice" + (isErr ? " err" : "");
+  n.hidden = !text;
+}
+
+const MESSAGES = {
+  not_granted: "Claude n'a pas été autorisé pour cette page. Tu peux toujours écrire et exécuter ton code.",
+  sampling_disabled: "Claude n'est pas disponible pour ce compte.",
+  rate_limited: "Trop de demandes d'un coup. Attends un peu, puis réessaie.",
+  session_expired: "Ta session claude.ai a expiré. Reconnecte-toi puis réessaie.",
+  refused: "Claude n'a pas voulu répondre à cette demande. Reformule-la.",
+  empty_completion: "Claude n'a rien renvoyé. Reformule ta demande plus simplement.",
+  prompt_too_large: "Le texte est trop long. Raccourcis ta demande.",
+};
+const HIDE_CODES = ["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"];
+
+function setClaudeBusy(on, label) {
+  claudeBusy = on;
+  $("thinking").hidden = !on;
+  if (label) $("thinking-label").textContent = label;
+  cm.setOption("readOnly", on);
+  $("btn-claude").disabled = on || !claudeReady;
+  $("btn-fix").disabled = on;
+  $("btn-run").disabled = on || running;
+  document.querySelectorAll(".chip").forEach(c => c.disabled = on);
+}
+
+async function callClaude(prompt, label) {
+  if (!claudeReady || claudeBusy) return;
+  if (running) stop();
+  beforeClaude = cm.getValue();
+  notice("");
+  $("fixbar").hidden = true;
+  $("btn-undo").hidden = true;
+  clearErrorLine();
+  setClaudeBusy(true, label);
+  claudeCtl = new AbortController();
+  let started = false;
+  try {
+    const { text, truncated } = await sample(prompt, {
+      signal: claudeCtl.signal,
+      cache: false,
+      onText: ({ text }) => {
+        if (!started) { started = true; $("thinking-label").textContent = "Claude écrit…"; }
+        cm.setValue(cleanCode(text));
+        cm.scrollTo(null, cm.getScrollInfo().height);
+      },
+    });
+    cm.setValue(cleanCode(text).replace(/\s+$/, "") + "\n");
+    cm.scrollTo(0, 0);
+    $("btn-undo").hidden = false;
+    notice(truncated ? "La réponse a été coupée. Demande quelque chose de plus court." : "Voilà ! Clique sur ▶ Exécuter pour tester le programme.", truncated);
+  } catch (e) {
+    const code = e && e.code;
+    if (code === "cancelled") {
+      cm.setValue(beforeClaude);
+      notice("");
+    } else {
+      cm.setValue(e && e.text ? cleanCode(e.text) : beforeClaude);
+      if (e && e.text) $("btn-undo").hidden = false;
+      if (HIDE_CODES.includes(code)) disableClaude(MESSAGES[code] || "Claude n'est pas disponible ici.");
+      else notice(MESSAGES[code] || "La connexion à Claude a été interrompue. Réessaie.", true);
+    }
+  } finally {
+    claudeCtl = null;
+    setClaudeBusy(false);
+  }
+}
+
+function askClaude() {
+  const content = cm.getValue().trim();
+  if (!content) { notice("Écris d'abord ta demande dans l'éditeur.", true); cm.focus(); return; }
+  callClaude(
+    REGLES + "\n\nVoici ce que l'étudiant a écrit dans son éditeur. C'est une description en français du programme voulu, ou du code avec une question ou une demande (souvent en commentaire), ou un mélange des deux. Écris le programme complet qui répond à sa demande :\n\n" + content,
+    "Claude réfléchit…"
+  );
+}
+
+function fixWithClaude() {
+  if (!lastError) return;
+  callClaude(
+    REGLES + "\n\nLe programme de l'étudiant ci-dessous plante avec cette erreur :\n" + lastError.msg +
+    "\n\nRenvoie le programme corrigé en entier. Juste au-dessus de chaque ligne corrigée, ajoute un commentaire qui commence par « # Correction : » et explique simplement l'erreur. Ne change pas le reste du programme.\n\nProgramme :\n" + cm.getValue(),
+    "Claude cherche l'erreur…"
+  );
+}
+
+function disableClaude(reason) {
+  claudeReady = false;
+  $("btn-claude").disabled = true;
+  $("btn-claude").title = reason;
+  $("fixbar").hidden = true;
+  notice(reason, false);
+}
+
+$("btn-claude").onclick = askClaude;
+$("btn-fix").onclick = fixWithClaude;
+$("btn-cancel").onclick = () => claudeCtl && claudeCtl.abort();
+$("btn-undo").onclick = () => {
+  if (beforeClaude === null) return;
+  cm.setValue(beforeClaude);
+  $("btn-undo").hidden = true;
+  notice("");
+  cm.focus();
+};
+$("btn-reset").onclick = () => {
+  if (running) stop();
+  beforeClaude = cm.getValue();
+  cm.setValue(VIDE);
+  $("btn-undo").hidden = false;
+  cm.setCursor(cm.lineCount(), 0);
+  cm.focus();
+};
+document.querySelectorAll(".chip").forEach(chip => {
+  chip.onclick = () => {
+    beforeClaude = cm.getValue();
+    cm.setValue("# " + chip.dataset.req + "\n");
+    $("btn-undo").hidden = true;
+    notice(claudeReady ? "Demande prête. Clique sur ✦ Demander à Claude." : "");
+    cm.focus();
+    cm.setCursor(cm.lineCount(), 0);
+  };
+});
+
+// Claude n'est disponible que si la page est ouverte sur claude.ai.
+$("btn-claude").disabled = true;
+$("btn-claude").title = "Connexion à Claude…";
+(async () => {
+  try { sample = window.claude && window.claude.use ? await window.claude.use("sample") : null; } catch (e) { sample = null; }
+  if (sample) {
+    claudeReady = true;
+    $("btn-claude").disabled = claudeBusy;
+    $("btn-claude").title = "Demander à Claude (Ctrl+Maj+Entrée)";
+  } else {
+    disableClaude("Claude n'est disponible que quand cette page est ouverte sur claude.ai. L'éditeur et l'exécution Python marchent quand même.");
+  }
+})();
+</script>
