@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Atelier Rénov' — Rénovation & isolation en Île-de-France</title>
+<meta name="description" content="Exemple de site vitrine pour artisan du bâtiment : rénovation, isolation, menuiseries, chauffage.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d1726; --ink-2:#1b2a40; --muted:#5b6b82; --line:#e3e8ef;
+    --bg:#ffffff; --soft:#f4f6f9; --accent:#f26b1d; --accent-2:#ff8a3d; --ok:#16a34a;
+    --radius:18px; --shadow:0 20px 50px -20px rgba(13,23,38,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{font-family:Archivo,Inter,sans-serif;line-height:1.08;letter-spacing:-.02em}
+  .wrap{width:min(1180px,100% - 32px);margin-inline:auto}
+  .demo-bar{background:var(--ink);color:#cfd8e6;font-size:13px;text-align:center;padding:8px 16px}
+  .demo-bar b{color:#fff}
+  .demo-bar a{color:var(--accent-2);font-weight:600;text-decoration:underline}
+
+  header.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:72px;gap:16px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:Archivo;font-weight:900;font-size:21px}
+  .logo i{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ffb36b);display:grid;place-items:center;color:#fff;font-style:normal;font-size:20px}
+  .nav ul{display:flex;gap:28px;list-style:none;font-weight:500;font-size:15px;color:var(--ink-2)}
+  .nav ul a:hover{color:var(--accent)}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:999px;font-weight:600;font-size:15px;transition:transform .2s,box-shadow .2s,background .2s;cursor:pointer;border:0}
+  .btn-accent{background:var(--accent);color:#fff;box-shadow:0 12px 30px -10px rgba(242,107,29,.7)}
+  .btn-accent:hover{transform:translateY(-2px);background:var(--accent-2)}
+  .btn-ghost{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(6px)}
+  .btn-ghost:hover{background:rgba(255,255,255,.24)}
+
+  .hero{position:relative;min-height:88vh;display:flex;align-items:flex-end;color:#fff;overflow:hidden}
+  .hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.06);animation:zoom 14s ease-out forwards}
+  @keyframes zoom{to{transform:scale(1)}}
+  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,23,38,.15) 0%,rgba(13,23,38,.55) 45%,rgba(13,23,38,.92) 100%)}
+  .hero .wrap{position:relative;z-index:2;padding:120px 0 64px}
+  .pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:600;backdrop-filter:blur(6px)}
+  .pill .dot{width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 4px rgba(74,222,128,.25)}
+  .hero h1{font-size:clamp(38px,5.2vw,72px);font-weight:900;margin:18px 0 16px;max-width:900px}
+  .hero h1 em{font-style:normal;color:var(--accent-2)}
+  .hero p.lead{font-size:clamp(17px,2vw,21px);max-width:620px;color:#dfe6f0}
+  .hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+  .trust{display:flex;flex-wrap:wrap;gap:22px;margin-top:44px;font-size:14px;color:#dfe6f0}
+  .trust span{display:flex;align-items:center;gap:8px}
+  .trust b{color:#fff}
+  .stars{color:#fbbf24;letter-spacing:2px}
+
+  .stats{background:var(--ink);color:#fff}
+  .stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+  .stat{padding:34px 20px;border-right:1px solid rgba(255,255,255,.08);text-align:center}
+  .stat:last-child{border-right:0}
+  .stat b{display:block;font-family:Archivo;font-size:clamp(30px,4vw,44px);font-weight:900;color:var(--accent-2)}
+  .stat span{color:#a9b6c9;font-size:14px}
+
+  section{padding:100px 0}
+  .kicker{color:var(--accent);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:48px;flex-wrap:wrap}
+  .sec-head h2{font-size:clamp(32px,4.4vw,54px);font-weight:900;margin-top:10px;max-width:640px}
+  .sec-head p{max-width:420px;color:var(--muted)}
+
+  .services{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .card{position:relative;border-radius:var(--radius);overflow:hidden;min-height:340px;color:#fff;display:flex;align-items:flex-end;box-shadow:var(--shadow);isolation:isolate}
+  .card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform .7s}
+  .card::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,transparent 30%,rgba(13,23,38,.9))}
+  .card:hover img{transform:scale(1.07)}
+  .card .in{padding:26px}
+  .card .ico{width:46px;height:46px;border-radius:12px;background:var(--accent);display:grid;place-items:center;font-size:22px;margin-bottom:14px}
+  .card h3{font-size:24px;font-weight:800}
+  .card p{color:#d5dde8;font-size:15px;margin-top:6px}
+
+  .ba{background:var(--soft)}
+  .ba-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:60px;align-items:center}
+  .compare{position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3;box-shadow:var(--shadow);user-select:none;touch-action:none;cursor:ew-resize}
+  .compare img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .compare .before{filter:grayscale(1) sepia(.35) brightness(.62) contrast(1.1) blur(.4px);clip-path:inset(0 50% 0 0)}
+  .compare .handle{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#fff;transform:translateX(-50%)}
+  .compare .handle::after{content:"⇆";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-size:22px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+  .tag{position:absolute;top:16px;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .tag.l{left:16px;background:rgba(13,23,38,.75);color:#fff}
+  .tag.r{right:16px;background:var(--accent);color:#fff}
+  .checks{list-style:none;margin-top:26px;display:grid;gap:14px}
+  .checks li{display:flex;gap:12px;align-items:flex-start}
+  .checks li::before{content:"✓";flex:none;width:26px;height:26px;border-radius:50%;background:#dcfce7;color:var(--ok);display:grid;place-items:center;font-weight:800;font-size:14px}
+
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;counter-reset:s}
+  .step{padding:30px 26px;border:1px solid var(--line);border-radius:var(--radius);background:#fff;position:relative;transition:border-color .2s,transform .2s}
+  .step:hover{border-color:var(--accent);transform:translateY(-4px)}
+  .step::before{counter-increment:s;content:"0" counter(s);font-family:Archivo;font-weight:900;font-size:44px;color:var(--accent);opacity:.9}
+  .step h3{font-size:20px;margin:10px 0 6px}
+  .step p{color:var(--muted);font-size:15px}
+
+  .gallery{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:220px;gap:14px}
+  .gallery figure{border-radius:14px;overflow:hidden;position:relative}
+  .gallery figure img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+  .gallery figure:hover img{transform:scale(1.06)}
+  .gallery figcaption{position:absolute;left:12px;bottom:12px;background:rgba(255,255,255,.92);color:var(--ink);font-size:12px;font-weight:600;padding:6px 10px;border-radius:8px}
+  .g-big{grid-column:span 2;grid-row:span 2}
+  .g-wide{grid-column:span 2}
+
+  .aides{background:linear-gradient(120deg,var(--accent) 0%,#ff9a52 100%);color:#fff;border-radius:28px;padding:56px;display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center;position:relative;overflow:hidden}
+  .aides::after{content:"€";position:absolute;right:-20px;top:-70px;font-family:Archivo;font-weight:900;font-size:340px;opacity:.12}
+  .aides h2{font-size:clamp(28px,3.6vw,44px);font-weight:900}
+  .aides p{color:#fff3ea;margin-top:12px}
+  .aides .btn{background:#fff;color:var(--accent)}
+  .badges{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;position:relative;z-index:1}
+  .badges span{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:10px 16px;border-radius:12px;font-weight:700;font-size:14px}
+
+  .reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .review{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 10px 30px -18px rgba(13,23,38,.25)}
+  .review p{margin:14px 0 20px;font-size:15.5px}
+  .who{display:flex;align-items:center;gap:12px;font-size:14px}
+  .who i{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:700;color:#fff}
+  .who small{display:block;color:var(--muted)}
+  .g-rating{display:flex;align-items:center;gap:16px;background:var(--soft);border-radius:14px;padding:16px 20px}
+  .g-rating b{font-family:Archivo;font-size:36px;font-weight:900}
+
+  .zone{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .zone span{padding:10px 16px;border-radius:999px;background:var(--soft);border:1px solid var(--line);font-weight:600;font-size:14px}
+
+  .contact{background:var(--ink);color:#fff}
+  .contact-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:60px;align-items:start}
+  .contact h2{font-size:clamp(34px,4.6vw,58px);font-weight:900}
+  .contact p{color:#a9b6c9;margin-top:14px}
+  .c-lines{margin-top:30px;display:grid;gap:14px}
+  .c-lines a,.c-lines div{display:flex;align-items:center;gap:14px;font-weight:600;font-size:17px}
+  .c-lines i{width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.08);display:grid;place-items:center;font-style:normal;font-size:20px}
+  form{background:#fff;color:var(--ink);border-radius:24px;padding:34px;display:grid;gap:14px;box-shadow:var(--shadow)}
+  form h3{font-size:24px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  label{font-size:13px;font-weight:600;color:var(--ink-2);display:grid;gap:6px}
+  input,select,textarea{font:inherit;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fbfcfd;outline:none;transition:border-color .2s}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+  textarea{min-height:110px;resize:vertical}
+  form .btn{justify-content:center;width:100%;padding:16px}
+  .small{font-size:12px;color:var(--muted)}
+
+  footer{background:#08101c;color:#7f8ea5;font-size:14px;padding:34px 0}
+  footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+  .call-fab{display:none}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease}
+  .reveal.on{opacity:1;transform:none}
+
+  @media (max-width:980px){
+    .nav ul{display:none}
+    .services,.reviews{grid-template-columns:1fr 1fr}
+    .steps{grid-template-columns:1fr 1fr}
+    .ba-grid,.contact-grid,.aides{grid-template-columns:1fr}
+    .badges{justify-content:flex-start}
+    .gallery{grid-template-columns:1fr 1fr}
+    .stats .wrap{grid-template-columns:1fr 1fr}
+    .stat:nth-child(2){border-right:0}
+  }
+  @media (max-width:640px){
+    .services,.reviews,.steps,.row{grid-template-columns:1fr}
+    .nav .btn{display:none}
+    section{padding:70px 0}
+    .aides{padding:34px 24px}
+    .gallery{grid-auto-rows:160px}
+    .call-fab{display:flex;position:fixed;bottom:16px;left:16px;right:16px;z-index:60;justify-content:center}
+    footer{padding-bottom:96px}
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-bar"><b>Site de démonstration</b> — voici à quoi pourrait ressembler le site de votre entreprise. <a href="#contact">Je veux le mien</a></div>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="#" class="logo"><i>⌂</i>Atelier Rénov'</a>
+    <ul>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#realisations">Réalisations</a></li>
+      <li><a href="#aides">Aides</a></li>
+      <li><a href="#avis">Avis</a></li>
+    </ul>
+    <a href="#contact" class="btn btn-accent">Devis gratuit</a>
+  </div>
+</header>
+
+<section class="hero" style="padding:0">
+  <img src="../assets/img/btp-hero.jpg" alt="Maison rénovée au crépuscule">
+  <div class="wrap">
+    <span class="pill"><span class="dot"></span>Disponible cette semaine · Île-de-France</span>
+    <h1>Votre maison rénovée,<br><em>sans mauvaise surprise.</em></h1>
+    <p class="lead">Isolation, menuiseries, chauffage, salle de bain : un seul interlocuteur, un devis clair et un chantier livré à la date prévue.</p>
+    <div class="ctas">
+      <a href="#contact" class="btn btn-accent">Demander mon devis gratuit →</a>
+      <a href="tel:0100000000" class="btn btn-ghost">📞 01 00 00 00 00</a>
+    </div>
+    <div class="trust">
+      <span><span class="stars">★★★★★</span><b>4,9/5</b> · 127 avis Google</span>
+      <span>🛡️ <b>Garantie décennale</b></span>
+      <span>🌿 <b>Certifié RGE</b></span>
+      <span>⏱️ Réponse sous <b>24 h</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="wrap">
+    <div class="stat"><b data-count="18">0</b><span>ans d'expérience</span></div>
+    <div class="stat"><b data-count="850">0</b><span>chantiers livrés</span></div>
+    <div class="stat"><b data-count="98" data-suffix="%">0</b><span>clients satisfaits</span></div>
+    <div class="stat"><b data-count="48" data-suffix="h">0</b><span>pour recevoir votre devis</span></div>
+  </div>
+</div>
+
+<section id="services">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div><span class="kicker">Nos savoir-faire</span><h2>Tout pour rénover votre logement, de A à Z.</h2></div>
+      <p>Des équipes qualifiées, du matériel professionnel et des finitions soignées, pour les particuliers comme pour les professionnels.</p>
+    </div>
+    <div class="services">
+      <a class="card reveal" href="#contact"><img src="../assets/img/btp-salon.jpg" alt=""><div class="in"><div class="ico">🏠</div><h3>Rénovation complète</h3><p>Appartements et maisons, clé en main.</p></div></a>
+      <a class="card reveal" href="#contact"><img src="../assets/img/btp-worker.jpg" alt=""><div class="in"><div class="ico">🧱</div><h3>Isolation</h3><p>Combles, murs, planchers : jusqu'à −30 % sur vos factures.</p></div></a>
+      <a class="card reveal" href="#contact"><img src="../assets/img/btp-chambre.jpg" alt=""><div class="in"><div class="ico">🪟</div><h3>Fenêtres & menuiseries</h3><p>PVC, alu, bois. Pose en une journée.</p></div></a>
+      <a class="card reveal" href="#contact"><img src="../assets/img/btp-plomberie.jpg" alt=""><div class="in"><div class="ico">🔥</div><h3>Chauffage & PAC</h3><p>Chaudières, pompes à chaleur, entretien.</p></div></a>
+      <a class="card reveal" href="#contact"><img src="../assets/img/btp-elec.jpg" alt=""><div class="in"><div class="ico">⚡</div><h3>Électricité</h3><p>Mise aux normes, tableaux, éclairage.</p></div></a>
+      <a class="card reveal" href="#contact"><img src="../assets/img/btp-sdb.jpg" alt=""><div class="in"><div class="ico">🛁</div><h3>Salle de bain</h3><p>Douche à l'italienne, faïence, accessibilité.</p></div></a>
+    </div>
+  </div>
+</section>
+
+<section class="ba">
+  <div class="wrap ba-grid">
+    <div class="compare reveal" id="compare">
+      <img src="../assets/img/btp-salon.jpg" alt="Après rénovation">
+      <img class="before" src="../assets/img/btp-salon.jpg" alt="Avant rénovation">
+      <span class="tag l">Avant</span><span class="tag r">Après</span>
+      <div class="handle"></div>
+    </div>
+    <div class="reveal">
+      <span class="kicker">Avant / Après</span>
+      <h2 style="font-size:clamp(30px,4vw,48px);font-weight:900;margin:10px 0 14px">Faites glisser pour voir la différence.</h2>
+      <p style="color:var(--muted)">Séjour de 42 m² à Vincennes : isolation des murs, nouveau parquet, éclairage encastré et peinture. Livré en 3 semaines.</p>
+      <ul class="checks">
+        <li>Devis détaillé poste par poste, sans frais cachés</li>
+        <li>Un chef de chantier unique qui vous tient informé</li>
+        <li>Chantier protégé et nettoyé chaque soir</li>
+        <li>Garantie décennale et assurance responsabilité civile</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal"><div><span class="kicker">Comment ça marche</span><h2>4 étapes, zéro stress.</h2></div></div>
+    <div class="steps">
+      <div class="step reveal"><h3>Visite gratuite</h3><p>On se déplace chez vous pour comprendre votre projet.</p></div>
+      <div class="step reveal"><h3>Devis sous 48 h</h3><p>Clair, détaillé, avec les aides auxquelles vous avez droit.</p></div>
+      <div class="step reveal"><h3>Travaux</h3><p>Planning respecté, photos d'avancement envoyées chaque semaine.</p></div>
+      <div class="step reveal"><h3>Réception</h3><p>On vérifie tout ensemble. Vous ne payez le solde qu'une fois satisfait.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="realisations" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal"><div><span class="kicker">Réalisations</span><h2>Nos derniers chantiers.</h2></div><p>Quelques projets livrés récemment en Île-de-France.</p></div>
+    <div class="gallery reveal">
+      <figure class="g-big"><img src="../assets/img/btp-hero.jpg" alt=""><figcaption>Extension contemporaine · Saint-Maur</figcaption></figure>
+      <figure><img src="../assets/img/btp-vasque.jpg" alt=""><figcaption>Salle d'eau · Paris 11e</figcaption></figure>
+      <figure><img src="../assets/img/btp-interieur.jpg" alt=""><figcaption>Rénovation · Boulogne</figcaption></figure>
+      <figure class="g-wide"><img src="../assets/img/btp-chantier.jpg" alt=""><figcaption>Gros œuvre · Montreuil</figcaption></figure>
+      <figure><img src="../assets/img/btp-plans.jpg" alt=""><figcaption>Étude & plans</figcaption></figure>
+      <figure><img src="../assets/img/btp-facade.jpg" alt=""><figcaption>Ravalement · Versailles</figcaption></figure>
+      <figure class="g-wide"><img src="../assets/img/btp-sdb.jpg" alt=""><figcaption>Salle de bain complète · Nanterre</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="aides" style="padding-top:0">
+  <div class="wrap">
+    <div class="aides reveal">
+      <div>
+        <h2>Jusqu'à 70 % de vos travaux financés.</h2>
+        <p>Entreprise certifiée RGE : vous pouvez bénéficier de MaPrimeRénov', des CEE et de l'éco-prêt à taux zéro. On monte le dossier avec vous.</p>
+        <a href="#contact" class="btn" style="margin-top:22px">Calculer mes aides →</a>
+      </div>
+      <div class="badges"><span>MaPrimeRénov'</span><span>CEE</span><span>Éco-PTZ</span><span>TVA 5,5 %</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="avis" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div><span class="kicker">Avis clients</span><h2>Ils nous ont fait confiance.</h2></div>
+      <div class="g-rating"><b>4,9</b><div><span class="stars">★★★★★</span><br><span class="small">127 avis vérifiés sur Google</span></div></div>
+    </div>
+    <div class="reviews">
+      <div class="review reveal"><span class="stars">★★★★★</span><p>« Équipe ponctuelle et très propre. Notre salle de bain a été refaite en 8 jours, exactement comme sur le devis. »</p><div class="who"><i style="background:#f26b1d">SL</i><div><b>Sophie L.</b><small>Créteil</small></div></div></div>
+      <div class="review reveal"><span class="stars">★★★★★</span><p>« Isolation des combles et changement des fenêtres : on sent la différence dès le premier hiver. Dossier d'aides géré de A à Z. »</p><div class="who"><i style="background:#1b2a40">KM</i><div><b>Karim M.</b><small>Argenteuil</small></div></div></div>
+      <div class="review reveal"><span class="stars">★★★★★</span><p>« Devis reçu en 48 h, prix honnête et chantier terminé en avance. Je recommande sans hésiter. »</p><div class="who"><i style="background:#16a34a">CD</i><div><b>Claire D.</b><small>Versailles</small></div></div></div>
+    </div>
+    <div class="reveal" style="margin-top:56px">
+      <span class="kicker">Zone d'intervention</span>
+      <div class="zone"><span>Paris (75)</span><span>Hauts-de-Seine (92)</span><span>Seine-Saint-Denis (93)</span><span>Val-de-Marne (94)</span><span>Yvelines (78)</span><span>Essonne (91)</span><span>Val-d'Oise (95)</span><span>Seine-et-Marne (77)</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap contact-grid">
+    <div class="reveal">
+      <span class="kicker">Contact</span>
+      <h2>Parlons de votre projet.</h2>
+      <p>Visite et devis gratuits, sans engagement. Réponse sous 24 h ouvrées.</p>
+      <div class="c-lines">
+        <a href="tel:0100000000"><i>📞</i>01 00 00 00 00</a>
+        <a href="mailto:contact@atelier-renov.fr"><i>✉️</i>contact@atelier-renov.fr</a>
+        <div><i>📍</i>Intervention dans toute l'Île-de-France</div>
+        <div><i>🕗</i>Lun–Sam · 8h–19h</div>
+      </div>
+    </div>
+    <form class="reveal" onsubmit="event.preventDefault();this.querySelector('button').textContent='✓ Demande envoyée (démo)';">
+      <h3>Devis gratuit en 1 minute</h3>
+      <div class="row">
+        <label>Nom<input required placeholder="Jean Dupont"></label>
+        <label>Téléphone<input required type="tel" placeholder="06 12 34 56 78"></label>
+      </div>
+      <div class="row">
+        <label>Ville<input placeholder="Nanterre"></label>
+        <label>Type de travaux<select><option>Rénovation complète</option><option>Isolation</option><option>Fenêtres</option><option>Chauffage / PAC</option><option>Électricité</option><option>Salle de bain</option></select></label>
+      </div>
+      <label>Votre projet<textarea placeholder="Décrivez vos travaux en quelques mots…"></textarea></label>
+      <button class="btn btn-accent" type="submit">Recevoir mon devis gratuit →</button>
+      <span class="small">Vos informations restent confidentielles et ne sont jamais revendues.</span>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© Atelier Rénov' — entreprise fictive, site de démonstration</span>
+    <span>Mentions légales · Politique de confidentialité</span>
+  </div>
+</footer>
+
+<a href="tel:0100000000" class="btn btn-accent call-fab">📞 Appeler maintenant</a>
+
+<script>
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  const cio=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const el=e.target,end=+el.dataset.count,suf=el.dataset.suffix||'';let t0;const step=t=>{t0??=t;const p=Math.min((t-t0)/1400,1);el.textContent=Math.round(end*(1-Math.pow(1-p,3)))+suf;if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step);cio.unobserve(el)}),{threshold:.5});
+  document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
+  const cmp=document.getElementById('compare'),before=cmp.querySelector('.before'),handle=cmp.querySelector('.handle');
+  const setPos=x=>{const r=cmp.getBoundingClientRect();const p=Math.max(0,Math.min(100,(x-r.left)/r.width*100));before.style.clipPath=`inset(0 ${100-p}% 0 0)`;handle.style.left=p+'%'};
+  let drag=false;cmp.addEventListener('pointerdown',e=>{drag=true;setPos(e.clientX)});
+  addEventListener('pointermove',e=>drag&&setPos(e.clientX));addEventListener('pointerup',()=>drag=false);
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "_note": "Remplacer les valeurs entre crochets avant tout envoi. BASE_URL = adresse GitHub Pages (ou nom de domaine) où le dossier docs/ est publié.",
+  "BASE_URL": "https://max234-jpg.github.io/11126",
+  "AGENCE": "[Nom de votre activité]",
+  "EXPEDITEUR": "[Prénom Nom]",
+  "INITIALES": "[PN]",
+  "TEL": "[06 00 00 00 00]",
+  "PRIX": "[XXX €]",
+  "DELAI": "7 jours",
+  "ENTITE_LEGALE": "[Statut — SIRET 000 000 000 00000]",
+  "ADRESSE_EXPEDITEUR": "[Ville]"
+}

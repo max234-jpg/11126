@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Maison Lila — Coiffure & couleur à Paris</title>
+<meta name="description" content="Exemple de site vitrine pour salon de coiffure : prestations, tarifs, réservation en ligne.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f7f1ea; --sand:#efe5d9; --plum:#2e1a24; --plum-2:#4a2c3b; --gold:#b98d55; --gold-2:#d7b07a;
+    --muted:#7a6670; --line:#e4d7c8; --radius:22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:Manrope,system-ui,sans-serif;color:var(--plum);background:var(--cream);line-height:1.65;-webkit-font-smoothing:antialiased}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;line-height:1.02;letter-spacing:-.01em}
+  .wrap{width:min(1200px,100% - 32px);margin-inline:auto}
+  .demo-bar{background:var(--plum);color:#e6d6c9;font-size:13px;text-align:center;padding:8px 16px}
+  .demo-bar b{color:#fff}.demo-bar a{color:var(--gold-2);font-weight:700;text-decoration:underline}
+
+  header{position:absolute;left:0;right:0;z-index:20}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;height:86px}
+  .logo{font-family:"Cormorant Garamond";font-size:30px;font-weight:700;letter-spacing:.02em}
+  .logo small{display:block;font-family:Manrope;font-size:10px;letter-spacing:.38em;text-transform:uppercase;font-weight:600;color:var(--gold);margin-top:-4px}
+  nav{display:flex;gap:34px;font-size:14px;font-weight:600;letter-spacing:.04em}
+  nav a:hover{color:var(--gold)}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:999px;font-weight:700;font-size:14px;letter-spacing:.03em;transition:transform .2s,background .2s,color .2s;border:0;cursor:pointer}
+  .btn-dark{background:var(--plum);color:#fff}
+  .btn-dark:hover{background:var(--plum-2);transform:translateY(-2px)}
+  .btn-line{border:1.5px solid var(--plum);color:var(--plum)}
+  .btn-line:hover{background:var(--plum);color:#fff}
+  .btn-gold{background:var(--gold);color:#fff}
+  .btn-gold:hover{background:var(--gold-2);transform:translateY(-2px)}
+
+  .hero{display:grid;grid-template-columns:1fr 1.05fr;min-height:100vh;align-items:center;gap:40px;padding-top:86px}
+  .hero-text{padding:40px 0 60px max(16px,calc((100vw - 1200px)/2))}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+  .eyebrow::before{content:"";width:34px;height:1.5px;background:var(--gold)}
+  .hero h1{font-size:clamp(52px,7.4vw,108px);margin:22px 0 22px}
+  .hero h1 em{font-style:italic;color:var(--gold)}
+  .hero p{font-size:18px;color:var(--muted);max-width:460px}
+  .hero .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+  .rating{display:flex;align-items:center;gap:14px;margin-top:44px}
+  .avatars{display:flex}
+  .avatars i{width:40px;height:40px;border-radius:50%;border:3px solid var(--cream);margin-left:-10px;background-size:cover;background-position:center}
+  .avatars i:first-child{margin-left:0}
+  .rating b{font-size:15px}.rating small{display:block;color:var(--muted);font-size:13px}
+  .stars{color:var(--gold);letter-spacing:2px}
+  .hero-visual{position:relative;height:100%;min-height:640px}
+  .hero-visual .main{position:absolute;inset:0 0 0 0;border-radius:0 0 0 220px;overflow:hidden}
+  .hero-visual .main img{width:100%;height:100%;object-fit:cover;animation:zoom 14s ease-out forwards}
+  @keyframes zoom{from{transform:scale(1.08)}to{transform:scale(1)}}
+  .float{position:absolute;background:#fff;border-radius:18px;padding:16px 18px;box-shadow:0 24px 50px -20px rgba(46,26,36,.45);display:flex;gap:12px;align-items:center;font-size:14px;animation:bob 5s ease-in-out infinite}
+  .float b{display:block;font-size:15px}
+  .float span.ico{width:42px;height:42px;border-radius:12px;background:var(--sand);display:grid;place-items:center;font-size:20px}
+  .f1{left:-40px;bottom:110px}
+  .f2{right:28px;top:120px;animation-delay:-2.5s}
+  @keyframes bob{50%{transform:translateY(-10px)}}
+
+  .marquee{background:var(--plum);color:var(--gold-2);overflow:hidden;white-space:nowrap;padding:20px 0;font-family:"Cormorant Garamond";font-size:28px;font-style:italic}
+  .marquee div{display:inline-block;animation:slide 30s linear infinite}
+  .marquee span{margin:0 28px}
+  @keyframes slide{to{transform:translateX(-50%)}}
+
+  section{padding:110px 0}
+  .head{text-align:center;max-width:680px;margin:0 auto 60px}
+  .head h2{font-size:clamp(40px,5.4vw,72px);margin-top:14px}
+  .head p{color:var(--muted);margin-top:14px}
+
+  .menu{display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
+  .menu-card{background:#fff;border-radius:var(--radius);overflow:hidden;display:grid;grid-template-columns:220px 1fr;box-shadow:0 20px 50px -30px rgba(46,26,36,.4)}
+  .menu-card img{height:100%;width:100%;object-fit:cover}
+  .menu-card .in{padding:28px 30px}
+  .menu-card h3{font-size:34px;margin-bottom:12px}
+  .price{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:15px}
+  .price:last-child{border:0}
+  .price b{color:var(--gold);font-weight:700;white-space:nowrap}
+
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+  .stack{position:relative;height:620px}
+  .stack img{position:absolute;border-radius:var(--radius);object-fit:cover;box-shadow:0 30px 60px -30px rgba(46,26,36,.55)}
+  .stack .a{width:68%;height:78%;left:0;top:0}
+  .stack .b{width:52%;height:56%;right:0;bottom:0;border:8px solid var(--cream)}
+  .split h2{font-size:clamp(40px,4.8vw,64px);margin:14px 0 20px}
+  .split p{color:var(--muted)}
+  .feats{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:34px}
+  .feat b{display:block;font-family:"Cormorant Garamond";font-size:46px;color:var(--gold);line-height:1}
+  .feat span{font-size:14px;color:var(--muted)}
+
+  .gallery{columns:4 240px;column-gap:16px}
+  .gallery figure{break-inside:avoid;margin-bottom:16px;border-radius:18px;overflow:hidden;position:relative}
+  .gallery img{width:100%;transition:transform .7s}
+  .gallery figure:hover img{transform:scale(1.06)}
+  .gallery figure::after{content:"♡";position:absolute;right:14px;top:12px;color:#fff;font-size:22px;opacity:0;transition:opacity .3s}
+  .gallery figure:hover::after{opacity:1}
+
+  .team{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+  .member{text-align:center}
+  .member .ph{aspect-ratio:3/4;border-radius:200px 200px 22px 22px;overflow:hidden;margin-bottom:18px}
+  .member .ph img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;transition:transform .7s}
+  .member:hover .ph img{transform:scale(1.05)}
+  .member h3{font-size:30px}
+  .member span{color:var(--gold);font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+
+  .reviews{background:var(--plum);color:#fff}
+  .reviews .head p{color:#cdb9c2}
+  .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .quote{border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);padding:32px;background:rgba(255,255,255,.03)}
+  .quote p{font-family:"Cormorant Garamond";font-size:24px;font-style:italic;line-height:1.3;margin:16px 0 22px}
+  .quote small{color:#cdb9c2;font-size:14px}
+
+  .visit{display:grid;grid-template-columns:1.1fr 1fr;gap:0;border-radius:28px;overflow:hidden;background:#fff;box-shadow:0 30px 60px -35px rgba(46,26,36,.45)}
+  .visit .info{padding:56px}
+  .visit h2{font-size:clamp(38px,4.4vw,58px);margin-bottom:24px}
+  .hours{display:grid;gap:8px;margin:20px 0 30px;font-size:15px}
+  .hours div{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:8px}
+  .hours .closed{color:var(--muted)}
+  .visit-img{width:100%;height:100%;min-height:420px;object-fit:cover}
+
+  footer{padding:40px 0;font-size:14px;color:var(--muted)}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;border-top:1px solid var(--line);padding-top:30px}
+
+  .book-fab{position:fixed;right:22px;bottom:22px;z-index:40;box-shadow:0 18px 40px -12px rgba(46,26,36,.6)}
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .9s ease,transform .9s ease}
+  .reveal.on{opacity:1;transform:none}
+
+  @media (max-width:980px){
+    nav{display:none}
+    .hero{grid-template-columns:1fr;min-height:auto}
+    .hero-text{padding:30px 16px 10px}
+    .hero-visual{min-height:440px;margin:0 16px}
+    .hero-visual .main{border-radius:22px 22px 22px 120px}
+    .f1{left:12px;bottom:20px}.f2{right:12px;top:20px}
+    .menu,.split,.visit{grid-template-columns:1fr}
+    .team,.quotes{grid-template-columns:1fr 1fr}
+    .stack{height:460px}
+  }
+  @media (max-width:640px){
+    header .btn{display:none}
+    section{padding:76px 0}
+    .menu-card{grid-template-columns:1fr}
+    .menu-card img{height:180px}
+    .team,.quotes{grid-template-columns:1fr}
+    .visit .info{padding:32px 24px}
+    .book-fab{left:16px;right:16px;justify-content:center}
+    footer{padding-bottom:100px}
+  }
+</style>
+</head>
+<body>
+<div class="demo-bar"><b>Site de démonstration</b> — voici à quoi pourrait ressembler le site de votre salon. <a href="#visite">Je veux le mien</a></div>
+
+<div style="position:relative">
+<header>
+  <div class="wrap">
+    <a href="#" class="logo">Maison Lila<small>Coiffure · Couleur</small></a>
+    <nav><a href="#prestations">Prestations</a><a href="#salon">Le salon</a><a href="#equipe">L'équipe</a><a href="#visite">Accès</a></nav>
+    <a href="#visite" class="btn btn-dark">Réserver</a>
+  </div>
+</header>
+
+<section class="hero" style="padding-bottom:0">
+  <div class="hero-text reveal">
+    <span class="eyebrow">Salon de coiffure · Paris 11e</span>
+    <h1>Révélez <em>votre</em> plus belle version.</h1>
+    <p>Coupes sur-mesure, balayages lumineux et soins profonds, dans un salon chaleureux où l'on prend le temps de vous écouter.</p>
+    <div class="ctas">
+      <a href="#visite" class="btn btn-dark">Réserver en ligne →</a>
+      <a href="#prestations" class="btn btn-line">Voir les tarifs</a>
+    </div>
+    <div class="rating">
+      <div class="avatars">
+        <i style="background-image:url(../assets/img/coif-cheveux.jpg)"></i>
+        <i style="background-image:url(../assets/img/coif-styliste.jpg)"></i>
+        <i style="background-image:url(../assets/img/coif-brushing.jpg)"></i>
+      </div>
+      <div><b><span class="stars">★★★★★</span> 4,9/5</b><small>Plus de 340 clientes ravies</small></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="main"><img src="../assets/img/coif-hero.jpg" alt="Intérieur du salon"></div>
+    <div class="float f1"><span class="ico">✂️</span><div><b>Prochain créneau</b>Aujourd'hui · 16h30</div></div>
+    <div class="float f2"><span class="ico">🌿</span><div><b>Produits végétaux</b>Colorations sans ammoniaque</div></div>
+  </div>
+</section>
+</div>
+
+<div class="marquee"><div>
+  <span>Coupe</span>·<span>Balayage</span>·<span>Couleur</span>·<span>Brushing</span>·<span>Soin kératine</span>·<span>Chignon mariée</span>·<span>Barbier</span>·
+  <span>Coupe</span>·<span>Balayage</span>·<span>Couleur</span>·<span>Brushing</span>·<span>Soin kératine</span>·<span>Chignon mariée</span>·<span>Barbier</span>·
+</div></div>
+
+<section id="prestations">
+  <div class="wrap">
+    <div class="head reveal"><span class="eyebrow">Prestations & tarifs</span><h2>Un savoir-faire, des tarifs clairs.</h2><p>Diagnostic personnalisé offert avant chaque prestation.</p></div>
+    <div class="menu">
+      <div class="menu-card reveal"><img src="../assets/img/coif-styliste.jpg" alt=""><div class="in"><h3>Femme</h3>
+        <div class="price"><span>Shampoing, coupe, brushing</span><b>dès 49 €</b></div>
+        <div class="price"><span>Brushing</span><b>dès 32 €</b></div>
+        <div class="price"><span>Coupe enfant (−12 ans)</span><b>dès 22 €</b></div>
+        <div class="price"><span>Chignon / attache</span><b>dès 55 €</b></div></div></div>
+      <div class="menu-card reveal"><img src="../assets/img/coif-barbier.jpg" alt=""><div class="in"><h3>Homme</h3>
+        <div class="price"><span>Coupe & coiffage</span><b>dès 29 €</b></div>
+        <div class="price"><span>Coupe + barbe</span><b>dès 42 €</b></div>
+        <div class="price"><span>Taille de barbe</span><b>dès 18 €</b></div>
+        <div class="price"><span>Rasage traditionnel</span><b>dès 30 €</b></div></div></div>
+      <div class="menu-card reveal"><img src="../assets/img/coif-cheveux.jpg" alt=""><div class="in"><h3>Couleur</h3>
+        <div class="price"><span>Coloration végétale</span><b>dès 58 €</b></div>
+        <div class="price"><span>Balayage / ombré</span><b>dès 95 €</b></div>
+        <div class="price"><span>Patine / gloss</span><b>dès 35 €</b></div>
+        <div class="price"><span>Mèches</span><b>dès 75 €</b></div></div></div>
+      <div class="menu-card reveal"><img src="../assets/img/coif-outils.jpg" alt=""><div class="in"><h3>Soins</h3>
+        <div class="price"><span>Soin profond réparateur</span><b>dès 25 €</b></div>
+        <div class="price"><span>Lissage à la kératine</span><b>dès 150 €</b></div>
+        <div class="price"><span>Rituel détente du cuir chevelu</span><b>dès 30 €</b></div>
+        <div class="price"><span>Forfait mariée (essai inclus)</span><b>dès 180 €</b></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="salon" style="padding-top:0">
+  <div class="wrap split">
+    <div class="stack reveal">
+      <img class="a" src="../assets/img/coif-salon-nb.jpg" alt="">
+      <img class="b" src="../assets/img/coif-brushing.jpg" alt="">
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">Le salon</span>
+      <h2>Un lieu pensé pour <em style="color:var(--gold)">vous</em>.</h2>
+      <p>Lumière naturelle, fauteuils massants au bac, café de torréfacteur et playlist choisie : chez Maison Lila, chaque rendez-vous est une parenthèse. Nos coiffeuses se forment chaque année aux dernières techniques de couleur.</p>
+      <div class="feats">
+        <div class="feat"><b>12</b><span>années d'expérience</span></div>
+        <div class="feat"><b>100 %</b><span>produits végétaux & vegan</span></div>
+        <div class="feat"><b>4</b><span>coiffeuses passionnées</span></div>
+        <div class="feat"><b>7j/7</b><span>réservation en ligne</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="head reveal"><span class="eyebrow">Inspirations</span><h2>Nos dernières créations.</h2></div>
+    <div class="gallery reveal">
+      <figure><img src="../assets/img/coif-cheveux.jpg" alt=""></figure>
+      <figure><img src="../assets/img/coif-fauteuils.jpg" alt=""></figure>
+      <figure><img src="../assets/img/coif-barbier.jpg" alt=""></figure>
+      <figure><img src="../assets/img/coif-seche.jpg" alt=""></figure>
+      <figure><img src="../assets/img/coif-styliste.jpg" alt=""></figure>
+      <figure><img src="../assets/img/coif-outils.jpg" alt=""></figure>
+      <figure><img src="../assets/img/coif-brushing.jpg" alt=""></figure>
+      <figure><img src="../assets/img/coif-salon-nb.jpg" alt=""></figure>
+    </div>
+  </div>
+</section>
+
+<section id="equipe" style="padding-top:0">
+  <div class="wrap">
+    <div class="head reveal"><span class="eyebrow">L'équipe</span><h2>Des mains expertes.</h2></div>
+    <div class="team">
+      <div class="member reveal"><div class="ph"><img src="../assets/img/coif-styliste.jpg" alt=""></div><h3>Léa</h3><span>Fondatrice · Coloriste</span></div>
+      <div class="member reveal"><div class="ph"><img src="../assets/img/coif-brushing.jpg" alt=""></div><h3>Inès</h3><span>Coiffeuse · Coupes</span></div>
+      <div class="member reveal"><div class="ph"><img src="../assets/img/coif-barbier.jpg" alt=""></div><h3>Yanis</h3><span>Barbier</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="reviews">
+  <div class="wrap">
+    <div class="head reveal"><span class="eyebrow">Avis</span><h2>Elles en parlent mieux que nous.</h2><p><span class="stars">★★★★★</span> 4,9/5 · 340 avis Google</p></div>
+    <div class="quotes">
+      <div class="quote reveal"><span class="stars">★★★★★</span><p>« Enfin un balayage naturel qui me ressemble. Léa a pris le temps de comprendre ce que je voulais. »</p><small>Camille R. · Paris 11e</small></div>
+      <div class="quote reveal"><span class="stars">★★★★★</span><p>« Salon magnifique, accueil adorable et coupe parfaite. Je ne vais plus nulle part ailleurs. »</p><small>Nadia B. · Montreuil</small></div>
+      <div class="quote reveal"><span class="stars">★★★★★</span><p>« Réservation en ligne en deux clics, et rasage traditionnel au top. Je recommande. »</p><small>Thomas G. · Paris 20e</small></div>
+    </div>
+  </div>
+</section>
+
+<section id="visite">
+  <div class="wrap">
+    <div class="visit reveal">
+      <div class="info">
+        <span class="eyebrow">Nous rendre visite</span>
+        <h2>On vous attend au salon.</h2>
+        <p>📍 12 rue de la Coiffure, 75011 Paris · Métro Voltaire</p>
+        <p style="margin-top:6px">📞 01 00 00 00 00</p>
+        <div class="hours">
+          <div><span>Lundi</span><span class="closed">Fermé</span></div>
+          <div><span>Mardi – Vendredi</span><span>9h30 – 19h30</span></div>
+          <div><span>Samedi</span><span>9h00 – 18h00</span></div>
+          <div><span>Dimanche</span><span class="closed">Fermé</span></div>
+        </div>
+        <a href="#" class="btn btn-gold" onclick="event.preventDefault();this.textContent='✓ Module de réservation (démo)'">Réserver mon rendez-vous →</a>
+      </div>
+      <img class="visit-img" src="../assets/img/coif-fauteuils.jpg" alt="Le salon">
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><span>© Maison Lila — salon fictif, site de démonstration</span><span>Mentions légales · Confidentialité</span></div></footer>
+<a href="#visite" class="btn btn-dark book-fab">✂️ Réserver</a>
+
+<script>
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

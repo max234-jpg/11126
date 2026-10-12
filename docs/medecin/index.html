@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cabinet Médical Horizon — Médecine générale</title>
+<meta name="description" content="Exemple de site pour cabinet médical : informations pratiques, horaires, prise de rendez-vous.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b2530; --muted:#557079; --line:#dbe9ec; --bg:#ffffff; --soft:#f1f8f9;
+    --teal:#0c8a8f; --teal-2:#12b3b0; --mint:#d9f3ef; --radius:22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{line-height:1.1;letter-spacing:-.025em;font-weight:800}
+  .wrap{width:min(1180px,100% - 32px);margin-inline:auto}
+  .demo-bar{background:var(--ink);color:#c5dadd;font-size:13px;text-align:center;padding:8px 16px}
+  .demo-bar b{color:#fff}.demo-bar a{color:var(--teal-2);font-weight:700;text-decoration:underline}
+
+  header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;height:74px;gap:16px}
+  .logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:18px}
+  .logo i{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--teal),var(--teal-2));color:#fff;display:grid;place-items:center;font-style:normal;font-size:22px;font-weight:800}
+  .logo small{display:block;font-size:12px;color:var(--muted);font-weight:600}
+  nav{display:flex;gap:28px;font-size:15px;font-weight:600;color:var(--muted)}
+  nav a:hover{color:var(--teal)}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:14px;font-weight:700;font-size:15px;transition:transform .2s,background .2s;border:0;cursor:pointer}
+  .btn-teal{background:var(--teal);color:#fff;box-shadow:0 14px 30px -12px rgba(12,138,143,.7)}
+  .btn-teal:hover{background:var(--teal-2);transform:translateY(-2px)}
+  .btn-soft{background:var(--mint);color:var(--teal)}
+
+  .hero{position:relative;overflow:hidden;background:radial-gradient(1200px 500px at 85% -10%,#c9f0ea 0%,transparent 60%),var(--soft)}
+  .hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:50px;align-items:center;padding:70px 0 90px}
+  .chip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:700;color:var(--teal)}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px #dcfce7}
+  .hero h1{font-size:clamp(40px,5.6vw,72px);margin:20px 0 18px}
+  .hero h1 span{background:linear-gradient(90deg,var(--teal),var(--teal-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p.lead{font-size:18px;color:var(--muted);max-width:540px}
+  .hero .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+  .quick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:40px;max-width:560px}
+  .quick div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;font-size:13px;color:var(--muted)}
+  .quick b{display:block;color:var(--ink);font-size:15px}
+  .hero-img{position:relative}
+  .hero-img .ph{border-radius:32px;overflow:hidden;aspect-ratio:4/4.4;box-shadow:0 40px 80px -40px rgba(11,37,48,.55)}
+  .hero-img .ph img{width:100%;height:100%;object-fit:cover}
+  .card-float{position:absolute;background:#fff;border-radius:18px;padding:16px 18px;box-shadow:0 24px 50px -22px rgba(11,37,48,.45);display:flex;gap:12px;align-items:center;font-size:13px;color:var(--muted);animation:bob 5s ease-in-out infinite}
+  .card-float b{display:block;color:var(--ink);font-size:15px}
+  .card-float .ic{width:42px;height:42px;border-radius:12px;background:var(--mint);display:grid;place-items:center;font-size:20px}
+  .cf1{left:-34px;bottom:60px}.cf2{right:-20px;top:40px;animation-delay:-2.5s}
+  @keyframes bob{50%{transform:translateY(-10px)}}
+
+  section{padding:100px 0}
+  .head{max-width:660px;margin-bottom:50px}
+  .kicker{color:var(--teal);font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+  .head h2{font-size:clamp(32px,4.2vw,50px);margin-top:10px}
+  .head p{color:var(--muted);margin-top:12px}
+
+  .care{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .care div{border:1px solid var(--line);border-radius:var(--radius);padding:28px;transition:transform .25s,box-shadow .25s,border-color .25s;background:#fff}
+  .care div:hover{transform:translateY(-5px);box-shadow:0 24px 50px -30px rgba(11,37,48,.4);border-color:var(--teal-2)}
+  .care .ic{width:54px;height:54px;border-radius:16px;background:var(--mint);display:grid;place-items:center;font-size:26px;margin-bottom:18px}
+  .care h3{font-size:19px;margin-bottom:6px}
+  .care p{color:var(--muted);font-size:15px}
+
+  .team{background:var(--soft)}
+  .docs{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .doc{background:#fff;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line)}
+  .doc .ph{aspect-ratio:4/3.4;overflow:hidden}
+  .doc .ph img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
+  .doc:hover .ph img{transform:scale(1.05)}
+  .doc .in{padding:22px 24px}
+  .doc h3{font-size:20px}
+  .doc span{color:var(--teal);font-weight:700;font-size:14px}
+  .doc p{color:var(--muted);font-size:14px;margin-top:8px}
+
+  .practical{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .box{border:1px solid var(--line);border-radius:var(--radius);padding:34px;background:#fff}
+  .box h3{font-size:22px;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+  .hours div{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+  .hours div:last-child{border:0}
+  .hours .c{color:var(--muted)}
+  .fees div{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+  .fees b{color:var(--teal)}
+  .note{font-size:13px;color:var(--muted);margin-top:14px}
+
+  .tele{background:linear-gradient(120deg,var(--teal),var(--teal-2));border-radius:30px;color:#fff;display:grid;grid-template-columns:1.2fr 1fr;overflow:hidden}
+  .tele .in{padding:56px}
+  .tele h2{font-size:clamp(30px,3.8vw,46px)}
+  .tele p{color:#e1fbf8;margin:14px 0 26px}
+  .tele .btn{background:#fff;color:var(--teal)}
+  .tele img{width:100%;height:100%;object-fit:cover;min-height:320px}
+
+  .access{display:grid;grid-template-columns:1fr 1.2fr;gap:24px}
+  .access-img{width:100%;height:100%;min-height:380px;object-fit:cover;border-radius:var(--radius)}
+  .access ul{list-style:none;display:grid;gap:14px;margin-top:6px}
+  .access li{display:flex;gap:12px;font-size:15px}
+  .access li i{font-style:normal;width:38px;height:38px;flex:none;border-radius:10px;background:var(--mint);display:grid;place-items:center}
+
+  .urgent{background:#fff5f5;border:1px solid #fecaca;color:#7f1d1d;border-radius:16px;padding:18px 22px;display:flex;gap:14px;align-items:center;margin-top:24px;font-size:15px}
+  .urgent b{font-size:22px;color:#dc2626}
+
+  footer{background:var(--ink);color:#9bb4ba;padding:34px 0;font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease}
+  .reveal.on{opacity:1;transform:none}
+  .rdv-fab{display:none}
+
+  @media (max-width:980px){
+    nav{display:none}
+    .hero .wrap,.practical,.tele,.access{grid-template-columns:1fr}
+    .care,.docs{grid-template-columns:1fr 1fr}
+    .cf1{left:12px}.cf2{right:12px}
+  }
+  @media (max-width:640px){
+    header .btn{display:none}
+    section{padding:70px 0}
+    .care,.docs,.quick{grid-template-columns:1fr}
+    .tele .in{padding:34px 24px}
+    .rdv-fab{display:flex;position:fixed;left:16px;right:16px;bottom:16px;z-index:40;justify-content:center}
+    footer{padding-bottom:96px}
+  }
+</style>
+</head>
+<body>
+<div class="demo-bar"><b>Site de démonstration</b> — voici à quoi pourrait ressembler le site de votre cabinet. <a href="#acces">Je veux le mien</a></div>
+
+<header>
+  <div class="wrap">
+    <a href="#" class="logo"><i>+</i><div>Cabinet Médical Horizon<small>Médecine générale · Paris 15e</small></div></a>
+    <nav><a href="#soins">Consultations</a><a href="#equipe">Médecins</a><a href="#infos">Infos pratiques</a><a href="#acces">Accès</a></nav>
+    <a href="#infos" class="btn btn-teal">Prendre rendez-vous</a>
+  </div>
+</header>
+
+<section class="hero" style="padding:0">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="chip"><span class="dot"></span>Nouveaux patients acceptés</span>
+      <h1>Votre santé,<br><span>suivie avec attention.</span></h1>
+      <p class="lead">Trois médecins généralistes conventionnés secteur 1 vous accueillent du lundi au samedi, sur rendez-vous ou en téléconsultation.</p>
+      <div class="ctas">
+        <a href="#infos" class="btn btn-teal">📅 Prendre rendez-vous en ligne</a>
+        <a href="tel:0100000000" class="btn btn-soft">📞 01 00 00 00 00</a>
+      </div>
+      <div class="quick">
+        <div><b>Secteur 1</b>Tiers payant</div>
+        <div><b>Lun → Sam</b>8h – 20h</div>
+        <div><b>Accessible</b>PMR · RDC</div>
+      </div>
+    </div>
+    <div class="hero-img reveal">
+      <div class="ph"><img src="../assets/img/med-hero.jpg" alt="Consultation au cabinet"></div>
+      <div class="card-float cf1"><span class="ic">📅</span><div><b>Prochain créneau</b>Aujourd'hui · 17h15</div></div>
+      <div class="card-float cf2"><span class="ic">💻</span><div><b>Téléconsultation</b>Disponible 7j/7</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="soins">
+  <div class="wrap">
+    <div class="head reveal"><span class="kicker">Consultations</span><h2>Une prise en charge globale, pour toute la famille.</h2><p>Du nourrisson au senior, nous assurons le suivi médical au long cours et coordonnons votre parcours de soins.</p></div>
+    <div class="care">
+      <div class="reveal"><div class="ic">🩺</div><h3>Médecine générale</h3><p>Consultations, bilans de santé, suivi des maladies chroniques.</p></div>
+      <div class="reveal"><div class="ic">👶</div><h3>Pédiatrie & suivi enfant</h3><p>Examens obligatoires, courbes de croissance, carnet de santé.</p></div>
+      <div class="reveal"><div class="ic">💉</div><h3>Vaccinations</h3><p>Calendrier vaccinal, voyages, rappels et vaccin antigrippal.</p></div>
+      <div class="reveal"><div class="ic">📄</div><h3>Certificats</h3><p>Sport, crèche, aptitude : sur rendez-vous dédié.</p></div>
+      <div class="reveal"><div class="ic">🫀</div><h3>ECG & petits actes</h3><p>Électrocardiogramme, sutures, frottis, retrait de points.</p></div>
+      <div class="reveal"><div class="ic">🏠</div><h3>Visites à domicile</h3><p>Pour les patients ne pouvant pas se déplacer.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="team" id="equipe">
+  <div class="wrap">
+    <div class="head reveal"><span class="kicker">L'équipe</span><h2>Vos médecins.</h2></div>
+    <div class="docs">
+      <div class="doc reveal"><div class="ph"><img src="../assets/img/med-docteure.jpg" alt=""></div><div class="in"><h3>Dr Élise Morel</h3><span>Médecin généraliste</span><p>Gynécologie médicale, suivi de grossesse.</p></div></div>
+      <div class="doc reveal"><div class="ph"><img src="../assets/img/med-docteur.jpg" alt=""></div><div class="in"><h3>Dr Samir Haddad</h3><span>Médecin généraliste</span><p>Médecine du sport, diabétologie.</p></div></div>
+      <div class="doc reveal"><div class="ph"><img src="../assets/img/med-consult.jpg" alt=""></div><div class="in"><h3>Dr Julie Perrin</h3><span>Médecin généraliste</span><p>Pédiatrie, gériatrie.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="infos">
+  <div class="wrap">
+    <div class="head reveal"><span class="kicker">Informations pratiques</span><h2>Tout ce qu'il faut savoir avant de venir.</h2></div>
+    <div class="practical">
+      <div class="box reveal"><h3>🕗 Horaires</h3>
+        <div class="hours">
+          <div><span>Lundi – Vendredi</span><span>8h00 – 20h00</span></div>
+          <div><span>Samedi</span><span>9h00 – 13h00</span></div>
+          <div><span>Dimanche</span><span class="c">Fermé</span></div>
+        </div>
+        <a href="#" class="btn btn-teal" style="margin-top:22px" onclick="event.preventDefault();this.textContent='✓ Module de prise de RDV (démo)'">Prendre rendez-vous →</a>
+      </div>
+      <div class="box reveal"><h3>💶 Honoraires</h3>
+        <div class="fees">
+          <div><span>Consultation</span><b>30 €</b></div>
+          <div><span>Consultation enfant (−6 ans)</span><b>30 € + majoration</b></div>
+          <div><span>Téléconsultation</span><b>30 €</b></div>
+          <div><span>Visite à domicile</span><b>Tarif conventionnel</b></div>
+        </div>
+        <p class="note">Médecins conventionnés secteur 1. Carte Vitale acceptée, tiers payant possible. Tarifs donnés à titre d'exemple.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="tele reveal">
+      <div class="in"><h2>Pas le temps de vous déplacer ?</h2><p>Consultez l'un de nos médecins en vidéo, depuis chez vous. Ordonnance envoyée directement à votre pharmacie.</p><a href="#infos" class="btn">💻 Réserver une téléconsultation</a></div>
+      <img src="../assets/img/med-stetho.jpg" alt="">
+    </div>
+  </div>
+</section>
+
+<section id="acces" style="padding-top:0">
+  <div class="wrap">
+    <div class="head reveal"><span class="kicker">Accès</span><h2>Nous trouver.</h2></div>
+    <div class="access">
+      <div class="box reveal">
+        <ul>
+          <li><i>📍</i><div><b>24 rue de la Santé, 75015 Paris</b><br>Rez-de-chaussée, accessible PMR</div></li>
+          <li><i>🚇</i><div>Métro ligne 12 · station Vaugirard (3 min)</div></li>
+          <li><i>🚌</i><div>Bus 39, 70, 80</div></li>
+          <li><i>🅿️</i><div>Parking public à 150 m</div></li>
+          <li><i>📞</i><div>01 00 00 00 00 · secrétariat 8h–19h</div></li>
+        </ul>
+        <div class="urgent"><b>15</b><div>En cas d'urgence vitale, composez le 15 (SAMU) ou le 112.</div></div>
+      </div>
+      <img class="reveal access-img" src="../assets/img/med-accueil.jpg" alt="Accueil du cabinet">
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><span>© Cabinet Médical Horizon — cabinet fictif, site de démonstration</span><span>Mentions légales · Confidentialité</span></div></footer>
+<a href="#infos" class="btn btn-teal rdv-fab">📅 Prendre rendez-vous</a>
+
+<script>
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

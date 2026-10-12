@@ -1,0 +1,5 @@
+# Prospect data (personal contact details) must never be committed: this repository is public.
+data/
+*.csv
+*.xlsx
+__pycache__/

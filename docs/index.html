@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Exemples de sites vitrines</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,system-ui,sans-serif;background:#0f1522;color:#fff;min-height:100vh}
+  .wrap{width:min(1100px,100% - 32px);margin:0 auto;padding:70px 0}
+  h1{font-size:clamp(34px,5vw,56px);font-weight:800;letter-spacing:-.03em;line-height:1.08}
+  p.lead{color:#9aa7bd;font-size:18px;margin:14px 0 46px;max-width:620px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  a.card{display:block;background:#182033;border:1px solid #243049;border-radius:20px;overflow:hidden;color:inherit;text-decoration:none;transition:transform .25s,border-color .25s}
+  a.card:hover{transform:translateY(-6px);border-color:#3b4b6e}
+  a.card img{width:100%;aspect-ratio:1200/760;object-fit:cover;display:block}
+  .in{padding:20px 22px}
+  .in b{font-size:19px}
+  .in span{display:block;color:#9aa7bd;font-size:14px;margin-top:4px}
+  @media (max-width:860px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Exemples de sites vitrines</h1>
+  <p class="lead">Trois modèles de démonstration, adaptables en quelques jours à votre entreprise : vos photos, vos textes, vos couleurs.</p>
+  <div class="grid">
+    <a class="card" href="btp/"><img src="assets/email/btp-mockup.jpg" alt=""><div class="in"><b>Artisan du bâtiment</b><span>Rénovation, isolation, chauffage…</span></div></a>
+    <a class="card" href="coiffeur/"><img src="assets/email/coiffeur-mockup.jpg" alt=""><div class="in"><b>Salon de coiffure</b><span>Tarifs, galerie, réservation en ligne</span></div></a>
+    <a class="card" href="medecin/"><img src="assets/email/medecin-mockup.jpg" alt=""><div class="in"><b>Cabinet médical</b><span>Infos pratiques, horaires, prise de RDV</span></div></a>
+  </div>
+</div>
+</body>
+</html>
