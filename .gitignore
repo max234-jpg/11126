@@ -1,0 +1,4 @@
+skidl_*.erc
+skidl_*.log
+*-backups/
+fp-info-cache
