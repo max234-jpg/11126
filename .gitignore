@@ -1,0 +1,5 @@
+firmware/ai_cam/config.h
+__pycache__/
+*.onnx
+*.onnx.json
+.venv/
