@@ -4,7 +4,7 @@
 Génère, sans dépendance externe :
   - ai_cam.net   : netlist KiCad (format "E"), à importer dans Pcbnew
                    (Fichier > Importer > Netlist)
-  - BOM.csv      : nomenclature groupée (codes LCSC indicatifs, à vérifier)
+  - BOM.csv      : nomenclature groupée (codes LCSC vérifiés sur le catalogue JLCPCB/LCSC)
   - NETLIST.md   : netlist lisible, net par net
 
 Lancer :  python3 gen_netlist.py
@@ -54,7 +54,7 @@ def two(ref, value, footprint, net1, net2, mpn="", lcsc="", desc=""):
 
 # ---------------------------------------------------------------- MCU
 part("U1", "ESP32-S3-MINI-1-N4R2", "RF_Module:ESP32-S2-MINI-1",  # même empreinte que le S3-MINI-1 (symbole KiCad officiel)
-     "ESP32-S3-MINI-1-N4R2", "C2913206",
+     "ESP32-S3-MINI-1-N4R2", "C3013941",
      "Module Wi-Fi/BLE, 4 Mo flash, 2 Mo PSRAM, antenne PCB")
 esp_gnd = [1, 2, 42, 43] + list(range(46, 66))
 conn("U1", {p: "GND" for p in esp_gnd})
@@ -92,23 +92,23 @@ two("R1", "10k", R0402, "+3V3", "EN", "0402WGF1002TCE", "C25744", "Pull-up EN")
 two("C3", "1uF", C0402, "EN", "GND", "CL05A105KA5NQNC", "C52923", "Délai reset EN")
 two("R2", "10k", R0402, "+3V3", "IO0_BOOT", "0402WGF1002TCE", "C25744", "Pull-up BOOT")
 
-part("SW1", "PHOTO", "Button_Switch_SMD:SW_SPST_TL3342", "TL3342F160QG", "C318884",
+part("SW1", "PHOTO", "Button_Switch_SMD:SW_SPST_TL3342", "TL3342F160QG", "C2886898",
      "Bouton prise de photo")
 conn("SW1", {1: "BTN_PHOTO", 2: "GND"})
-part("SW2", "BOOT", "Button_Switch_SMD:SW_SPST_PTS810", "PTS810SJM250SMTRLFS", "C221929",
+part("SW2", "BOOT", "Button_Switch_SMD:SW_SPST_PTS810", "PTS810SJG250SMTRLFS", "C221895",
      "Bouton BOOT (programmation)")
 conn("SW2", {1: "IO0_BOOT", 2: "GND"})
-part("SW3", "RESET", "Button_Switch_SMD:SW_SPST_PTS810", "PTS810SJM250SMTRLFS", "C221929",
+part("SW3", "RESET", "Button_Switch_SMD:SW_SPST_PTS810", "PTS810SJG250SMTRLFS", "C221895",
      "Bouton RESET")
 conn("SW3", {1: "EN", 2: "GND"})
 
 two("R3", "1k", R0402, "LED_STATUS", "LED1_A", "0402WGF1001TCE", "C11702", "")
-two("LED1", "BLEU", LED0402, "GND", "LED1_A", "KT-0402B", "C2827396",
+two("LED1", "JAUNE", LED0402, "GND", "LED1_A", "NCD0402Y1", "C130721",
     "LED d'état (1=K, 2=A)")
 
 # ---------------------------------------------------------------- USB-C
 part("J1", "USB-C", "Connector_USB:USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt_Horizontal",
-     "USB4105-GF-A", "C3020560", "USB-C 16P : charge + programmation USB natif")
+     "USB4105-GF-A-060", "C3025063", "USB-C 16P : charge + programmation USB natif")
 conn("J1", {
     "A4": "VBUS", "B4": "VBUS", "A9": "VBUS", "B9": "VBUS",
     "A1": "GND", "B1": "GND", "A12": "GND", "B12": "GND", "SH": "GND",
@@ -119,7 +119,7 @@ two("R4", "5.1k", R0402, "CC1", "GND", "0402WGF5101TCE", "C25905", "CC1 sink 5 V
 two("R5", "5.1k", R0402, "CC2", "GND", "0402WGF5101TCE", "C25905", "CC2 sink 5 V")
 part("U9", "USBLC6-2SC6", SOT23_6, "USBLC6-2SC6", "C7519", "Protection ESD USB")
 conn("U9", {1: "USB_DN", 6: "USB_DN", 3: "USB_DP", 4: "USB_DP", 2: "GND", 5: "VBUS"})
-two("C4", "10uF", C0603, "VBUS", "GND", "CL10A106MQ8NNNC", "C96446", "")
+two("C4", "10uF", C0603, "VBUS", "GND", "CL10A106KP8NNNC", "C19702", "")
 
 # ---------------------------------------------------------------- Chargeur LiPo + power-path
 part("U2", "MCP73831T-2ACI/OT", SOT23_5, "MCP73831T-2ACI/OT", "C424093",
@@ -128,20 +128,20 @@ conn("U2", {1: "CHG_STAT", 2: "GND", 3: "VBAT", 4: "VBUS", 5: "CHG_PROG"})
 two("R6", "3.3k", R0402, "CHG_PROG", "GND", "0402WGF3301TCE", "C25890", "I charge = 300 mA")
 two("C5", "4.7uF", C0603, "VBAT", "GND", "CL10A475KO8NNNC", "C19666", "")
 two("R7", "1k", R0402, "VBUS", "LED2_A", "0402WGF1001TCE", "C11702", "")
-two("LED2", "ROUGE", LED0402, "CHG_STAT", "LED2_A", "KT-0402R", "C2827400",
+two("LED2", "ROUGE", LED0402, "CHG_STAT", "LED2_A", "NCD0402R1", "C130719",
     "LED charge (1=K, 2=A)")
 
 part("J2", "BATT", "Connector_JST:JST_SH_SM02B-SRSS-TB_1x02-1MP_P1.00mm_Horizontal",
-     "SM02B-SRSS-TB", "C160402", "Batterie Li-Po 1S (ex. 402030, 300 mAh)")
+     "SM02B-SRSS-TB(LF)(SN)", "C160402", "Batterie Li-Po 1S (ex. 402030, 300 mAh)")
 conn("J2", {1: "VBAT", 2: "GND"})
 
-two("D1", "B5819W", "Diode_SMD:D_SOD-123", "VSYS", "VBUS", "B5819W", "C8598",
+two("D1", "B5819W", "Diode_SMD:D_SOD-123", "VSYS", "VBUS", "B5819W SL", "C8598",
     "Power-path USB -> VSYS (1=K, 2=A)")
-part("Q1", "DMG2305UX", SOT23_3, "DMG2305UX-7", "C150470",
+part("Q1", "DMG2305UX", SOT23_3, "DMG2305UX-7", "C5261054",
      "P-MOS power-path batterie -> VSYS")
 conn("Q1", {1: "VBUS", 2: "VSYS", 3: "VBAT"})
 two("R8", "100k", R0402, "VBUS", "GND", "0402WGF1003TCE", "C25741", "Tire la grille de Q1 à 0 sans USB")
-two("C6", "10uF", C0603, "VSYS", "GND", "CL10A106MQ8NNNC", "C96446", "")
+two("C6", "10uF", C0603, "VSYS", "GND", "CL10A106KP8NNNC", "C19702", "")
 
 # ---------------------------------------------------------------- 3V3
 part("U3", "AP2112K-3.3", SOT23_5, "AP2112K-3.3TRG1", "C51118", "LDO 3,3 V 600 mA")
@@ -153,16 +153,16 @@ two("R10", "220k", R0402, "VBAT_SENSE", "GND", "0402WGF2203TCE", "C25767", "Pont
 two("C9", "100nF", C0402, "VBAT_SENSE", "GND", "CL05B104KO5NNNC", "C1525", "")
 
 # ---------------------------------------------------------------- Caméra OV2640
-part("U4", "XC6206P282MR", SOT23_3, "XC6206P282MR", "C14949", "LDO 2,8 V (AVDD caméra)")
+part("U4", "XC6206P282MR", SOT23_3, "XC6206P282MR", "C5148690", "LDO 2,8 V (AVDD caméra)")
 conn("U4", {1: "GND", 2: "+2V8", 3: "+3V3"})
-part("U5", "XC6206P122MR", SOT23_3, "XC6206P122MR", "C21659", "LDO 1,2 V (DVDD caméra)")
+part("U5", "XC6206P122MR", SOT23_3, "XC6206P122MR(1uA)", "C2827649", "LDO 1,2 V (DVDD caméra)")
 conn("U5", {1: "GND", 2: "+1V2", 3: "+3V3"})
 two("C10", "1uF", C0402, "+2V8", "GND", "CL05A105KA5NQNC", "C52923", "")
 two("C11", "1uF", C0402, "+1V2", "GND", "CL05A105KA5NQNC", "C52923", "")
 two("C12", "1uF", C0402, "+3V3", "GND", "CL05A105KA5NQNC", "C52923", "")
 
 part("J3", "OV2640 FPC24", "Connector_FFC-FPC:Hirose_FH12-24S-0.5SH_1x24-1MP_P0.50mm_Horizontal",
-     "FH12-24S-0.5SH(55)", "C506791",
+     "FH12-24S-0.5SH(55)", "C202112",
      "Connecteur nappe caméra 24P 0,5 mm (brochage type ESP32-CAM)")
 conn("J3", {
     2: "GND", 3: "CAM_SDA", 4: "+2V8", 5: "CAM_SCL", 6: "CAM_RESET",
@@ -182,17 +182,17 @@ two("R14", "10k", R0402, "+3V3", "CAM_PWDN", "0402WGF1002TCE", "C25744",
 part("U6", "MT3608", SOT23_6, "MT3608", "C84817", "Boost VSYS -> 11,4 V")
 conn("U6", {1: "BOOST_SW", 2: "GND", 3: "BOOST_FB", 4: "BOOST_EN", 5: "VSYS"})
 two("L1", "10uH", "Inductor_SMD:L_Taiyo-Yuden_NR-40xx", "VSYS", "BOOST_SW",
-    "NR4018T100M", "C83459", "Inductance boost (Isat >= 1 A)")
+    "ANR4018T100M", "C6808084", "Inductance boost (Isat >= 1 A)")
 two("D2", "SS34", "Diode_SMD:D_SMA", "+12V", "BOOST_SW", "SS34", "C8678",
     "Diode boost (1=K, 2=A)")
-two("R15", "180k", R0402, "+12V", "BOOST_FB", "0402WGF1803TCE", "C25780",
+two("R15", "180k", R0402, "+12V", "BOOST_FB", "0402WGF1803TCE", "C25760",
     "Vout = 0,6 x (1 + 180k/10k) = 11,4 V")
 two("R16", "10k", R0402, "BOOST_FB", "GND", "0402WGF1002TCE", "C25744", "")
 two("R17", "100k", R0402, "BOOST_EN", "GND", "0402WGF1003TCE", "C25741", "Boost coupé par défaut")
 two("C14", "22uF 25V", C1206, "+12V", "GND", "CL31A226KAHNNNE", "C12891", "Sortie boost")
 two("C15", "22uF", C0805, "VSYS", "GND", "CL21A226MAQNNNE", "C45783", "Entrée boost")
 
-part("U7", "TC4427AEOA", "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm", "TC4427AEOA", "C185143",
+part("U7", "TC4427AEOA", "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm", "TC4427AEOA713", "C20551",
      "Double driver 1,5 A monté en pont -> transducteurs")
 conn("U7", {2: "US_A", 3: "GND", 4: "US_B", 5: "US_OUT_B", 6: "+12V", 7: "US_OUT_A"})
 two("C16", "10uF 25V", C0805, "+12V", "GND", "CL21A106KAYNNNE", "C15850", "Découplage driver")
@@ -201,7 +201,7 @@ two("R18", "100k", R0402, "US_A", "GND", "0402WGF1003TCE", "C25741", "Driver au 
 two("R19", "100k", R0402, "US_B", "GND", "0402WGF1003TCE", "C25741", "Driver au repos au boot")
 
 part("J4", "US_ARRAY", "Connector_JST:JST_SH_SM02B-SRSS-TB_1x02-1MP_P1.00mm_Horizontal",
-     "SM02B-SRSS-TB", "C160402", "Vers réseau de transducteurs 40 kHz (en parallèle)")
+     "SM02B-SRSS-TB(LF)(SN)", "C160402", "Vers réseau de transducteurs 40 kHz (en parallèle)")
 conn("J4", {1: "US_OUT_A", 2: "US_OUT_B"})
 
 
@@ -255,7 +255,7 @@ def write_bom(path):
         groups[(value, fp, mpn, lcsc)].append((ref, desc))
     with path.open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["Références", "Qté", "Valeur", "Empreinte", "Référence fabricant", "LCSC (indicatif, à vérifier)", "Rôle"])
+        w.writerow(["Références", "Qté", "Valeur", "Empreinte", "Référence fabricant", "LCSC (vérifié le 2026-10-17)", "Rôle"])
         for (value, fp, mpn, lcsc), items in sorted(groups.items(), key=lambda g: ref_key(sorted(g[1])[0][0])):
             refs = sorted((r for r, _ in items), key=ref_key)
             desc = "; ".join(sorted({d for _, d in items if d}))

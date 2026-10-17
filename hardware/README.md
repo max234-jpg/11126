@@ -86,9 +86,10 @@ Carte **22 × 36 mm**, 4 couches (signal / GND plein / alim / signal), 0,8 mm.
 1. **Nappe caméra** : le brochage 24 broches (type ESP32-CAM) varie selon les
    vendeurs, ainsi que le côté des contacts (dessus/dessous). Comparer avec
    la fiche de ton module OV2640 ; inverser l'ordre si nécessaire.
-2. **Codes LCSC** de `BOM.csv` : indicatifs, saisis sans base en ligne —
-   contrôler chaque référence et sa disponibilité.
+2. **Stock** : les codes LCSC de `BOM.csv` ont été vérifiés un par un
+   contre le catalogue le 2026-10-17 ; revérifier le stock le jour de la
+   commande (SW1 et U1 ont peu de stock).
 3. **Antenne** : respecter la zone d'exclusion de la datasheet du module.
-4. **Boost** : vérifier que l'inductance retenue a Isat ≥ 1 A.
+4. **Boost** : L1 (ANR4018T100M) est donnée pour 1,2 A ; ne pas la remplacer par moins.
 5. **Polarité LED / diodes** : convention empreinte KiCad 1 = cathode.
 6. Faire un DRC complet et un contrôle visuel 3D avant fabrication.

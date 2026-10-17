@@ -33,6 +33,7 @@ faisceau).
 |---|---|
 | [`hardware/`](hardware/) | Netlist KiCad, BOM, script générateur, guide de routage — voir [`hardware/README.md`](hardware/README.md) |
 | [`firmware/ai_cam/`](firmware/ai_cam/) | Firmware Arduino ESP32-S3 : capture, envoi, modulation ultrason, deep-sleep |
+| [`ACHATS.md`](ACHATS.md) | Liste d'achat : kit prototype et carte finale |
 | [`server/`](server/) | Serveur relais Python : Claude (vision) + synthèse vocale Piper |
 
 ## Pourquoi un serveur relais ?
@@ -71,7 +72,7 @@ arduino-cli upload  --fqbn "esp32:esp32:esp32s3:PSRAM=enabled,CDCOnBoot=cdc" -p 
 
 ### 3. Utilisation
 
-Appui court → bip ultrason → LED bleue allumée pendant l'analyse → la voix
+Appui court → bip ultrason → LED jaune allumée pendant l'analyse → la voix
 décrit la scène. Long bip = erreur (Wi-Fi, serveur ou caméra). Après 60 s
 sans appui, la carte s'endort ; un appui la réveille et prend la photo.
 
