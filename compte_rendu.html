@@ -104,6 +104,20 @@
 Serveur sûr   : recalcule depuis sa base → ignore la valeur client (sécurisé)</pre>
   <p>Objectif du test : déterminer dans quelle catégorie se situe la cible.</p>
 
+  <p><strong>Quel type de requête permettrait de « forcer » le serveur ?</strong>
+  Une requête (généralement POST) qui transporte, en paramètre modifiable, une
+  valeur que le serveur devrait calculer lui-même. Formes typiques :</p>
+  <table>
+    <tr><th>Forme</th><th>Exemple générique</th></tr>
+    <tr><td>Prix envoyé par le client</td><td><code>POST /panier/ajouter &nbsp; product_id=42&amp;price=0.01</code></td></tr>
+    <tr><td>Montant total imposé</td><td><code>POST /checkout &nbsp; amount=0</code></td></tr>
+    <tr><td>Quantité négative</td><td><code>quantity=-1</code> → total nul ou négatif</td></tr>
+    <tr><td>Champ caché modifié</td><td>prix stocké dans un <code>&lt;input type="hidden"&gt;</code></td></tr>
+  </table>
+  <p>Point clé : la requête vulnérable est rarement le <em>paiement final</em>
+  (souvent durci), mais plutôt l'<strong>ajout / mise à jour du panier</strong>,
+  là où le prix de la ligne est fixé pour la première fois.</p>
+
   <h3>4.2 Falsification du montant de réduction <code>cot_gv</code></h3>
   <p>Le champ <code>cot_gv</code> (montant du bon) est transmis par le client.
   Valeur forcée de <code>0.00</code> à <code>9999</code> via la console :</p>
