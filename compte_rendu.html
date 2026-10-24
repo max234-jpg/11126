@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compte rendu — Sécurité du paiement</title>
+<style>
+  :root{
+    --ink:#1a1a2e; --muted:#555; --line:#e2e2ea; --bg:#fff;
+    --accent:#2b4b8c; --ok:#15803d; --warn:#b45309; --bad:#b91c1c;
+    --okbg:#eafaf0; --warnbg:#fdf4e7; --badbg:#fdeaea;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+    color:var(--ink); background:#f4f4f8; margin:0; line-height:1.55;
+  }
+  .page{
+    max-width:800px; margin:24px auto; background:var(--bg);
+    padding:48px 56px; box-shadow:0 2px 16px rgba(0,0,0,.08); border-radius:8px;
+  }
+  h1{font-size:1.75rem; margin:0 0 4px; color:var(--accent)}
+  .sub{color:var(--muted); margin:0 0 24px; font-size:.95rem}
+  h2{font-size:1.2rem; margin:32px 0 10px; padding-bottom:6px;
+     border-bottom:2px solid var(--line); color:var(--accent)}
+  h3{font-size:1.02rem; margin:20px 0 6px}
+  table{border-collapse:collapse; width:100%; margin:12px 0; font-size:.92rem}
+  th,td{border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top}
+  th{background:#f0f2f8}
+  code{background:#f2f2f7; padding:1px 5px; border-radius:4px; font-size:.88em}
+  pre{background:#1e1e2e; color:#e6e6ef; padding:12px 14px; border-radius:6px;
+      overflow:auto; font-size:.85rem}
+  .meta{background:#f7f8fc; border:1px solid var(--line); border-radius:6px;
+        padding:14px 18px; font-size:.9rem; margin-bottom:8px}
+  .meta div{margin:2px 0}
+  .badge{display:inline-block; padding:1px 8px; border-radius:20px;
+         font-size:.78rem; font-weight:600}
+  .b-ok{background:var(--okbg); color:var(--ok)}
+  .b-warn{background:var(--warnbg); color:var(--warn)}
+  .b-bad{background:var(--badbg); color:var(--bad)}
+  .shot{border:2px dashed #c3c3d0; border-radius:6px; color:#8a8a9a;
+        text-align:center; padding:26px; margin:10px 0; font-size:.88rem}
+  .fill{color:#b91c1c; font-weight:600}
+  ul{margin:6px 0 6px 2px; padding-left:20px}
+  li{margin:3px 0}
+  @media print{
+    body{background:#fff} .page{box-shadow:none; margin:0; max-width:none; border-radius:0}
+    pre{background:#f2f2f7; color:#1e1e2e; border:1px solid var(--line)}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Compte rendu — Analyse de la sécurité du processus de paiement</h1>
+  <p class="sub">Test de sécurité applicative web — logique de paiement d'une boutique en ligne</p>
+
+  <div class="meta">
+    <div><strong>Étudiant :</strong> <span class="fill">(à compléter)</span></div>
+    <div><strong>Module :</strong> Cybersécurité — Sécurité des applications web</div>
+    <div><strong>Date :</strong> <span class="fill">(à compléter)</span></div>
+    <div><strong>Cible :</strong> Application e-commerce fournie dans le cadre du TP</div>
+    <div><strong>Cadre :</strong> Tests réalisés dans l'environnement autorisé du cours.</div>
+  </div>
+
+  <h2>1. Objectif</h2>
+  <p>Analyser le tunnel de commande d'une boutique en ligne et déterminer s'il
+  est possible de <strong>contourner ou altérer le paiement</strong>, notamment
+  d'<strong>imposer un prix</strong> au serveur. Présenter les approches testées,
+  les résultats et les contre-mesures.</p>
+
+  <h2>2. Méthodologie</h2>
+  <p>Analyse en boîte noire, côté client uniquement, via les outils développeur
+  de Chrome (onglets <em>Network</em> et <em>Console</em>), sans accès aux
+  fichiers serveur.</p>
+  <ul>
+    <li>Passer une commande normale et capturer la requête de validation.</li>
+    <li>Identifier les paramètres transmis.</li>
+    <li>Pour chaque paramètre sensible : formuler une hypothèse d'abus, la tester.</li>
+    <li>Observer la réponse du serveur pour conclure (accepté / rejeté).</li>
+  </ul>
+
+  <h2>3. Observation de la requête de commande</h2>
+  <p>La validation s'effectue via une requête <strong>POST</strong> (formulaire
+  classique). Champs observés dans l'onglet <em>Payload</em> :</p>
+  <table>
+    <tr><th>Champ</th><th>Rôle probable</th></tr>
+    <tr><td><code>securityToken</code></td><td>Jeton anti-falsification (anti-CSRF)</td></tr>
+    <tr><td><code>dc_redeem_code</code> / <code>gv_redeem_code</code></td><td>Code de réduction / bon cadeau</td></tr>
+    <tr><td><code>cot_gv</code></td><td>Montant du bon appliqué au panier</td></tr>
+    <tr><td><code>payment</code></td><td>Mode de paiement</td></tr>
+    <tr><td><code>mtp_cc_*</code></td><td>Données de carte bancaire</td></tr>
+    <tr><td><code>mtp_timing</code> / <code>mtp_resolution</code></td><td>Signaux anti-fraude (fuseau, résolution)</td></tr>
+  </table>
+  <p><strong>Première observation :</strong> le prix total n'est pas transmis
+  comme paramètre librement modifiable → le serveur semble maîtriser le montant.</p>
+
+  <h2>4. Approches testées</h2>
+
+  <h3>4.1 Imposition du prix au serveur (concept central)</h3>
+  <p>Principe de l'attaque : le client envoie lui-même une valeur de prix et un
+  serveur mal conçu <em>lui fait confiance</em> sans revérifier.</p>
+  <pre>Serveur naïf  : accepte "price=0"      → commande gratuite  (vulnérable)
+Serveur sûr   : recalcule depuis sa base → ignore la valeur client (sécurisé)</pre>
+  <p>Objectif du test : déterminer dans quelle catégorie se situe la cible.</p>
+
+  <h3>4.2 Falsification du montant de réduction <code>cot_gv</code></h3>
+  <p>Le champ <code>cot_gv</code> (montant du bon) est transmis par le client.
+  Valeur forcée de <code>0.00</code> à <code>9999</code> via la console :</p>
+  <pre>document.querySelector('[name="cot_gv"]').value = "9999"</pre>
+  <p><strong>Résultat :</strong> le total à payer <strong>n'a pas changé</strong>.
+  Le serveur ignore la valeur et recalcule la réduction.
+  <span class="badge b-ok">Sécurisé ✔</span></p>
+  <div class="shot">[ Capture d'écran à insérer : console + total inchangé ]</div>
+
+  <h3>4.3 Falsification du jeton <code>securityToken</code></h3>
+  <p>Le jeton est censé protéger la requête contre la falsification. Test de
+  remplacement par une valeur arbitraire :</p>
+  <pre>document.querySelector('[name="securityToken"]').value = "0000"</pre>
+  <p><strong>Résultat :</strong> malgré ce jeton invalide, le serveur
+  <strong>accepte la requête et poursuit le processus de commande</strong>
+  (test arrêté avant l'envoi final). <span class="badge b-bad">Vulnérable ⚠️</span></p>
+  <div class="shot">[ Capture d'écran à insérer : jeton "0000" + commande qui continue ]</div>
+
+  <h3>4.4 Évaluation de la robustesse CSRF (synthèse)</h3>
+  <table>
+    <tr><th>Critère</th><th>Attendu</th><th>Observé</th><th>Verdict</th></tr>
+    <tr><td>Imprévisibilité</td><td>jeton aléatoire</td><td>32 car. hexadécimaux</td><td><span class="badge b-ok">OK</span></td></tr>
+    <tr><td>Validation serveur</td><td>rejet si invalide</td><td>jeton <code>0000</code> accepté</td><td><span class="badge b-bad">Échec</span></td></tr>
+    <tr><td>Rotation / usage unique</td><td>nouveau jeton à chaque requête</td><td>identique après rechargement</td><td><span class="badge b-warn">Faible</span></td></tr>
+    <tr><td>Secret non exposé au JS</td><td>cookie <code>HttpOnly</code></td><td>seuls des cookies d'analytics lisibles</td><td><span class="badge b-ok">OK</span></td></tr>
+  </table>
+  <p><strong>Conclusion CSRF :</strong> protection <strong>inopérante</strong>
+  — le jeton est bien aléatoire mais n'est pas validé côté serveur et reste
+  rejouable.</p>
+
+  <h2>5. Analyse des défenses</h2>
+  <ul>
+    <li><strong>Prix / montant de réduction :</strong> recalculés côté serveur
+    → l'imposition de prix échoue (bonne pratique respectée).</li>
+    <li><strong>securityToken :</strong> présent mais <strong>non appliqué</strong>
+    → protection en façade uniquement.</li>
+    <li><strong>Session :</strong> cookie non exposé au JavaScript (bon point).</li>
+  </ul>
+
+  <h2>6. Contre-mesures (remédiation)</h2>
+  <ul>
+    <li>Recalculer systématiquement prix et réductions côté serveur <em>(déjà fait ici ✔)</em>.</li>
+    <li><strong>Valider le <code>securityToken</code> côté serveur</strong> : le lier à la session, le rendre à usage unique, rejeter toute requête au jeton absent/invalide.</li>
+    <li>Contrôler les bornes (quantité &gt; 0, montant du bon ≤ total).</li>
+    <li>Valider l'enchaînement du workflow : pas de confirmation sans paiement validé.</li>
+  </ul>
+
+  <h2>7. Conclusion</h2>
+  <p>La cible est <strong>bien protégée contre l'imposition de prix</strong> :
+  le montant et la réduction sont recalculés côté serveur, l'attaque classique
+  échoue. En revanche, une <strong>faille réelle a été identifiée</strong> : le
+  jeton <code>securityToken</code> n'est pas validé côté serveur, ce qui expose
+  l'application à la falsification de requêtes (CSRF). La recommandation
+  prioritaire est donc la validation stricte de ce jeton côté serveur.</p>
+
+</div>
+</body>
+</html>
