@@ -88,6 +88,23 @@ paramètre modifiable → le serveur recalcule probablement le montant lui-même
   appliquée**, ce qui ouvre la voie à la falsification de requêtes.
   (Capture d'écran : _à insérer_.)
 
+### 4.6 Évaluation de la robustesse de la protection CSRF (synthèse)
+
+Vérification des 4 critères d'un bon jeton anti-CSRF, testés depuis la console :
+
+| Critère | Attendu | Observé | Verdict |
+|---------|---------|---------|---------|
+| Imprévisibilité | jeton aléatoire, longue entropie | 32 caractères hexadécimaux | ✔ OK |
+| Validation côté serveur | requête rejetée si jeton absent/faux | jeton `0000` **accepté** (cf. 4.5) | ⚠️ **ÉCHEC** |
+| Rotation / usage unique | nouveau jeton à chaque requête | **identique** après rechargement (rejouable) | ⚠️ faible |
+| Secret non exposé au JS | session en cookie `HttpOnly` | `document.cookie` ne révèle que des cookies d'analytics, pas le jeton de session | ✔ OK |
+
+**Conclusion CSRF :** la protection est **inopérante**. Le jeton existe et est
+bien aléatoire, mais il n'est **pas validé côté serveur** et il est
+**rejouable** (statique). Un attaquant peut donc forger une requête de commande
+valide. Seul point positif : le cookie de session n'est pas exposé au
+JavaScript.
+
 ## 5. Analyse des défenses observées
 La cible met en œuvre plusieurs protections qui bloquent les attaques simples :
 - **Validation côté serveur du montant** → l'altération du prix est inopérante.
