@@ -39,6 +39,34 @@ Outil utilisé : script `payment_logic_test.py` (joint).
 
 _(Insère une capture d'écran DevTools/Burp pour chaque cas trouvé.)_
 
+## 5bis. Récupération de fichiers serveur (si demandé)
+
+> Objectif : démontrer qu'une faille applicative permet de **lire des fichiers
+> côté serveur** à distance (et non en accédant physiquement à la machine).
+
+**Classes de failles à tester :**
+
+| Faille | Exemple de symptôme | Ce que ça permet |
+|--------|---------------------|------------------|
+| Path traversal | un paramètre `?file=rapport.pdf` qui lit un fichier | lire `../../etc/passwd`, un `.env`… |
+| Local File Inclusion (LFI) | une page incluse via un paramètre | lire/inclure du code serveur |
+| Divulgation de code source | `.php.bak`, `.git/`, `index.php~` accessibles | récupérer le code backend |
+| Mauvaise config | listing de répertoire, fichiers de conf exposés | clés, mots de passe en clair |
+
+**Méthode (sur le lab autorisé) :**
+1. Cartographier les paramètres qui manipulent un nom de fichier ou un chemin.
+2. Tester une valeur de contrôle légitime, observer la réponse.
+3. Tenter une variation (traversée de répertoire, extension alternative) et
+   comparer la réponse.
+4. Documenter la requête exacte et la preuve (extrait du fichier obtenu).
+
+**Remédiation :**
+- Ne jamais construire un chemin de fichier à partir d'une entrée utilisateur.
+- Liste blanche de fichiers autorisés / identifiants indirects.
+- Normaliser et vérifier le chemin final (rester dans un dossier racine).
+- Interdire l'accès web aux fichiers sensibles (`.env`, `.git`, backups).
+- Droits système minimaux pour le processus web.
+
 ## 6. Analyse
 _(Explique POURQUOI la faille existe : le serveur fait confiance à une
 donnée venant du client au lieu de la recalculer lui-même.)_
