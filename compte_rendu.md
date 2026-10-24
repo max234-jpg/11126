@@ -53,11 +53,18 @@ paramètre modifiable → le serveur recalcule probablement le montant lui-même
 - **À tester :** `quantity = -1`, `quantity = 0`.
 - **Résultat :** _(à compléter avec ton observation)_
 
-### 4.3 Abus des codes de réduction / bons cadeaux
-- **Principe :** rejouer plusieurs fois `dc_redeem_code` / `gv_redeem_code`,
-  ou tester une valeur `cot_gv` supérieure au total.
-- **À tester :** appliquer deux fois le même code ; forcer `cot_gv` élevé.
-- **Résultat :** _(à compléter)_
+### 4.3 Falsification du montant de réduction (`cot_gv`)
+- **Principe :** le champ `cot_gv` (montant du bon appliqué au panier) est
+  transmis par le client. On teste si le serveur l'accepte tel quel.
+- **Manipulation :** via la console du navigateur, valeur forcée de `0.00`
+  à `9999` avant validation :
+  ```js
+  document.querySelector('[name="cot_gv"]').value = "9999"
+  ```
+- **Résultat :** le **total à payer n'a pas changé**. Le serveur **ignore**
+  la valeur envoyée et **recalcule la réduction de son côté**.
+- **Conclusion :** vecteur **sécurisé** ✔ — pas de confiance accordée à la
+  donnée client. (Capture d'écran : _à insérer_.)
 
 ### 4.4 Contournement de l'étape de paiement (faille de logique)
 - **Principe :** appeler directement l'URL de confirmation de commande sans
