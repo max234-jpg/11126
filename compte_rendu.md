@@ -71,15 +71,28 @@ paramètre modifiable → le serveur recalcule probablement le montant lui-même
   passer par l'étape de paiement, ou changer `payment` pour un mode gratuit.
 - **Résultat :** _(à compléter)_
 
-### 4.5 Rejeu / falsification du `securityToken`
-- **Principe :** vérifier si le jeton est réellement contrôlé (réutilisation,
-  valeur vide, jeton d'une autre session).
-- **Résultat :** _(à compléter)_
+### 4.5 Falsification du jeton `securityToken` — ⚠️ FAILLE TROUVÉE
+- **Principe :** le `securityToken` est censé protéger la requête contre la
+  falsification (anti-CSRF / anti-tamper). On teste s'il est réellement
+  contrôlé côté serveur.
+- **Manipulation :** via la console, remplacement du jeton légitime par une
+  valeur arbitraire avant validation :
+  ```js
+  document.querySelector('[name="securityToken"]').value = "0000"
+  ```
+- **Résultat :** malgré ce jeton **invalide**, le serveur **accepte la requête
+  et poursuit le processus de commande** (le test a été arrêté juste avant
+  l'envoi final).
+- **Conclusion :** ⚠️ **VULNÉRABLE** — le jeton de sécurité n'est pas validé
+  côté serveur. La protection est présente dans le formulaire mais **non
+  appliquée**, ce qui ouvre la voie à la falsification de requêtes.
+  (Capture d'écran : _à insérer_.)
 
 ## 5. Analyse des défenses observées
 La cible met en œuvre plusieurs protections qui bloquent les attaques simples :
 - **Validation côté serveur du montant** → l'altération du prix est inopérante.
-- **`securityToken`** → protège contre la falsification/rejeu de requête (CSRF).
+- **`securityToken`** → **présent mais NON appliqué** : le serveur accepte un
+  jeton invalide (cf. 4.5). Protection en façade uniquement.
 - **Signaux anti-fraude** (`mtp_timing`, `mtp_resolution`) → le serveur peut
   détecter des requêtes forgées qui ne correspondent pas à un vrai navigateur.
 
@@ -97,7 +110,13 @@ métier** (étapes, quantités, cumul de codes), pas des altérations de prix.
 - Journaliser et corréler les signaux anti-fraude.
 
 ## 7. Conclusion
-L'attaque « classique » de modification de prix est **neutralisée** par la
-validation côté serveur. L'analyse s'oriente donc vers les failles de logique
-métier (quantité, codes promo, enchaînement des étapes), seules susceptibles
-de subsister. _(Conclure selon ce que tu as réellement pu tester.)_
+La cible est **bien protégée** contre les attaques classiques : le prix et le
+montant de réduction (`cot_gv`) sont recalculés côté serveur (cf. 4.3).
+
+En revanche, une **faille réelle a été identifiée** : le jeton `securityToken`
+n'est **pas validé côté serveur** (cf. 4.5). Un attaquant peut donc envoyer une
+requête de commande forgée avec un jeton invalide sans être bloqué.
+
+**Recommandation prioritaire :** valider systématiquement le `securityToken`
+côté serveur, le lier à la session, le rendre à usage unique, et rejeter toute
+requête dont le jeton est absent ou invalide.
