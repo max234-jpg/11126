@@ -154,24 +154,18 @@ function clothingMask(doc, S) {
       const uv = prim.getAttribute('TEXCOORD_0'), J = prim.getAttribute('JOINTS_0'), W = prim.getAttribute('WEIGHTS_0');
       const idx = prim.getIndices();
       const n = uv.getCount();
-      const vReg = new Uint8Array(n);
+      // poids de chaque région par sommet, interpolés par pixel : frontières lisses (ourlets nets)
+      const vW = new Float32Array(n * 5);
       const j4 = [0, 0, 0, 0], w4 = [0, 0, 0, 0];
       for (let v = 0; v < n; v++) {
         J.getElement(v, j4); W.getElement(v, w4);
-        const acc = [0, 0, 0, 0, 0];
-        for (let k = 0; k < 4; k++) acc[boneRegion(joints[j4[k]])] += w4[k];
-        let best = 0; for (let r = 1; r < 5; r++) if (acc[r] > acc[best]) best = r;
-        vReg[v] = best;
+        for (let k = 0; k < 4; k++) vW[v * 5 + boneRegion(joints[j4[k]])] += w4[k];
       }
       const a = [0, 0], b = [0, 0], c = [0, 0];
       for (let t = 0; t < idx.getCount(); t += 3) {
         const i0 = idx.getScalar(t), i1 = idx.getScalar(t + 1), i2 = idx.getScalar(t + 2);
-        const regs = [vReg[i0], vReg[i1], vReg[i2]];
-        // région majoritaire du triangle (la peau gagne en cas d'égalité totale)
-        const reg = regs[0] === regs[1] || regs[0] === regs[2] ? regs[0] : regs[1] === regs[2] ? regs[1] : Math.min(...regs);
-        if (!reg) continue;
         uv.getElement(i0, a); uv.getElement(i1, b); uv.getElement(i2, c);
-        rasterTri(mask, S, a[0] * S, a[1] * S, b[0] * S, b[1] * S, c[0] * S, c[1] * S, reg);
+        rasterTriW(mask, S, a[0] * S, a[1] * S, b[0] * S, b[1] * S, c[0] * S, c[1] * S, vW, i0, i1, i2);
       }
     }
   }
@@ -200,6 +194,26 @@ function clothingMask(doc, S) {
     if (mask[i]) last = mask[i]; else if (!seen[i] && last) mask[i] = last;
   } }
   return mask;
+}
+
+function rasterTriW(buf, S, x0, y0, x1, y1, x2, y2, vW, i0, i1, i2) {
+  const minX = Math.max(0, Math.floor(Math.min(x0, x1, x2))), maxX = Math.min(S - 1, Math.ceil(Math.max(x0, x1, x2)));
+  const minY = Math.max(0, Math.floor(Math.min(y0, y1, y2))), maxY = Math.min(S - 1, Math.ceil(Math.max(y0, y1, y2)));
+  const area = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0);
+  if (Math.abs(area) < 1e-9) return;
+  for (let y = minY; y <= maxY; y++) for (let x = minX; x <= maxX; x++) {
+    const px = x + 0.5, py = y + 0.5;
+    const w0 = ((x1 - px) * (y2 - py) - (x2 - px) * (y1 - py)) / area;
+    const w1 = ((x2 - px) * (y0 - py) - (x0 - px) * (y2 - py)) / area;
+    const w2 = 1 - w0 - w1;
+    if (w0 < -0.01 || w1 < -0.01 || w2 < -0.01) continue;
+    let best = 0, bv = -1;
+    for (let r = 0; r < 5; r++) {
+      const v = vW[i0 * 5 + r] * w0 + vW[i1 * 5 + r] * w1 + vW[i2 * 5 + r] * w2;
+      if (v > bv) { bv = v; best = r; }
+    }
+    buf[y * S + x] = best;
+  }
 }
 
 function rasterTri(buf, S, x0, y0, x1, y1, x2, y2, val) {

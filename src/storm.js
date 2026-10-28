@@ -25,8 +25,8 @@ export class Storm {
           vec2 p = vec2(vUv.x * 220.0, vW.y * 0.06);
           float s = n(p + vec2(0.0, -uTime * 0.6)) * 0.6 + n(p * 2.3 + vec2(uTime * 0.3, -uTime * 1.1)) * 0.4;
           float streak = smoothstep(0.55, 1.0, n(vec2(vUv.x * 900.0, vW.y * 0.01 - uTime * 0.8)));
-          vec3 col = mix(vec3(0.28, 0.08, 0.55), vec3(0.65, 0.35, 1.0), s) + streak * vec3(0.5, 0.4, 0.9);
-          float a = 0.14 + 0.2 * s + streak * 0.18;
+          vec3 col = mix(vec3(0.28, 0.08, 0.55), vec3(0.65, 0.35, 1.0), s) + streak * vec3(0.25, 0.2, 0.45);
+          float a = 0.16 + 0.22 * s + streak * 0.07;
           a *= smoothstep(400.0, 120.0, vW.y);
           float dc = length(cameraPosition.xz - vW.xz);
           a *= smoothstep(150.0, 25.0, dc);

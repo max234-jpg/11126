@@ -48,9 +48,9 @@ export class Actor {
     const world = this.game.world;
     const ground = heightAt(this.pos.x, this.pos.z);
     const depth = WATER - ground;
-    this.swimming = depth > SWIM_DEPTH && this.pos.y < WATER - SWIM_DEPTH + 0.6;
+    this.swimming = depth > SWIM_DEPTH && this.pos.y < WATER + 0.25;
     if (this.swimming) {
-      const target = WATER - SWIM_DEPTH;
+      const target = WATER - 0.1; // les animations de nage placent le corps autour de la racine
       this.vel.y = 0;
       this.pos.y += (target - this.pos.y) * Math.min(1, dt * 4);
       speed = Math.min(speed, 4.2);

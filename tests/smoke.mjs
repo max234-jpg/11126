@@ -63,20 +63,22 @@ const results = await page.evaluate(() => {
   for (let a = 0; a < 6.28; a += 0.1) { const x = Math.cos(a) * 245, z = Math.sin(a) * 245; if (g.world.groundAt(x, z) < -2) { wx = x; wz = z; break; } }
   p.setPosition(wx, wz); p.pos.y = 0; run(30);
   g.input.keys.add('KeyW'); run(20); g.input.keys.delete('KeyW');
-  ok('nage', p.swimming && p.char.current.startsWith('swim'), `anim=${p.char.current}, y=${p.pos.y.toFixed(2)}`);
+  p.root.updateMatrixWorld(true);
+  const headY = p.char.bones.Head.getWorldPosition(p.pos.clone()).y;
+  ok('nage', p.swimming && p.char.current.startsWith('swim') && headY > -0.25, `anim=${p.char.current}, tête à ${headY.toFixed(2)} m du niveau de l'eau, racine ${p.pos.y.toFixed(2)} actions ${Object.entries(p.char.actions).filter(([k, a]) => a.isRunning()).map(([k, a]) => k + ':' + a.getEffectiveWeight().toFixed(2)).join(',')}`);
 
   // tir : un bot devant le joueur
   p.setPosition(0, 40); p.health = 100; run(2);
   const b = g.bots[0];
-  b.setPosition(0, 30); b.health = 100;
-  p.yaw = Math.PI; p.camYaw = 0; p.camPitch = 0;
+  b.setPosition(0, 30); b.health = 100; b.alive = true;
+  p.yaw = Math.PI; p.camYaw = 0; p.camPitch = -0.06;
   run(2);
   const hp0 = b.health;
   b.update = () => {}; // le bot reste immobile pendant le test de tir
   for (let i = 0; i < 40; i++) { g.input.buttons = 1 | 4; g.frame(1 / 30); }
   delete b.update;
   g.input.buttons = 0;
-  ok('tir', b.health < hp0 || !b.alive, `santé du bot ${hp0} -> ${Math.max(0, b.health).toFixed(0)}, munitions ${p.mag}/${p.reserve}`);
+  ok('tir', b.health < hp0 || !b.alive, `santé du bot ${hp0} -> ${Math.max(0, b.health).toFixed(0)}, munitions ${p.mag}/${p.reserve}` + (b.health < hp0 ? '' : ` [joueur ${p.pos.toArray().map((v) => v.toFixed(1))} cam ${g.camera.position.toArray().map((v) => v.toFixed(1))} bot ${b.pos.toArray().map((v) => v.toFixed(1))} voitures ${g.vehicles.cars.map((c) => c.pos.x.toFixed(0) + ',' + c.pos.z.toFixed(0)).join(' ')}]`));
 
   // danse
   g.input.pressed.add('KeyB'); g.frame(1 / 30); run(10);

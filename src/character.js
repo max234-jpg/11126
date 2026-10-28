@@ -233,6 +233,11 @@ export class Character {
       }
       this.actions[k] = a;
     }
+    // les gestes ponctuels du haut du corps s'estompent une fois terminés
+    this.mixer.addEventListener('finished', (e) => {
+      const n = e.action.getClip().name;
+      if (['hit', 'interact', 'shoot', 'reload'].includes(n)) e.action.fadeOut(0.2);
+    });
     this.current = null;
     this.upper = null;
     this.play('idle', 0);

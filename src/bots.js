@@ -62,7 +62,7 @@ export class Bot extends Actor {
     if (this.think <= 0) {
       this.think = 0.35 + Math.random() * 0.3;
       // cible : ennemi visible le plus proche
-      let best = null, bd = 55 * (0.7 + this.skill * 0.5);
+      let best = null, bd = 48 * (0.7 + this.skill * 0.5);
       for (const a of game.actors) {
         if (a === this || !a.alive) continue;
         const d = a.pos.distanceTo(this.pos);
@@ -98,7 +98,7 @@ export class Bot extends Actor {
         if (this.tryShoot()) {
           // précision : dépend de la distance, du mouvement de la cible et du niveau du bot
           const moving = Math.hypot(t.vel.x, t.vel.z) > 2 ? 0.7 : 1;
-          const p = Math.max(0.08, Math.min(0.75, (0.95 - d * 0.017) * this.skill * moving));
+          const p = Math.max(0.06, Math.min(0.7, (0.95 - d * 0.018) * this.skill * moving * (t.isPlayer ? 0.8 : 0.85)));
           const aim = t.eye.clone();
           aim.y -= 0.35 + Math.random() * 0.4;
           if (Math.random() > p) {
