@@ -22,6 +22,9 @@ const results = await page.evaluate(() => {
   const out = {};
   const ok = (name, cond, info = '') => { out[name] = (cond ? 'OK ' : 'ÉCHEC ') + info; };
   const run = (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { g.frame(dt); } };
+  // hasard reproductible : le test donne toujours le même résultat
+  let seed = 12345;
+  Math.random = () => { seed |= 0; seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
   g.startMatch(new URLSearchParams('bots=15'));
   ok('partie lancée', g.state === 'playing' && g.actors.length === 16, `${g.actors.length} joueurs`);
 

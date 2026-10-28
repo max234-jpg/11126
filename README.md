@@ -4,6 +4,9 @@ Battle Royale solo en 3D, hors ligne, avec des graphismes réalistes : textures 
 ciel HDRI, océan, personnages humains animés, maisons explorables et voitures conduisibles.
 C'est la suite du prototype Python d'origine (conservé dans `prototype_python/`).
 
+![Menu avec aperçu du personnage](docs/menu.jpg)
+![En jeu dans le village](docs/jeu.jpg)
+
 ## Lancer le jeu sur Mac (double-clic)
 
 Télécharge ou clone le dossier complet, puis au choix :
@@ -63,7 +66,8 @@ En voiture : Z/W accélérer, S freiner/reculer, Q/A et D tourner, Espace frein 
 - **Personnages humains riggés** (homme / femme) avec vraies animations : repos, marche, course, sprint,
   saut (départ, chute, réception), nage, danse, conduite, visée et tir au pistolet, rechargement, impact, mort.
 - **Tenues** composées de tissus scannés (jean, coton, jersey, cuir, camouflage) : 8 tenues.
-- **Casier** (choix de tenue) et **boutique** (achat avec les pièces gagnées), sauvegardés dans le navigateur.
+- **Casier** (choix de tenue) et **boutique** (achat avec les pièces gagnées), sauvegardés dans le navigateur ;
+  le menu montre ton personnage en 3D avec la tenue équipée (il danse quand tu en changes).
 - **Battle royale** : 15 bots qui explorent, fouillent, fuient la tempête et se battent entre eux et contre toi ;
   tempête qui se referme en 6 phases ; coffres qui s'ouvrent (couvercle animé), trousses de soin, munitions ;
   pistolet avec chargeur, tirs à la tête, traçantes ; classement et écran de victoire.
@@ -77,8 +81,9 @@ En voiture : Z/W accélérer, S freiner/reculer, Q/A et D tourner, Espace frein 
 - Les vêtements sont **peints** sur le corps (pas de vêtements 3D séparés) : de près, la tenue colle à la silhouette.
 - Les bots se déplacent en ligne droite avec un évitement simple (pas de vrai calcul d'itinéraire).
 - Une seule arme (pistolet). Pas de multijoueur.
-- Testé automatiquement dans Chromium (rendu logiciel). Je n'ai pas pu le tester sur un vrai Mac :
-  Safari et Chrome sur Mac utilisent la même technologie (WebGL 2), mais les performances dépendent de ta machine.
+- Testé automatiquement dans Chromium et dans WebKit (le moteur de Safari), en ouvrant `JOUER.html` depuis le disque
+  comme sur ton Mac. Je n'ai pas pu le tester sur un vrai Mac : les performances dépendent de ta machine
+  (touche **P** pour afficher les images/seconde).
 
 ## Pour les développeurs
 
@@ -94,7 +99,9 @@ npm run build               # compile src/ -> jeu/js/game.js
 npm test                    # test automatique de gameplay (nécessite Playwright + Chromium)
 ```
 
-`node tests/shot.mjs "q=haute&auto&bots=4" capture.png` fait une capture d'écran d'une partie.
+`node tests/shot.mjs "q=haute&auto&bots=4" capture.png` fait une capture d'écran d'une partie (Chromium),
+`node tests/shot_webkit.mjs "q=haute&auto&bots=4" capture.png` fait de même avec WebKit (moteur de Safari).
+Paramètres d'URL utiles : `q=basse|moyenne|haute|ultra`, `auto` (lance directement une partie), `bots=N`, `stats`.
 
 | Dossier | Contenu |
 |---|---|

@@ -10,7 +10,7 @@ import { createVegetation } from './vegetation.js';
 import { createGrass } from './grass.js';
 import { World } from './physics.js';
 import { LOTS, PARKING, heightAt, islandRadius } from './map.js';
-import { loadCharacters, SKINS } from './character.js';
+import { loadCharacters, SKINS, Character } from './character.js';
 import { Player } from './player.js';
 import { Bot } from './bots.js';
 import { Combat } from './combat.js';
@@ -100,6 +100,7 @@ export class Game {
     document.getElementById('boot').style.display = 'none';
     this.state = 'menu';
     this.ui.showMenu(true);
+    this.menuPreview();
     addEventListener('keydown', (e) => {
       if (e.code === 'Escape' && this.state === 'playing') this.pause();
       else if (e.code === 'Escape' && this.state === 'paused') this.resume();
@@ -115,10 +116,23 @@ export class Game {
 
   skin(id) { return SKINS.find((s) => s.id === id) || SKINS[0]; }
 
+  // Aperçu 3D du personnage dans le menu (tenue équipée)
+  menuPreview(celebrate = false) {
+    const skin = this.skin(this.save.skin);
+    if (!this.preview) { this.preview = new Character(skin); this.scene.add(this.preview.root); }
+    else if (this.preview.skin.id !== skin.id) this.preview.setSkin(skin);
+    const x = -26, z = -6.6;
+    this.preview.root.position.set(x, this.world.groundAt(x, z, 10), z);
+    this.preview.root.visible = true;
+    this.preview.play(celebrate ? 'dance' : 'idle', 0.3);
+    this.previewDance = celebrate ? 4 : 0;
+  }
+
   equipSkin(id) {
     if (!this.save.owned.includes(id)) return;
     this.save.skin = id;
     this.persist();
+    if (this.state === 'menu') this.menuPreview(true);
     this.ui.toast('👕 Tenue équipée : ' + this.skin(id).nom);
   }
 
@@ -130,6 +144,7 @@ export class Game {
     this.save.owned.push(id);
     this.save.skin = id;
     this.persist();
+    if (this.state === 'menu') this.menuPreview(true);
     this.audio.chime([523, 659, 784, 1046]);
     this.ui.toast('🛍️ Tenue achetée et équipée : ' + s.nom);
     this.ui.updateWallet();
@@ -193,6 +208,7 @@ export class Game {
       this.actors.push(b); this.bots.push(b);
     }
     this.state = 'playing';
+    if (this.preview) this.preview.root.visible = false;
     this.ui.showMenu(false);
     this.ui.showPause(false);
     this.ui.menuOpen = false;
@@ -222,6 +238,7 @@ export class Game {
     this.state = 'menu';
     this.storm.wall.visible = false;
     this.ui.showMenu(true);
+    this.menuPreview();
     this.input.unlock();
     this.input.enabled = false;
   }
@@ -315,11 +332,15 @@ export class Game {
         this.camera.position.y += (Math.random() - 0.5) * this.ui.shakeAmt * 0.2;
       }
     } else if (this.state === 'menu') {
-      // caméra cinématique au-dessus du village
-      this.menuCam += dt * 0.04;
-      const r = 70, a = this.menuCam;
-      this.camera.position.set(Math.cos(a) * r, 22 + Math.sin(a * 0.7) * 4, Math.sin(a) * r);
-      this.camera.lookAt(0, 6, 0);
+      // caméra de présentation autour du personnage (placé à droite de l'écran)
+      this.menuCam += dt * 0.12;
+      const c = this.preview.root.position, a = 0.9 + Math.sin(this.menuCam) * 0.55, R = 3.1;
+      this.camera.position.set(c.x + Math.sin(a) * R, c.y + 1.5, c.z + Math.cos(a) * R);
+      const rx = Math.cos(a), rz = -Math.sin(a), off = innerWidth > innerHeight ? 0.95 : 0;
+      this.camera.lookAt(c.x - rx * off, c.y + 1.15, c.z - rz * off);
+      this.preview.root.rotation.y = a;
+      this.preview.update(dt);
+      if (this.previewDance > 0) { this.previewDance -= dt; if (this.previewDance <= 0) this.preview.play('idle', 0.4); }
     }
     const focus = this.player && this.state !== 'menu' ? this.player.pos : this.camera.position;
     this.sky.follow(focus);

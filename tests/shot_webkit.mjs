@@ -27,7 +27,17 @@ const url = await page.evaluate(async (code) => {
   return g.engine.renderer.domElement.toDataURL('image/png');
 }, code);
 fs.mkdirSync(path.dirname(out), { recursive: true });
-fs.writeFileSync(out, Buffer.from(url.split(',')[1], 'base64'));
+if (process.env.UI) {
+  // interface comprise : l'image 3D remplace le canvas, puis capture de la page entière
+  await page.evaluate((u) => {
+    const img = document.createElement('img');
+    img.src = u; img.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:1';
+    document.body.appendChild(img);
+    document.getElementById('game').style.display = 'none';
+  }, url);
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: out });
+} else fs.writeFileSync(out, Buffer.from(url.split(',')[1], 'base64'));
 console.log(`capture ${out} en ${((Date.now() - t0) / 1000).toFixed(0)} s`);
 if (logs.length) console.log(logs.slice(0, 20).join('\n'));
 await b.close();

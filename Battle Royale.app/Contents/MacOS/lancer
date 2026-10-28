@@ -3,6 +3,7 @@
 APPDIR="$(cd "$(dirname "$0")/../.." && pwd)"
 PAGE="$(dirname "$APPDIR")/JOUER.html"
 URL="file://$PAGE"
+URL="${URL// /%20}"   # espaces encodés pour Chrome
 for APP in "Google Chrome" "Brave Browser" "Microsoft Edge" "Chromium"; do
   if open -Ra "$APP" 2>/dev/null; then
     open -na "$APP" --args --app="$URL" --start-fullscreen --autoplay-policy=no-user-gesture-required

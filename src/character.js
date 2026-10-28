@@ -183,6 +183,8 @@ export class Character {
       if (o.isMesh) {
         o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false;
         o.material = o.material.clone();
+        if (/Eyes/i.test(o.material.name)) { o.material.envMapIntensity = 0.2; o.material.roughness = 0.55; }
+        if (/Hair/i.test(o.material.name)) { o.material.color.setHex(skin.hairColor); o.material.alphaTest = 0.4; } // sourcils
         if (/Superhero/i.test(o.material.name)) {
           const t = composeOutfit(skin);
           o.material.map = t.map; o.material.normalMap = t.normalMap;
