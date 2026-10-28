@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Battle Royale 3D — Environnement plus réaliste</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#87bfe8;font-family:system-ui,-apple-system,sans-serif;color:white}#game{display:block;width:100%;height:100%;outline:none}#hud{position:fixed;inset:0;pointer-events:none;text-shadow:0 2px 3px #17231d} .panel{background:rgba(13,24,32,.76);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:10px 13px;backdrop-filter:blur(5px)}#top{position:absolute;top:12px;left:12px;display:flex;gap:8px;flex-wrap:wrap}#help{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);max-width:94%;text-align:center;font-size:13px;line-height:1.6}#cross{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:25px;color:white;opacity:.9}#msg{position:absolute;top:19%;left:50%;transform:translateX(-50%);font-weight:800;font-size:clamp(20px,4vw,36px);text-align:center;width:90%;color:#fff4bd}#start{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(#173f60a8,#101b2bd9);padding:20px}#card{max-width:530px;text-align:center;background:#142632ed;border:1px solid #7895a7;border-radius:20px;padding:26px;box-shadow:0 18px 60px #0008}h1{margin:0 0 8px;font-size:clamp(28px,5vw,42px)}#card p{line-height:1.55;color:#e1edf3}button{font:700 17px system-ui;background:#ffcf47;color:#17202a;border:0;border-radius:12px;padding:13px 22px;cursor:pointer}#toast{position:fixed;bottom:95px;left:50%;transform:translateX(-50%);background:#15232be8;border-radius:10px;padding:10px 15px;display:none;text-align:center;max-width:90%}.bar{height:8px;background:#253b42;border-radius:8px;overflow:hidden;width:130px;margin-top:5px}.bar span{display:block;height:100%;background:#5ee38c;width:100%}#shopBtn{font:700 14px system-ui;cursor:pointer;border-radius:12px}#danceBtn{position:fixed;right:14px;bottom:18px;z-index:5;pointer-events:auto;background:#a66cff;color:white;border:2px solid #e4d4ff;padding:12px 16px;font-size:15px;box-shadow:0 4px 16px #0006}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="hud"><div id="top"><div class="panel">❤️ Vie : <b id="healthNum">100</b><div class="bar"><span id="healthBar"></span></div></div><div class="panel">🎯 Cibles : <b id="kills">0</b>/6</div><div class="panel">🧰 Coffres : <b id="chests">0</b>/5</div><div class="panel">🪙 Pièces : <b id="coins">100</b></div><div class="panel">⏱️ <b id="timer">00:00</b></div><div class="panel">🌪️ Tempête : <b id="stormNum">85 m</b></div></div><div id="cross">＋</div><div id="msg"></div><div id="help" class="panel">⌨️ <b>W A S D</b> bouger/nager · <b>ESPACE</b> sauter sur terre · <b>CLIC</b> tirer · <b>E</b> ouvrir un coffre · <b>R</b> recommencer</div></div>
+<button id="danceBtn" type="button">💃 DANSER</button><button id="lockerBtn" type="button" style="position:fixed;right:14px;bottom:134px;z-index:5;pointer-events:auto;background:#667eea;color:white;border:2px solid #cbd2ff;padding:11px 15px;font-size:14px;border-radius:12px">👕 CASIER</button><div id="lockerPanel" style="display:none;position:fixed;right:14px;bottom:190px;z-index:6;background:#132733f2;border:1px solid #8ab6c9;border-radius:14px;padding:14px;max-width:250px;box-shadow:0 10px 30px #0008"><b>👕 MON CASIER</b><p style="font-size:13px">Choisis une tenue gratuite :</p><button data-locker-skin="blue" style="margin:3px;background:#438de0">🔵 Éclaireur</button><button data-locker-skin="red" style="margin:3px;background:#df554c">🔴 Commando</button><button data-locker-skin="green" style="margin:3px;background:#4d9c63">🟢 Ranger</button><button data-locker-skin="shadow" style="margin:3px;background:#353943;color:white">🌑 Ombre</button><button data-locker-skin="ice" style="margin:3px;background:#8bd9ef">❄️ Glacier</button><button data-locker-skin="neon" style="margin:3px;background:#d93be8;color:white">💜 Néon</button></div><button id="shopBtn" type="button" style="position:fixed;right:14px;bottom:76px;z-index:5;pointer-events:auto;background:#31b6a0;color:#092b29;border:2px solid #b8fff0;padding:11px 15px;font-size:14px">🛍️ BOUTIQUE</button><div id="shopPanel" style="display:none;position:fixed;right:14px;bottom:135px;z-index:6;background:#132733f2;border:1px solid #8ab6c9;border-radius:14px;padding:14px;max-width:260px;box-shadow:0 10px 30px #0008"><b>🛍️ BOUTIQUE DE TENUES</b><p style="font-size:13px">Pièces : <strong id="shopCoins">100</strong><br>Choisis une tenue :</p><button data-skin="blue" data-price="0" style="margin:3px;background:#438de0">🔵 Éclaireur — gratuit</button><button data-skin="red" data-price="50" style="margin:3px;background:#df554c">🔴 Commando — 50 🪙</button><button data-skin="green" data-price="75" style="margin:3px;background:#4d9c63">🟢 Ranger — 75 🪙</button><button data-skin="shadow" data-price="100" style="margin:3px;background:#353943;color:white">🌑 Ombre — 100 🪙</button><button data-skin="ice" data-price="125" style="margin:3px;background:#8bd9ef">❄️ Glacier — 125 🪙</button><button data-skin="neon" data-price="150" style="margin:3px;background:#d93be8;color:white">💜 Néon — 150 🪙</button><p style="font-size:11px">Ouvre des coffres pour gagner des pièces.</p></div><div id="toast"></div>
+<div id="start"><div id="card"><h1>🏝️ BATTLE ROYALE 3D</h1><p>Explore une île, découvre des coffres et entraîne-toi contre des bots !<br><br><b>Commandes :</b> W A S D pour marcher, Espace pour sauter, clic pour tirer, E près d’un coffre, DANSER pour danser, CASIER pour changer de tenue. Tu peux nager dans le lac ! Évite le cercle bleu de la tempête !</p><button id="play">JOUER</button><p style="font-size:12px;margin-bottom:0">Première version de démonstration · connexion Internet requise pour charger le moteur 3D.</p></div></div><div id="loadError" style="display:none;position:fixed;z-index:20;left:50%;top:12px;transform:translateX(-50%);background:#7f1d1d;color:white;padding:12px 16px;border-radius:10px;max-width:90%;font:14px system-ui">Le moteur 3D n’a pas pu se charger. Vérifie Internet, puis recharge la page dans Safari.</div><div style="position:fixed;left:10px;bottom:8px;z-index:4;font:10px system-ui;color:#fff9;text-shadow:0 1px 3px #000;pointer-events:none">Textures PBR photo-scannées : Poly Haven (CC0) · chargement en ligne</div>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}
+</script>
+<script>
+window.addEventListener('error', function(){ const e=document.getElementById('loadError'); if(e) e.style.display='block'; });
+window.addEventListener('unhandledrejection', function(){ const e=document.getElementById('loadError'); if(e) e.style.display='block'; });
+</script>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import { RoundedBoxGeometry } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/geometries/RoundedBoxGeometry.js';
+const canvas=document.querySelector('#game');const renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.autoUpdate=true;
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x9fc9e8);scene.fog=new THREE.Fog(0x9fc9e8,95,260);
+const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,400);
+scene.add(new THREE.HemisphereLight(0xe5f4ff,0x46553a,2.35));const sun=new THREE.DirectionalLight(0xfff3d9,3.7);sun.position.set(-45,70,35);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-90;sun.shadow.camera.right=90;sun.shadow.camera.top=90;sun.shadow.camera.bottom=-90;scene.add(sun);
+const mat=(color,roughness=.85)=>new THREE.MeshStandardMaterial({color,roughness});
+// Procedural textures give the island more natural surface detail.
+function noiseTexture(base, flecks, count=6500){const c=document.createElement('canvas');c.width=c.height=512;const x=c.getContext('2d');x.fillStyle=base;x.fillRect(0,0,512,512);for(let i=0;i<count;i++){x.globalAlpha=.08+Math.random()*.22;x.fillStyle=flecks[Math.floor(Math.random()*flecks.length)];const w=1+Math.random()*5;x.fillRect(Math.random()*512,Math.random()*512,w,w)}x.globalAlpha=1;const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(8,8);t.colorSpace=THREE.SRGBColorSpace;return t}
+const grassTex=noiseTexture('#557d3d',['#243e24','#9bb85c','#6b9144','#3f6634']);const sandTex=noiseTexture('#c4b17e',['#e0cf9a','#9c895d','#d2c08b'],2800);
+const grass=new THREE.MeshStandardMaterial({map:grassTex,color:0xffffff,roughness:1}),sand=new THREE.MeshStandardMaterial({map:sandTex,color:0xffffff,roughness:1}),trunk=mat(0x68462d),leaf=mat(0x2d6d37),leaf2=mat(0x438744),rock=mat(0x777f80),wall=mat(0xd0c6ad),roof=mat(0x765448),blue=mat(0x2f81c2),dark=mat(0x24313b),skin=mat(0xd5a17d),red=mat(0xc94738),gold=mat(0xffd65a);
+// Real scanned PBR material maps from Poly Haven (CC0). If the online library is unavailable, the procedural textures above remain as a fallback.
+const roadmat=new THREE.MeshStandardMaterial({color:0x777777,roughness:1});
+const roofMat=new THREE.MeshStandardMaterial({color:0x66534a,roughness:.95});
+const woodMat=new THREE.MeshStandardMaterial({color:0x6b4931,roughness:.9});
+const trimMat=new THREE.MeshStandardMaterial({color:0xe1d5bc,roughness:.8});
+const glassMat=new THREE.MeshPhysicalMaterial({color:0x8ac9d9,metalness:.12,roughness:.18,transparent:true,opacity:.86});
+const pbrLoader=new THREE.TextureLoader();
+function findPbrFile(tree, mapNames){const found=[];function walk(node,path=[]){if(!node||typeof node!=='object')return;if(typeof node.url==='string'){const low=path.join('/').toLowerCase();if(mapNames.some(n=>low.includes(n)))found.push({url:node.url,path:low});return;}for(const [k,v] of Object.entries(node))walk(v,path.concat(k));}walk(tree);found.sort((a,b)=>{const rank=x=>(x.path.includes('1k')?0:x.path.includes('2k')?1:x.path.includes('4k')?2:3)+(x.path.includes('/png')?0:1);return rank(a)-rank(b)});return found[0]?.url||null;}
+async function applyPolyHavenPBR(assetId, material, repeatX=5, repeatY=5){try{const response=await fetch('https://api.polyhaven.com/files/'+assetId);if(!response.ok)throw new Error('PBR unavailable');const files=await response.json();const maps=[['map',['diffuse','diff','albedo']],['normalMap',['nor_gl','normal']],['roughnessMap',['rough']]];for(const [prop,names] of maps){const url=findPbrFile(files,names);if(!url)continue;await new Promise(resolve=>{pbrLoader.load(url,texture=>{texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.repeat.set(repeatX,repeatY);if(prop==='map')texture.colorSpace=THREE.SRGBColorSpace;material[prop]=texture;material.needsUpdate=true;resolve();},undefined,()=>resolve())})}}catch(e){console.info('Texture PBR de secours pour',assetId)}}
+// Use lightweight 1K/2K maps to keep the game suitable for a Mac browser.
+applyPolyHavenPBR('aerial_grass_rock',grass,7,7);applyPolyHavenPBR('ground_037',sand,6,6);applyPolyHavenPBR('asphalt_02',roadmat,3,18);applyPolyHavenPBR('brick_wall_001',wall,2,2);applyPolyHavenPBR('rocky_terrain_02',rock,2,2);
+
+const ground=new THREE.Mesh(new THREE.CylinderGeometry(92,98,5,192),grass);ground.position.y=-2.5;ground.receiveShadow=true;scene.add(ground);const beach=new THREE.Mesh(new THREE.CylinderGeometry(96,100,2,192),sand);beach.position.y=-4.1;beach.receiveShadow=true;scene.add(beach);
+// terrain hills
+for(let i=0;i<20;i++){let a=i*2.4,r=28+(i%5)*9,x=Math.cos(a)*r,z=Math.sin(a)*r;const h=4+(i%4)*2.3;let m=new THREE.Mesh(new THREE.SphereGeometry(1,18,14),i%2?grass:leaf);m.scale.set(7+(i%3)*2,h,8+(i%4));m.position.set(x,h-1.8,z);m.castShadow=true;m.receiveShadow=true;scene.add(m)}
+// Distant mountain silhouettes, soft clouds and layered atmosphere for a richer island skyline.
+const mountainMats=[mat(0x667d80,1),mat(0x7f9290,1),mat(0x9aa6a0,1)];
+for(let i=0;i<32;i++){const a=i/32*Math.PI*2;const r=142+(i%4)*5;const h=17+(i%7)*5;const m=new THREE.Mesh(new THREE.ConeGeometry(12+(i%4)*3,h,7),mountainMats[i%3]);m.position.set(Math.cos(a)*r,h*.36,Math.sin(a)*r);m.rotation.y=(i%5)*.3;m.receiveShadow=true;scene.add(m)}
+const cloudMat=new THREE.MeshStandardMaterial({color:0xf7fbff,roughness:1,transparent:true,opacity:.82});
+for(let i=0;i<18;i++){const g=new THREE.Group();const x=(i%6)*42-105,z=Math.floor(i/6)*75-75;for(let j=0;j<5;j++){const puff=new THREE.Mesh(new THREE.SphereGeometry(3+(j%3),12,9),cloudMat);puff.position.set(j*3.4,Math.sin(j*1.4)*1.1,Math.cos(j*1.7)*2);puff.scale.y=.55;g.add(puff)}g.position.set(x,38+(i%4)*7,z);scene.add(g)}
+// lake and road
+const lake=new THREE.Mesh(new THREE.CircleGeometry(13,48),new THREE.MeshStandardMaterial({color:0x348fbc,roughness:.25,metalness:.1}));lake.rotation.x=-Math.PI/2;lake.position.set(-28,.05,22);scene.add(lake);
+function road(x,z,w,d,rot=0){const o=new THREE.Mesh(new THREE.PlaneGeometry(w,d,1,1),roadmat);o.rotation.x=-Math.PI/2;o.position.set(x,.055,z);o.rotation.z=rot;o.receiveShadow=true;scene.add(o);for(let t=-d/2+2;t<d/2;t+=5){const line=new THREE.Mesh(new THREE.PlaneGeometry(.16,2.1),mat(0xd8cba0));line.rotation.x=-Math.PI/2;line.position.set(x,.066,z+t);line.rotation.z=rot;scene.add(line)}}road(0,0,7,145);road(12,3,115,6,0.1);road(-24,-16,5,57,-.65);
+// buildings
+const obstacles=[];
+function building(x,z,s=1){
+ const g=new THREE.Group(),wallH=5*s,th=.34*s;
+ const addWall=(w,h,d,px,py,pz)=>{const m=new THREE.Mesh(new RoundedBoxGeometry(w,h,d,3,Math.min(.10*s,th*.28)),wall);m.position.set(px,py,pz);m.castShadow=true;m.receiveShadow=true;g.add(m)};
+ // Textured, slightly rounded wall panels; the front has a walk-through doorway.
+ addWall(8*s,wallH,th,0,wallH/2,-3.5*s);addWall(th,wallH,7*s,-4*s,wallH/2,0);addWall(th,wallH,7*s,4*s,wallH/2,0);addWall(2.9*s,wallH,th,-2.55*s,wallH/2,3.5*s);addWall(2.9*s,wallH,th,2.55*s,wallH/2,3.5*s);
+ obstacles.push({x:x,z:z-3.5*s,rx:4.1*s,rz:.45*s},{x:x-4*s,z:z,rx:.45*s,rz:3.5*s},{x:x+4*s,z:z,rx:.45*s,rz:3.5*s},{x:x-2.55*s,z:z+3.5*s,rx:1.5*s,rz:.45*s},{x:x+2.55*s,z:z+3.5*s,rx:1.5*s,rz:.45*s});
+ const floor=new THREE.Mesh(new THREE.PlaneGeometry(7.5*s,6.5*s),new THREE.MeshStandardMaterial({color:0x95836b,roughness:.95}));floor.rotation.x=-Math.PI/2;floor.position.y=.05;floor.receiveShadow=true;g.add(floor);
+ // A hipped roof instead of the old pointed cube-like cap.
+ const roofGeo=new THREE.CylinderGeometry(0,5.9*s,2.35*s,4,1);const roofMesh=new THREE.Mesh(roofGeo,roofMat);roofMesh.position.y=6.05*s;roofMesh.rotation.y=Math.PI/4;roofMesh.castShadow=true;roofMesh.receiveShadow=true;g.add(roofMesh);
+ // Roof fascia, chimney and wooden door frame.
+ for(const zz of [-3.62,3.62]){const fascia=new THREE.Mesh(new RoundedBoxGeometry(8.3*s,.18*s,.24*s,3,.06*s),woodMat);fascia.position.set(0,5.05*s,zz*s/Math.abs(s));g.add(fascia)}
+ const chimney=new THREE.Mesh(new RoundedBoxGeometry(.7*s,1.7*s,.7*s,3,.08*s),wall);chimney.position.set(2.2*s,6.1*s,-1.3*s);chimney.castShadow=true;g.add(chimney);
+ const door=new THREE.Mesh(new RoundedBoxGeometry(1.65*s,3.05*s,.14*s,4,.08*s),woodMat);door.position.set(0,1.52*s,3.52*s);g.add(door);
+ const knob=new THREE.Mesh(new THREE.SphereGeometry(.075*s,16,12),gold);knob.position.set(.48*s,1.5*s,3.62*s);g.add(knob);
+ // Real glass panes, pale trim, sill and crossbars on each window.
+ for(let yy of [1.8,3.7])for(let xx of [-2.45,2.45]){
+  const frame=new THREE.Mesh(new RoundedBoxGeometry(1.12*s,1.1*s,.16*s,3,.06*s),trimMat);frame.position.set(xx*s,yy*s,3.55*s);g.add(frame);
+  const win=new THREE.Mesh(new RoundedBoxGeometry(.88*s,.86*s,.08*s,3,.035*s),glassMat);win.position.set(xx*s,yy*s,3.64*s);g.add(win);
+  const v=new THREE.Mesh(new THREE.BoxGeometry(.045*s,.86*s,.035*s),woodMat);v.position.set(xx*s,yy*s,3.69*s);g.add(v);
+  const h=new THREE.Mesh(new THREE.BoxGeometry(.88*s,.045*s,.035*s),woodMat);h.position.set(xx*s,yy*s,3.69*s);g.add(h);
+  const sill=new THREE.Mesh(new RoundedBoxGeometry(1.28*s,.12*s,.28*s,3,.04*s),trimMat);sill.position.set(xx*s,(yy-.59)*s,3.68*s);g.add(sill);
+ }
+ // Visible corner posts break up flat surfaces and add believable house structure.
+ for(const xx of [-3.78,3.78]){const post=new THREE.Mesh(new RoundedBoxGeometry(.18*s,wallH,.18*s,3,.05*s),woodMat);post.position.set(xx*s,wallH/2,3.48*s);g.add(post)}
+ g.position.set(x,0,z);scene.add(g);return g
+}
+building(18,-20,1.25);building(29,-11,.8);building(-15,-25,1);building(27,24,.9);building(-40,2,1.2);building(3,42,.85);building(-48,-35,.9);
+// Keep vegetation outside houses and their doorways.
+const houseClearings=[[18,-20,1.25],[29,-11,.8],[-15,-25,1],[27,24,.9],[-40,2,1.2],[3,42,.85],[-48,-35,.9]];
+function nearHouse(x,z,pad=9){return houseClearings.some(([hx,hz,scale])=>Math.abs(x-hx)<5*scale+pad&&Math.abs(z-hz)<5*scale+pad)}
+// trees
+function tree(x,z,scale=1){const g=new THREE.Group();const t=new THREE.Mesh(new THREE.CylinderGeometry(.22*scale,.42*scale,3.3*scale,14),trunk);t.position.y=1.65*scale;t.castShadow=true;t.receiveShadow=true;g.add(t);
+ // Overlapping irregular, smooth leaf crowns instead of low-poly cones.
+ for(let j=0;j<8;j++){const size=(1.15+(j%3)*.22)*scale;const c=new THREE.Mesh(new THREE.SphereGeometry(size,18,14),j%3===0?leaf2:leaf);const a=j*2.399;c.position.set(Math.cos(a)*.8*scale,(3.1+(j%4)*.45)*scale,Math.sin(a)*.8*scale);c.scale.set(1+(j%2)*.15,.85+(j%3)*.08,.95);c.castShadow=true;c.receiveShadow=true;g.add(c)}const crown=new THREE.Mesh(new THREE.SphereGeometry(1.35*scale,20,16),leaf);crown.position.y=4.3*scale;crown.scale.set(1.05,.95,1);crown.castShadow=true;g.add(crown);g.position.set(x,0,z);scene.add(g)}for(let i=0;i<115;i++){let a=i*2.399,r=17+Math.sqrt(i/115)*66,x=Math.cos(a)*r,z=Math.sin(a)*r;if(Math.hypot(x+28,z-22)<17||Math.abs(x)<5||Math.abs(z)<4||Math.hypot(x-18,z+20)<11||nearHouse(x,z,9))continue;tree(x,z,.7+(i%5)*.12)}
+// rocks
+for(let i=0;i<32;i++){let a=i*2.1,r=18+(i%7)*8;let x=Math.cos(a)*r,z=Math.sin(a)*r;if(nearHouse(x,z,9))continue;const geo=new THREE.IcosahedronGeometry(1+(i%3)*.6,3);const pos=geo.attributes.position;for(let v=0;v<pos.count;v++){const f=1+.055*Math.sin(pos.getX(v)*8+i)*Math.cos(pos.getY(v)*6)*Math.sin(pos.getZ(v)*7);pos.setXYZ(v,pos.getX(v)*f,pos.getY(v)*f,pos.getZ(v)*f)}geo.computeVertexNormals();const o=new THREE.Mesh(geo,rock);o.position.set(x,.6,z);o.scale.set(1.1,.7+(i%3)*.12,1.2);o.castShadow=true;o.receiveShadow=true;scene.add(o)}
+// Small grass tufts add detail around clearings and roads.
+const tuftMat=new THREE.MeshStandardMaterial({color:0x83a94e,roughness:1,side:THREE.DoubleSide});
+const leafPlantMat=new THREE.MeshStandardMaterial({color:0x527f37,roughness:.95,side:THREE.DoubleSide});
+for(let i=0;i<700;i++){const a=Math.random()*Math.PI*2,r=9+Math.random()*77,x=Math.cos(a)*r,z=Math.sin(a)*r;if(Math.hypot(x+28,z-22)<15||Math.abs(x)<5||Math.abs(z)<4||nearHouse(x,z,9))continue;const blade=new THREE.Mesh(new THREE.ConeGeometry(.055,.35+Math.random()*.35,3),tuftMat);blade.position.set(x,.15,z);blade.rotation.z=(Math.random()-.5)*.25;blade.rotation.y=Math.random()*Math.PI;scene.add(blade)}
+// Fallen logs and clusters of low shrubs break up repeated ground patterns.
+const shrubMat=new THREE.MeshStandardMaterial({color:0x356b35,roughness:1});
+for(let i=0;i<95;i++){const a=i*2.17,r=12+(i%9)*7,x=Math.cos(a)*r,z=Math.sin(a)*r;if(Math.hypot(x+28,z-22)<16||Math.abs(x)<5||Math.abs(z)<4||nearHouse(x,z,9))continue;const shrub=new THREE.Mesh(new THREE.IcosahedronGeometry(.55+(i%4)*.16,1),shrubMat);shrub.position.set(x,.42,z);shrub.scale.set(1.3,.8,1);shrub.castShadow=true;shrub.receiveShadow=true;scene.add(shrub)}
+
+// Low broad-leaf plants and small wildflower clusters add natural detail without blocky props.
+for(let i=0;i<210;i++){const a=i*2.399,r=12+(i%17)*4.1,x=Math.cos(a)*r,z=Math.sin(a)*r;if(Math.hypot(x+28,z-22)<16||Math.abs(x)<5||Math.abs(z)<4||nearHouse(x,z,9))continue;const plant=new THREE.Group();for(let k=0;k<5;k++){const leafMesh=new THREE.Mesh(new THREE.SphereGeometry(.22,10,8),leafPlantMat);leafMesh.scale.set(.42,1.5,.16);leafMesh.position.set(Math.cos(k*1.256)*.24,.3,Math.sin(k*1.256)*.24);leafMesh.rotation.z=(k-2)*.2;plant.add(leafMesh)}plant.position.set(x,.02,z);plant.rotation.y=(i%11)*.57;scene.add(plant)}
+// La tempête se referme progressivement autour de l’île.
+const stormMat=new THREE.MeshBasicMaterial({color:0x53bfff,transparent:true,opacity:.58,side:THREE.DoubleSide});const stormRing=new THREE.Mesh(new THREE.TorusGeometry(85,.42,8,180),stormMat);stormRing.rotation.x=Math.PI/2;stormRing.position.y=.28;scene.add(stormRing);let stormRadius=85;
+// Detailed fabric texture: subtle weave and irregular camouflage patches.
+const fabricCanvas=document.createElement('canvas');fabricCanvas.width=fabricCanvas.height=256;
+const fabricCtx=fabricCanvas.getContext('2d');fabricCtx.fillStyle='#65705a';fabricCtx.fillRect(0,0,256,256);
+for(let i=0;i<95;i++){fabricCtx.fillStyle=['#414d3d','#7b8060','#505b46','#8a8967'][i%4];fabricCtx.globalAlpha=.45;fabricCtx.beginPath();fabricCtx.ellipse(Math.random()*256,Math.random()*256,5+Math.random()*16,3+Math.random()*10,Math.random()*Math.PI,0,Math.PI*2);fabricCtx.fill()}
+for(let i=0;i<1800;i++){fabricCtx.globalAlpha=.06+Math.random()*.1;fabricCtx.fillStyle=i%2?'#ffffff':'#101610';fabricCtx.fillRect(Math.random()*256,Math.random()*256,1+Math.random()*2,1)}
+fabricCtx.globalAlpha=1;const fabricTexture=new THREE.CanvasTexture(fabricCanvas);fabricTexture.wrapS=fabricTexture.wrapT=THREE.RepeatWrapping;fabricTexture.repeat.set(1.2,1.2);fabricTexture.colorSpace=THREE.SRGBColorSpace;
+// player character
+function character(color,isBot=false){
+ const g=new THREE.Group();
+ const cloth=new THREE.MeshStandardMaterial({color:color,map:fabricTexture,roughness:1});
+ const fabricDark=mat(isBot?0x343b3d:0x28343a,1), vestMat=mat(isBot?0x754039:0x4a5948,1), straps=mat(0x20292b,1), skinMat=mat(0xb98565,.85), bootMat=mat(0x171d20,1), metal=mat(0x3b4448,.45);
+ const add=(geo,ma,x,y,z,rx=0,ry=0,rz=0)=>{const o=new THREE.Mesh(geo,ma);o.position.set(x,y,z);o.rotation.set(rx,ry,rz);o.castShadow=true;o.receiveShadow=true;g.add(o);return o};
+ const torso=add(new THREE.CapsuleGeometry(.48,.78,6,12),cloth,0,1.62,0);
+ // Tactical vest, shoulder pads and chest pouches
+ add(new THREE.BoxGeometry(.72,.72,.25),vestMat,0,1.68,-.35);
+ add(new THREE.BoxGeometry(.13,.68,.29),straps,-.22,1.7,-.49,0,0,-.08);add(new THREE.BoxGeometry(.13,.68,.29),straps,.22,1.7,-.49,0,0,.08);
+ for(let x of [-.22,0,.22])add(new THREE.BoxGeometry(.17,.18,.12),fabricDark,x,1.48,-.5);
+ add(new THREE.BoxGeometry(.85,.18,.3),straps,0,1.17,0); // belt
+ for(let x of [-.32,.32]){add(new THREE.SphereGeometry(.22,12,8),vestMat,x,2.02,0);add(new THREE.BoxGeometry(.28,.15,.28),fabricDark,x,2.08,0)}
+ const head=add(new THREE.SphereGeometry(.31,20,16),skinMat,0,2.48,0);
+ // ears, eyes, nose, helmet and visor
+ for(let x of [-1,1]){add(new THREE.SphereGeometry(.065,8,8),skinMat,x*.31,2.48,0);add(new THREE.SphereGeometry(.035,8,8),mat(0x1d2528,.4),x*.115,2.51,-.285)}
+ add(new THREE.ConeGeometry(.075,.16,8),skinMat,0,2.43,-.31,Math.PI/2,0,0);
+ add(new THREE.SphereGeometry(.34,18,12,0,Math.PI*2,0,Math.PI/2),isBot?mat(0x8d3930):mat(0x202b30),0,2.64,0);
+ add(new THREE.BoxGeometry(.48,.09,.12),metal,0,2.55,-.27); // helmet brow
+ // Backpack with extra pockets, rolled bedroll and visible stitching details
+ add(new THREE.BoxGeometry(.52,.65,.22),fabricDark,0,1.72,.31);
+ add(new THREE.BoxGeometry(.25,.25,.12),vestMat,0,1.86,.47);
+ add(new THREE.BoxGeometry(.48,.16,.25),vestMat,0,2.09,.34); // rolled bedroll
+ add(new THREE.BoxGeometry(.18,.28,.14),fabricDark,-.19,1.62,.48);
+ add(new THREE.BoxGeometry(.18,.28,.14),fabricDark,.19,1.62,.48);
+ // Chest magazine pouches, buckles, radio and utility details
+ for(let x of [-.29,-.1,.1,.29]){
+   add(new THREE.BoxGeometry(.14,.2,.13),vestMat,x,1.57,-.51);
+   add(new THREE.BoxGeometry(.075,.035,.025),metal,x,1.58,-.585);
+   add(new THREE.BoxGeometry(.12,.018,.02),straps,x,1.45,-.53);
+ }
+ add(new THREE.BoxGeometry(.19,.27,.09),fabricDark,-.36,1.86,-.44); // radio
+ add(new THREE.BoxGeometry(.035,.23,.025),metal,-.36,2.03,-.49);
+ // Fine visible stitching, reinforced fabric panels and buckles
+ for(let x of [-.32,.32]){
+   add(new THREE.BoxGeometry(.025,.48,.018),mat(0x9a9a76,1),x,1.72,-.505);
+   add(new THREE.BoxGeometry(.17,.035,.025),metal,x,1.32,-.53);
+ }
+ for(let y of [1.39,1.53,1.67]) add(new THREE.BoxGeometry(.012,.035,.012),mat(0xc3b995,1),-.39,y,-.48);
+ // Shoulder straps and utility clips on the backpack
+ for(let x of [-.19,.19]){
+   add(new THREE.BoxGeometry(.055,.5,.035),straps,x,1.78,.19,-.1,0,0);
+   add(new THREE.BoxGeometry(.075,.08,.04),metal,x,1.69,.215);
+ }
+ add(new THREE.BoxGeometry(.28,.08,.035),straps,0,1.49,.44);
+ add(new THREE.BoxGeometry(.09,.08,.04),metal,0,1.49,.465);
+ add(new THREE.CylinderGeometry(.025,.025,.25,8),straps,-.36,2.14,-.46); // antenna
+ add(new THREE.BoxGeometry(.18,.13,.04),mat(0xd8cda4,1),.18,1.87,-.5); // insignia patch
+ add(new THREE.BoxGeometry(.11,.035,.025),red,.18,1.87,-.53);
+ // Helmet rails, night-vision mount and ear protection
+ add(new THREE.BoxGeometry(.28,.055,.12),fabricDark,0,2.73,-.02);
+ add(new THREE.BoxGeometry(.13,.12,.14),metal,0,2.66,-.32);
+ add(new THREE.BoxGeometry(.09,.19,.09),fabricDark,-.09,2.57,-.38);
+ add(new THREE.BoxGeometry(.09,.19,.09),fabricDark,.09,2.57,-.38);
+ for(let x of [-.29,.29]){
+   add(new THREE.BoxGeometry(.08,.17,.12),vestMat,x,2.46,.015);
+   add(new THREE.BoxGeometry(.1,.09,.08),fabricDark,x,2.45,-.08);
+ }
+ const legs=[],arms=[];
+ for(let side of [-1,1]){
+  const leg=new THREE.Group();leg.position.set(side*.22,.83,0);g.add(leg);
+  const thigh=new THREE.Mesh(new THREE.CapsuleGeometry(.17,.45,5,10),fabricDark);thigh.position.y=-.1;thigh.castShadow=true;leg.add(thigh);
+  const knee=new THREE.Mesh(new THREE.BoxGeometry(.27,.22,.23),vestMat);knee.position.set(0,-.35,-.035);knee.castShadow=true;leg.add(knee);
+  const shin=new THREE.Mesh(new THREE.CapsuleGeometry(.145,.28,4,8),fabricDark);shin.position.y=-.53;shin.castShadow=true;leg.add(shin);
+  const kneeStrap=new THREE.Mesh(new THREE.BoxGeometry(.29,.045,.24),straps);kneeStrap.position.set(0,-.29,-.04);kneeStrap.castShadow=true;leg.add(kneeStrap);
+  const shinPlate=new THREE.Mesh(new THREE.BoxGeometry(.22,.24,.055),vestMat);shinPlate.position.set(0,-.54,-.14);shinPlate.castShadow=true;leg.add(shinPlate);
+  for(let lace=0;lace<3;lace++){const line=new THREE.Mesh(new THREE.BoxGeometry(.13,.018,.025),metal);line.position.set(0,-.71+lace*.035,-.315);leg.add(line)}
+  const boot=new THREE.Mesh(new THREE.BoxGeometry(.3,.17,.43),bootMat);boot.position.set(0,-.76,-.09);boot.castShadow=true;leg.add(boot);legs.push(leg);
+  const arm=new THREE.Group();arm.position.set(side*.48,1.93,0);arm.rotation.z=side*.12;g.add(arm);
+  const upper=new THREE.Mesh(new THREE.CapsuleGeometry(.145,.36,5,9),cloth);upper.position.y=-.2;upper.castShadow=true;arm.add(upper);
+  const sleevePatch=new THREE.Mesh(new THREE.BoxGeometry(.17,.13,.025),vestMat);sleevePatch.position.set(0,-.16,-.13);sleevePatch.rotation.z=side*.12;sleevePatch.castShadow=true;arm.add(sleevePatch);
+  const sleeveSeam=new THREE.Mesh(new THREE.BoxGeometry(.21,.025,.025),mat(0xb1ae8a,1));sleeveSeam.position.set(0,-.24,-.13);arm.add(sleeveSeam);
+  const elbow=new THREE.Mesh(new THREE.SphereGeometry(.15,10,8),vestMat);elbow.position.y=-.39;elbow.castShadow=true;arm.add(elbow);
+  const fore=new THREE.Mesh(new THREE.CapsuleGeometry(.12,.32,4,8),fabricDark);fore.position.set(0,-.56,-.025);fore.castShadow=true;arm.add(fore);
+  const elbowPad=new THREE.Mesh(new THREE.BoxGeometry(.22,.16,.2),fabricDark);elbowPad.position.set(0,-.4,-.06);elbowPad.castShadow=true;arm.add(elbowPad);
+  const wrist=new THREE.Mesh(new THREE.CylinderGeometry(.125,.125,.08,10),metal);wrist.rotation.x=Math.PI/2;wrist.position.set(0,-.69,-.055);arm.add(wrist);
+  const glove=new THREE.Mesh(new THREE.SphereGeometry(.13,10,8),bootMat);glove.position.set(0,-.77,-.06);glove.castShadow=true;arm.add(glove);arms.push(arm);
+ }
+ // Rifle with stock, barrel, grip, magazine, sight and small rails
+ add(new THREE.BoxGeometry(.16,.16,.48),fabricDark,.42,1.53,-.28,.12,0,0);
+ add(new THREE.BoxGeometry(.13,.13,.72),metal,.42,1.56,-.82,.05,0,0);
+ add(new THREE.BoxGeometry(.08,.08,.22),bootMat,.42,1.56,-1.25);
+ add(new THREE.BoxGeometry(.08,.12,.18),bootMat,.42,1.68,-.75);
+ add(new THREE.BoxGeometry(.11,.23,.16),fabricDark,.42,1.36,-.55,.18,0,0); // magazine
+ add(new THREE.BoxGeometry(.08,.1,.17),metal,.42,1.68,-.94); // sight
+ add(new THREE.BoxGeometry(.2,.035,.22),metal,.42,1.64,-.69); // rail
+ // Small shoulder insignia and belt buckle
+ add(new THREE.BoxGeometry(.13,.12,.04),mat(isBot?0xb5b5b5:0xe1d7b1,1),-.42,1.99,-.13);
+ add(new THREE.BoxGeometry(.16,.12,.055),metal,0,1.17,-.16);
+ g.userData={torso,head,arms,legs};return g
+}
+const player=character(blue);player.position.set(0,0,8);scene.add(player);let yaw=0,health=100,kills=0,opened=0,coins=100,started=false,elapsed=0,vy=0,onGround=true,shotCooldown=0,dancing=false,danceTime=0,walkTime=0;const keys={};
+document.querySelector('#danceBtn').addEventListener('click',()=>{if(!started){notify('Appuie d’abord sur JOUER !');return}dancing=!dancing;danceTime=0;notify(dancing?'💃 Danse activée !':'🎮 Danse arrêtée.')});
+document.querySelector('#lockerBtn').addEventListener('click',()=>{const p=document.querySelector('#lockerPanel');p.style.display=p.style.display==='block'?'none':'block'});document.querySelectorAll('[data-locker-skin]').forEach(btn=>btn.addEventListener('click',()=>{const colors={blue:0x2f81c2,red:0xc94738,green:0x438744,shadow:0x252832,ice:0x86d7ed,neon:0xc52ce0};const c=colors[btn.dataset.lockerSkin];player.userData.torso.material.color.setHex(c);for(const limb of [...player.userData.arms,...player.userData.legs])limb.children.forEach(part=>{if(part.material&&part.material.color&&part.material!==undefined)part.material.color.setHex(c)});player.children[1].material=mat(({shadow:0x171a20,ice:0xc8f6ff,neon:0x711c91})[btn.dataset.lockerSkin]||c);notify('👕 Tenue changée dans le casier !')}));
+document.querySelector('#shopBtn').addEventListener('click',()=>{const p=document.querySelector('#shopPanel');p.style.display=p.style.display==='block'?'none':'block';document.querySelector('#shopCoins').textContent=coins});document.querySelectorAll('[data-skin]').forEach(btn=>btn.addEventListener('click',()=>{const price=Number(btn.dataset.price||0);if(coins<price){notify('🪙 Pas assez de pièces ! Ouvre des coffres.');return}coins-=price;document.querySelector('#coins').textContent=coins;document.querySelector('#shopCoins').textContent=coins;const colors={blue:0x2f81c2,red:0xc94738,green:0x438744,shadow:0x252832,ice:0x86d7ed,neon:0xc52ce0};const c=colors[btn.dataset.skin];player.userData.torso.material.color.setHex(c);for(const limb of [...player.userData.arms,...player.userData.legs])limb.children.forEach(part=>{if(part.material&&part.material.color)part.material.color.setHex(c)});player.children[1].material=mat(({shadow:0x171a20,ice:0xc8f6ff,neon:0x711c91})[btn.dataset.skin]||c);notify('👕 Tenue équipée !')}));
+// chest objects
+const chests=[];for(let [x,z] of [[-8,-7],[24,10],[-35,-10],[10,36],[43,-30]]){const g=new THREE.Group();const b=new THREE.Mesh(new THREE.BoxGeometry(1.5,.9,1.05),mat(0x8b4c22));b.position.y=.6;b.castShadow=true;g.add(b);const lid=new THREE.Mesh(new THREE.BoxGeometry(1.55,.22,1.1),gold);lid.position.y=1.15;lid.castShadow=true;g.add(lid);const lock=new THREE.Mesh(new THREE.BoxGeometry(.23,.3,.08),dark);lock.position.set(0,.82,.57);g.add(lock);g.position.set(x,0,z);scene.add(g);chests.push({g,x,z,open:false})}
+// bots
+const bots=[];for(let i=0;i<6;i++){let a=i*1.04+1.2,r=22+(i%3)*8;const g=character(red,true);g.position.set(Math.cos(a)*r,0,Math.sin(a)*r);scene.add(g);bots.push({g,hp:2,phase:i*2.1,alive:true,home:g.position.clone()})}
+const bullets=[];function shoot(){if(!started||shotCooldown>0)return;shotCooldown=.28;const origin=player.position.clone();origin.y+=1.8;const dir=new THREE.Vector3(Math.sin(yaw),0,-Math.cos(yaw));let best=null,bd=17;for(const b of bots){if(!b.alive)continue;const to=b.g.position.clone().sub(player.position);const d=to.length();to.y=0;to.normalize();if(d<bd&&dir.dot(to)>.84){best=b;bd=d}}const geom=new THREE.Mesh(new THREE.SphereGeometry(.14,8,8),gold);geom.position.copy(origin).add(dir.clone().multiplyScalar(.9));scene.add(geom);bullets.push({mesh:geom,dir,life:.22});if(best){best.hp--;if(best.hp<=0){best.alive=false;scene.remove(best.g);kills++;document.querySelector('#kills').textContent=kills;notify(kills===6?'🏆 Bravo ! Tu as gagné !':'🎯 Cible éliminée !')}}}
+function notify(t){const el=document.querySelector('#toast');el.textContent=t;el.style.display='block';clearTimeout(notify.t);notify.t=setTimeout(()=>el.style.display='none',2200)}
+function interact(){let near=null,dmin=4;for(const c of chests){if(c.open)continue;let d=Math.hypot(player.position.x-c.x,player.position.z-c.z);if(d<dmin){dmin=d;near=c}}if(near){near.open=true;near.g.children[1].material=mat(0x6e5b32);opened++;coins+=50;document.querySelector('#chests').textContent=opened;document.querySelector('#coins').textContent=coins;document.querySelector('#shopCoins').textContent=coins;notify('🧰 Coffre ouvert ! +50 pièces !')}else notify('Approche-toi d’un coffre pour l’ouvrir.')}
+function reset(){health=100;kills=0;opened=0;coins=100;elapsed=0;stormRadius=85;document.querySelector('#coins').textContent=coins;document.querySelector('#shopCoins').textContent=coins;player.position.set(0,0,8);yaw=0;vy=0;for(const b of bots){b.alive=true;b.hp=2;b.g.position.copy(b.home);if(!scene.children.includes(b.g))scene.add(b.g)}for(const c of chests){c.open=false;c.g.children[1].material=gold}for(const b of bullets)scene.remove(b.mesh);bullets.length=0;document.querySelector('#kills').textContent='0';document.querySelector('#chests').textContent='0';document.querySelector('#healthNum').textContent='100';document.querySelector('#healthBar').style.width='100%';document.querySelector('#msg').textContent='';notify('Nouvelle partie !')}
+document.querySelector('#play').addEventListener('click',()=>{document.querySelector('#start').style.display='none';started=true;canvas.focus()});addEventListener('keydown',e=>{keys[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(e.code==='KeyE')interact();if(e.code==='KeyR')reset();if(e.code==='Space'&&onGround&&started&&Math.hypot(player.position.x+28,player.position.z-22)>=12.2){vy=8;onGround=false}});addEventListener('keyup',e=>keys[e.code]=false);canvas.addEventListener('click',()=>{if(started)shoot()});addEventListener('mousemove',e=>{if(started&&e.buttons===2)yaw-=e.movementX*.004});canvas.addEventListener('contextmenu',e=>e.preventDefault());
+const clock=new THREE.Clock();function animate(){requestAnimationFrame(animate);let dt=Math.min(clock.getDelta(),.04);if(started){elapsed+=dt;stormRadius=Math.max(20,85-elapsed*.22);stormRing.geometry.dispose();stormRing.geometry=new THREE.TorusGeometry(stormRadius,.42,8,180);document.querySelector('#stormNum').textContent=Math.round(stormRadius)+' m';if(Math.hypot(player.position.x,player.position.z)>stormRadius){health=Math.max(0,health-5*dt);document.querySelector('#healthNum').textContent=Math.ceil(health);document.querySelector('#healthBar').style.width=health+'%';if(health<=0){document.querySelector('#msg').textContent='🌪️ La tempête t’a éliminé ! Appuie sur R.';started=false}}shotCooldown=Math.max(0,shotCooldown-dt);const forward=new THREE.Vector3(Math.sin(yaw),0,-Math.cos(yaw)),right=new THREE.Vector3(Math.cos(yaw),0,Math.sin(yaw));let move=new THREE.Vector3();if(keys.KeyW||keys.ArrowUp)move.add(forward);if(keys.KeyS||keys.ArrowDown)move.sub(forward);if(keys.KeyD||keys.ArrowRight)move.add(right);if(keys.KeyA||keys.ArrowLeft)move.sub(right);const inWater=Math.hypot(player.position.x+28,player.position.z-22)<12.2;const isWalking=move.lengthSq()>0&&!dancing;if(isWalking){walkTime+=dt*(inWater?6:10);move.normalize();const speed=inWater?5.2:10;const nx=player.position.x+move.x*speed*dt,nz=player.position.z+move.z*speed*dt;let blocked=false;for(const o of obstacles){if(Math.abs(nx-o.x)<o.rx&&Math.abs(nz-o.z)<o.rz){blocked=true;break}}if(!blocked){player.position.x=nx;player.position.z=nz}player.rotation.y=yaw}
+if(!dancing){const p=player.userData;if(inWater){p.legs[0].rotation.x=Math.sin(walkTime*1.4)*.48;p.legs[1].rotation.x=-Math.sin(walkTime*1.4)*.48;p.arms[0].rotation.x=-.7+Math.sin(walkTime*1.2)*.55;p.arms[1].rotation.x=-.7-Math.sin(walkTime*1.2)*.55;}else if(isWalking){p.legs[0].rotation.x=Math.sin(walkTime)*.72;p.legs[1].rotation.x=-Math.sin(walkTime)*.72;p.arms[0].rotation.x=-Math.sin(walkTime)*.42;p.arms[1].rotation.x=Math.sin(walkTime)*.42;player.position.y=Math.max(player.position.y,Math.abs(Math.sin(walkTime*2))*.06)}else{p.legs[0].rotation.x=0;p.legs[1].rotation.x=0;p.arms[0].rotation.x=0;p.arms[1].rotation.x=0}}
+if(dancing){danceTime+=dt;const p=player.userData;player.rotation.y=yaw+Math.sin(danceTime*5)*.65;p.torso.rotation.z=Math.sin(danceTime*8)*.16;p.torso.rotation.x=Math.sin(danceTime*5)*.12;p.head.rotation.z=Math.sin(danceTime*6)*.12;p.arms[0].rotation.z=-1.1+Math.sin(danceTime*9)*.65;p.arms[1].rotation.z=1.1-Math.sin(danceTime*9)*.65;p.legs[0].rotation.x=Math.sin(danceTime*8)*.6;p.legs[1].rotation.x=-Math.sin(danceTime*8)*.6;player.position.y=Math.max(player.position.y,Math.abs(Math.sin(danceTime*8))*.25)}else{const p=player.userData;p.torso.rotation.set(0,0,0);p.head.rotation.set(0,0,0);p.arms[0].rotation.z=.15;p.arms[1].rotation.z=-.15;p.legs[0].rotation.x=0;p.legs[1].rotation.x=0}player.position.x=THREE.MathUtils.clamp(player.position.x,-84,84);player.position.z=THREE.MathUtils.clamp(player.position.z,-84,84);const swimming=Math.hypot(player.position.x+28,player.position.z-22)<12.2;if(swimming){vy=0;onGround=false;player.position.y=-.48+Math.sin(elapsed*3.2)*.08;player.rotation.y=yaw;if(!dancing){const p=player.userData;p.torso.rotation.x=.08;p.arms[0].rotation.z=-.22+Math.sin(elapsed*4)*.12;p.arms[1].rotation.z=.22-Math.sin(elapsed*4)*.12;}}else{vy-=19*dt;player.position.y+=vy*dt;if(player.position.y<=0){player.position.y=0;vy=0;onGround=true}}for(const b of bots){if(!b.alive)continue;b.phase+=dt;const target=b.home.clone().add(new THREE.Vector3(Math.sin(b.phase*.7)*3,0,Math.cos(b.phase*.8)*3));b.g.position.lerp(target,dt*.6);b.g.lookAt(player.position.x,0,player.position.z);if(b.g.position.distanceTo(player.position)<2.2){health=Math.max(0,health-8*dt);document.querySelector('#healthNum').textContent=Math.ceil(health);document.querySelector('#healthBar').style.width=health+'%';if(health<=0){document.querySelector('#msg').textContent='💥 Éliminé ! Appuie sur R pour recommencer.';started=false}}}for(let i=bullets.length-1;i>=0;i--){let b=bullets[i];b.life-=dt;b.mesh.position.addScaledVector(b.dir,65*dt);if(b.life<=0){scene.remove(b.mesh);bullets.splice(i,1)}}const desired=new THREE.Vector3(player.position.x+Math.sin(yaw)*10,player.position.y+7,player.position.z+Math.cos(yaw)*10);camera.position.lerp(desired,1-Math.exp(-dt*4));camera.lookAt(player.position.x,player.position.y+1.3,player.position.z);const m=Math.floor(elapsed/60).toString().padStart(2,'0'),s=Math.floor(elapsed%60).toString().padStart(2,'0');document.querySelector('#timer').textContent=m+':'+s}
+renderer.render(scene,camera)}animate();addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+</script>
+</body></html>

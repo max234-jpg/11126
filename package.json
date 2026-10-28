@@ -1,0 +1,23 @@
+{
+  "name": "battle-royale-realiste",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Battle Royale 3D réaliste (Three.js) jouable hors ligne sur Mac par double-clic",
+  "scripts": {
+    "fetch-assets": "node tools/fetch_assets.mjs",
+    "build-assets": "node tools/build_assets.mjs",
+    "build": "node tools/build.mjs",
+    "test": "node tests/smoke.mjs"
+  },
+  "devDependencies": {
+    "@dgreenheck/ez-tree": "^1.1.0",
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
+    "esbuild": "^0.28.2",
+    "meshoptimizer": "^1.3.0",
+    "sharp": "^0.35.5",
+    "three": "^0.170.0"
+  }
+}

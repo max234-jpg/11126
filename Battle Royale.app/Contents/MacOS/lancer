@@ -1,0 +1,12 @@
+#!/bin/bash
+# Application Mac minimale : ouvre JOUER.html (situé à côté de l'app) dans Chrome ou Safari.
+APPDIR="$(cd "$(dirname "$0")/../.." && pwd)"
+PAGE="$(dirname "$APPDIR")/JOUER.html"
+URL="file://$PAGE"
+for APP in "Google Chrome" "Brave Browser" "Microsoft Edge" "Chromium"; do
+  if open -Ra "$APP" 2>/dev/null; then
+    open -na "$APP" --args --app="$URL" --start-fullscreen --autoplay-policy=no-user-gesture-required
+    exit 0
+  fi
+done
+open "$PAGE"
