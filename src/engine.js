@@ -69,7 +69,10 @@ export class Engine {
     if (this.composer) this.composer.dispose();
     r.setPixelRatio(Math.min(devicePixelRatio || 1, q.pixelRatio));
     const size = r.getDrawingBufferSize(new THREE.Vector2());
-    const rt = new THREE.WebGLRenderTarget(size.x, size.y, { type: THREE.HalfFloatType, samples: q.msaa });
+    // rendu HDR en demi-flottants si la carte le permet (sinon 8 bits)
+    const ext = r.extensions;
+    const hdrOK = ext.has('EXT_color_buffer_float') || ext.has('EXT_color_buffer_half_float');
+    const rt = new THREE.WebGLRenderTarget(size.x, size.y, { type: hdrOK ? THREE.HalfFloatType : THREE.UnsignedByteType, samples: q.msaa });
     this.composer = new EffectComposer(r, rt);
     this.composer.addPass(new RenderPass(this.scene, this.camera));
     if (q.ao) {
@@ -92,6 +95,26 @@ export class Engine {
   }
 
   render() {
+    const info = this.renderer.info;
+    info.autoReset = false;
+    info.reset();
     this.composer.render();
+    if (this.stats) {
+      this.statN = (this.statN || 0) + 1;
+      const now = performance.now();
+      if (!this.statT) this.statT = now;
+      if (now - this.statT > 500) {
+        this.stats.textContent = `${(this.statN * 1000 / (now - this.statT)).toFixed(0)} img/s · ${info.render.calls} appels · ${(info.render.triangles / 1e6).toFixed(2)} M triangles · ${this.qualityName}`;
+        this.statN = 0; this.statT = now;
+      }
+    }
+  }
+
+  showStats(v) {
+    if (v && !this.stats) {
+      this.stats = document.createElement('div');
+      this.stats.style.cssText = 'position:fixed;left:50%;bottom:6px;transform:translateX(-50%);font:12px monospace;color:#fff;background:#0008;padding:3px 8px;border-radius:6px;z-index:40;pointer-events:none';
+      document.body.appendChild(this.stats);
+    } else if (!v && this.stats) { this.stats.remove(); this.stats = null; }
   }
 }

@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import * as A from './assets.js';
 import * as M from './models.js';
 import { Bucket, wallPieces } from './geom.js';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { LOTS, PARKS, PARKING, heightAt } from './map.js';
 import { mulberry32 } from './noise.js';
 
@@ -16,18 +17,6 @@ const WALL_STYLES = {
 const FLOORS = ['laminate_floor_02', 'herringbone_parquet', 'floor_tiles_06'];
 
 export const HOUSES = [];  // pour le jeu : intérieurs (coffres), portes, etc.
-
-function scaledBoxGeometry(sx, sy, sz, ts) {
-  const g = new THREE.BoxGeometry(sx, sy, sz);
-  const uv = g.attributes.uv;
-  // ordre des faces : px, nx, py, ny, pz, nz (4 sommets chacune)
-  const dims = [[sz, sy], [sz, sy], [sx, sz], [sx, sz], [sx, sy], [sx, sy]];
-  for (let f = 0; f < 6; f++) for (let k = 0; k < 4; k++) {
-    const i = f * 4 + k;
-    uv.setXY(i, uv.getX(i) * dims[f][0] / ts, uv.getY(i) * dims[f][1] / ts);
-  }
-  return g;
-}
 
 export async function createTown(engine, world, game) {
   const scene = engine.scene;
@@ -53,15 +42,32 @@ export async function createTown(engine, world, game) {
 
   const Y0 = 0.35, H = 3.0, T = 0.24;
 
+  // Toute la géométrie des maisons est fusionnée par matériau (quelques appels de rendu
+  // pour tout le village) et le mobilier est instancié sur GPU.
+  const merged = new Map();
+  const put = (key, mat, geo, matrix, cast = true) => {
+    geo.applyMatrix4(matrix);
+    if (!merged.has(key)) merged.set(key, { mat, geos: [], cast });
+    merged.get(key).geos.push(geo);
+  };
+  const instances = new Map();
+  const inst = (id, x, y, z, rot, scale = 1) => {
+    if (!instances.has(id)) instances.set(id, []);
+    instances.get(id).push({ x, y, z, rot, scale });
+  };
+  const slab = (topBucketTs, sx, sy, sz) => {
+    const top = new Bucket(topBucketTs), und = new Bucket(1);
+    Bucket.box({ py: top, px: und, nx: und, ny: und, pz: und, nz: und }, -sx / 2, -sy / 2, -sz / 2, sx / 2, sy / 2, sz / 2);
+    return { top: top.geometry(), und: und.geometry() };
+  };
+  const M4 = (x, y, z, rx = 0) => new THREE.Matrix4().compose(new THREE.Vector3(x, y, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(rx, 0, 0)), new THREE.Vector3(1, 1, 1));
+
   for (const lot of LOTS) {
     const rnd = mulberry32(lot.seed * 977);
     const w = 11 + Math.round(rnd() * 4) / 2, d = 9 + Math.round(rnd() * 3) / 2;
     const style = WALL_STYLES[lot.style];
-    const g = new THREE.Group();
     const ground = heightAt(lot.x, lot.z);
-    g.position.set(lot.x, ground, lot.z);
-    g.rotation.y = lot.rot;
-    town.add(g);
+    const HM = new THREE.Matrix4().compose(new THREE.Vector3(lot.x, ground, lot.z), new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), lot.rot), new THREE.Vector3(1, 1, 1));
 
     const bExt = new Bucket(2.5), bInt = new Bucket(2.5), bFloor = new Bucket(2), bTrim = new Bucket(1), bGlass = new Bucket(1), bWood = new Bucket(1.2);
     const colliders = [];   // [cx, cz, hx, hz, y0, y1, walkable]
@@ -149,43 +155,42 @@ export async function createTown(engine, world, game) {
     // porte ouverte en bois
     Bucket.box(allOf(bWood), doorX - 0.55, Y0, d / 2 - T - 1.0, doorX - 0.5, Y0 + 2.2, d / 2 - T);
 
-    const add = (b, mat, cast = true) => {
-      if (b.empty) return;
-      const m = new THREE.Mesh(b.geometry(), mat);
-      m.castShadow = cast; m.receiveShadow = true;
-      g.add(m);
-    };
-    add(bExt, ext[lot.style]);
-    add(bInt, interior);
-    add(bFloor, floors[Math.floor(rnd() * floors.length)], false);
-    add(bTrim, trim);
-    add(bWood, wood);
-    add(bGlass, glass, false);
-    // la face inférieure du plafond ne doit pas projeter d'ombre sur le toit : le toit le fait
+    const add = (key, b, mat, cast = true) => { if (!b.empty) put(key, mat, b.geometry(), HM, cast); };
+    add('ext_' + lot.style, bExt, ext[lot.style]);
+    add('int', bInt, interior);
+    const fi = Math.floor(rnd() * floors.length);
+    add('floor' + fi, bFloor, floors[fi], false);
+    add('trim', bTrim, trim);
+    add('wood', bWood, wood);
+    add('glass', bGlass, glass, false);
 
     // toit à deux pans
     const o = 0.55, slope = rh / (d / 2);
     const ze = d / 2 + o, ye = Y0 + H - o * slope;
     const len = Math.hypot(ze, ridge - ye), ang = Math.atan2(ridge - ye, ze);
     for (const s of [1, -1]) {
-      const geo = scaledBoxGeometry(w + 2 * o, 0.16, len, 2.2);
-      const roof = new THREE.Mesh(geo, [roofUnder, roofUnder, ext[lot.style + '_roof'], roofUnder, roofUnder, roofUnder]);
-      roof.rotation.x = s * ang;
-      roof.position.set(0, (ye + ridge) / 2 + 0.1, s * ze / 2);
-      roof.castShadow = roof.receiveShadow = true;
-      g.add(roof);
+      const sl = slab(2.2, w + 2 * o, 0.16, len);
+      const mm = HM.clone().multiply(M4(0, (ye + ridge) / 2 + 0.1, s * ze / 2, s * ang));
+      put('roof_' + lot.style, ext[lot.style + '_roof'], sl.top, mm);
+      put('under', roofUnder, sl.und, mm);
     }
-    const cap = new THREE.Mesh(scaledBoxGeometry(w + 2 * o, 0.18, 0.36, 1), roofUnder);
-    cap.position.set(0, ridge + 0.17, 0); cap.castShadow = true; g.add(cap);
+    const cap = slab(1, w + 2 * o, 0.18, 0.36);
+    put('under', roofUnder, cap.top, HM.clone().multiply(M4(0, ridge + 0.17, 0)));
+    put('under', roofUnder, cap.und, HM.clone().multiply(M4(0, ridge + 0.17, 0)));
     // cheminée
-    const chim = new THREE.Mesh(scaledBoxGeometry(0.7, 2.2, 0.7, 2.5), ext[lot.style]);
-    chim.position.set(w / 2 - 1.6, ridge - 0.5, -d / 4);
-    chim.castShadow = true; g.add(chim);
+    const ch = new Bucket(2.5);
+    Bucket.box(allOf(ch), -0.35, -1.1, -0.35, 0.35, 1.1, 0.35);
+    put('ext_' + lot.style, ext[lot.style], ch.geometry(), HM.clone().multiply(M4(w / 2 - 1.6, ridge - 0.5, -d / 4)));
 
     // ---- mobilier ----
     const furn = [];
-    const env = { envMapIntensity: 0.8 };
-    const inner = (id, x, z, rot, scale = 1, y = Y0) => furn.push(M.place(id, g, x, y, z, rot, scale, env).then((obj) => ({ obj, id, x, z, rot, scale })));
+    const cr = Math.cos(lot.rot), sr = Math.sin(lot.rot);
+    const toWorld = (x, z) => [lot.x + x * cr + z * sr, lot.z - x * sr + z * cr];
+    const inner = (id, x, z, rot, scale = 1, y = Y0) => {
+      const [wx, wz] = toWorld(x, z);
+      inst(id, wx, ground + y, wz, lot.rot + rot, scale);
+      furn.push({ id, x, z, rot, scale });
+    };
     const wl = -w / 2 + T, wb = -d / 2 + T;
     inner('sofa_02', wl + 0.45, 0.3, Math.PI / 2);
     inner('CoffeeTable_01', wl + 1.75, 0.3, Math.PI / 2, 0.8);
@@ -197,7 +202,7 @@ export async function createTown(engine, world, game) {
     inner('GothicBed_01', bedC, wb + 1.08, 0);
     inner('ClassicNightstand_01', bedC + 1.15, wb + 0.25, 0);
     inner('painted_wooden_chair_02', bedC + 0.9, d / 2 - T - 1.2, Math.PI * 0.85);
-    for (const f of await Promise.all(furn)) {
+    for (const f of furn) {
       const s = await M.size(f.id);
       const hx = s.x * f.scale / 2, hz = s.z * f.scale / 2;
       const c = Math.cos(f.rot), sn = Math.sin(f.rot);
@@ -207,11 +212,9 @@ export async function createTown(engine, world, game) {
     }
 
     // colliders -> monde
-    const cr = Math.cos(lot.rot), sr = Math.sin(lot.rot);
     for (const [cx, cz, hx, hz, y0, y1, walk] of colliders) {
       world.addBox(lot.x + cx * cr + cz * sr, lot.z - cx * sr + cz * cr, hx, hz, lot.rot, ground + y0, ground + y1, walk ? { walkable: true } : {});
     }
-    const toWorld = (x, z) => [lot.x + x * cr + z * sr, lot.z - x * sr + z * cr];
     HOUSES.push({
       lot, w, d, ground, floorY: ground + Y0, toWorld,
       spots: [toWorld(bedC - 0.2, d / 2 - T - 0.9), toWorld(livC - 0.5, -0.6)], // emplacements de coffres / butin
@@ -220,7 +223,6 @@ export async function createTown(engine, world, game) {
   }
 
   // ---- mobilier urbain ----
-  const props = [];
   const lampSpots = [];
   for (let a = -78; a <= 78; a += 26) {
     if (Math.abs(a) < 12) continue;
@@ -228,7 +230,7 @@ export async function createTown(engine, world, game) {
   }
   for (const [x, z, r] of lampSpots) {
     if (Math.abs(x) > 82 || Math.abs(z) > 82 || (Math.abs(x) < 10 && Math.abs(z) < 10)) continue;
-    props.push(M.place('street_lamp_01', town, x, 4.41, z, r, 1.45));
+    inst('street_lamp_01', x, 4.41, z, r, 1.45);
     world.addCircle(x, z, 0.2, 4.4, 10);
   }
   const misc = [
@@ -236,14 +238,14 @@ export async function createTown(engine, world, game) {
     ['metal_trash_can', 33, 7.2, 0], ['metal_trash_can', -62, -7.2, Math.PI], ['metal_trash_can', 7.2, 26, Math.PI / 2], ['metal_trash_can', -7.2, -66, -Math.PI / 2],
   ];
   for (const [id, x, z, r] of misc) {
-    props.push(M.place(id, town, x, 4.41, z, r));
+    inst(id, x, 4.41, z, r);
     world.addCircle(x, z, 0.45, 4.4, 5.3);
   }
   // parc : tables de pique-nique, barils, caisses
   for (const p of PARKS) {
     const y = heightAt(p.x, p.z);
-    props.push(M.place('wooden_picnic_table', town, p.x - 2, y, p.z + 1, p.rot + 0.3));
-    props.push(M.place('wooden_picnic_table', town, p.x + 3, y, p.z - 2, p.rot - 0.2));
+    inst('wooden_picnic_table', p.x - 2, y, p.z + 1, p.rot + 0.3);
+    inst('wooden_picnic_table', p.x + 3, y, p.z - 2, p.rot - 0.2);
     world.addBox(p.x - 2, p.z + 1, 1.1, 1.5, p.rot + 0.3, y, y + 0.75);
     world.addBox(p.x + 3, p.z - 2, 1.1, 1.5, p.rot - 0.2, y, y + 0.75);
   }
@@ -252,14 +254,23 @@ export async function createTown(engine, world, game) {
     const p = PARKING, y = heightAt(p.x, p.z);
     for (let i = 0; i < 4; i++) {
       const x = p.x - 6 + i * 1.6, z = p.z + 7;
-      props.push(M.place('concrete_road_barrier_02', town, x, y, z, 0));
+      inst('concrete_road_barrier_02', x, y, z, 0);
       world.addBox(x, z, 0.78, 0.25, 0, y, y + 1.1);
     }
     for (const [dx, dz, id] of [[6, -6, 'Barrel_01'], [6.7, -5.2, 'Barrel_01'], [5.8, -4.3, 'wooden_crate_01'], [-6, -6, 'wooden_crate_01']]) {
-      props.push(M.place(id, town, p.x + dx, y, p.z + dz, dx));
+      inst(id, p.x + dx, y, p.z + dz, dx);
       world.addCircle(p.x + dx, p.z + dz, 0.4, y, y + 0.9);
     }
   }
-  await Promise.all(props);
+  for (const { mat, geos, cast } of merged.values()) {
+    const mesh = new THREE.Mesh(mergeGeometries(geos, false), mat);
+    mesh.castShadow = cast; mesh.receiveShadow = true;
+    town.add(mesh);
+  }
+  const INTERIOR = ['sofa_02', 'CoffeeTable_01', 'ArmChair_01', 'wooden_bookshelf_worn', 'Television_01', 'ClassicNightstand_01', 'potted_plant_04', 'GothicBed_01', 'painted_wooden_chair_02'];
+  for (const [id, list] of instances) {
+    const meshes = await M.instanced(id, list, town);
+    if (INTERIOR.includes(id)) for (const m of meshes) { m.material.envMapIntensity = 0.85; m.castShadow = false; }
+  }
   return town;
 }

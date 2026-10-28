@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 import * as A from './assets.js';
 import * as M from './models.js';
+import { mergeByMaterial } from './models.js';
 import { makeNoise } from './noise.js';
 
 export const SKINS = [
@@ -79,7 +80,10 @@ export async function loadCharacters() {
   for (const f of ['denim_fabric', 'cotton_jersey', 'jersey_melange', 'fabric_leather_01']) {
     tex[f] = { diff: await A.pixels(f + '/diff', 512), nor: await A.pixels(f + '/nor', 512) };
   }
-  shared = { bodies, clips, hairs, tex, pistol };
+  // pistolet : une seule variante visible, fusionnée en un objet
+  pistol.scene.traverse((o) => { if (/_b$|bullet|magazine_empty/.test(o.name)) o.visible = false; });
+  const gunMesh = mergeByMaterial(pistol.scene, pistol.scene);
+  shared = { bodies, clips, hairs, tex, pistol, gunMesh };
   return shared;
 }
 
@@ -211,8 +215,7 @@ export class Character {
     addHair(skin.hair);
     if (skin.beard) addHair('Hair_Beard');
     // pistolet dans la main droite
-    const gun = shared.pistol.scene.clone(true);
-    gun.traverse((o) => { if (/_b$|bullet|magazine_empty/.test(o.name)) o.visible = false; });
+    const gun = shared.gunMesh.clone(true);
     gun.scale.setScalar(1.0);
     gun.rotation.set(0, Math.PI / 2, Math.PI / 2);
     gun.position.set(-0.02, 0.1, 0.03);

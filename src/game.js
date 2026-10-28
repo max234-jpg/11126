@@ -55,6 +55,7 @@ export class Game {
     this.engine.setQuality(params.get('q') || this.save.quality || (isMac ? 'haute' : 'moyenne'));
     this.input = new Input(this.engine.renderer.domElement);
     this.input.sensitivity = this.save.sens || 1;
+    if (params.has('stats') || this.save.stats) this.engine.showStats(true);
     this.audio = new Audio();
     this.audio.volume = this.save.volume ?? 0.7;
     this.world = new World();
@@ -103,6 +104,7 @@ export class Game {
       if (e.code === 'Escape' && this.state === 'playing') this.pause();
       else if (e.code === 'Escape' && this.state === 'paused') this.resume();
       if (e.code === 'KeyM' && (this.state === 'playing')) { this.bigMap = !this.bigMap; this.ui.toggleMap(this.bigMap); }
+      if (e.code === 'F3' || e.code === 'KeyP') { this.save.stats = !this.engine.stats; this.engine.showStats(this.save.stats); this.persist(); }
     });
     document.addEventListener('pointerlockchange', () => {
       if (!this.input.locked && this.state === 'playing' && !this.ended) this.pause();
@@ -139,7 +141,7 @@ export class Game {
 
   // Ajustement automatique : si le Mac n'atteint pas ~30 images/s, on baisse la qualité.
   autoQuality(raw) {
-    if (this.state !== 'playing' || this.save.qualityManual || (this.qChecks || 0) >= 2 || window.__stop) return;
+    if (this.state !== 'playing' || this.save.qualityManual || /[?&]q=/.test(location.search) || (this.qChecks || 0) >= 2 || window.__stop) return;
     this.fpsT = (this.fpsT || 0) + raw; this.fpsN = (this.fpsN || 0) + 1;
     if (this.fpsT < 6) return;
     const fps = this.fpsN / this.fpsT;

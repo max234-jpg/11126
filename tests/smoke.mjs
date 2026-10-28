@@ -72,7 +72,9 @@ const results = await page.evaluate(() => {
   p.yaw = Math.PI; p.camYaw = 0; p.camPitch = 0;
   run(2);
   const hp0 = b.health;
-  for (let i = 0; i < 40; i++) { g.input.buttons = 1; g.frame(1 / 30); }
+  b.update = () => {}; // le bot reste immobile pendant le test de tir
+  for (let i = 0; i < 40; i++) { g.input.buttons = 1 | 4; g.frame(1 / 30); }
+  delete b.update;
   g.input.buttons = 0;
   ok('tir', b.health < hp0 || !b.alive, `santé du bot ${hp0} -> ${Math.max(0, b.health).toFixed(0)}, munitions ${p.mag}/${p.reserve}`);
 

@@ -1,6 +1,7 @@
 // Coffres (s'ouvrent vraiment : couvercle animé) et objets ramassables (trousses de soin, munitions).
 import * as THREE from 'three';
 import * as M from './models.js';
+import { mergeByMaterial } from './models.js';
 import { heightAt } from './map.js';
 
 export class Loot {
@@ -22,8 +23,17 @@ export class Loot {
     const outdoor = [[120, 60], [-140, 40], [60, -150], [-60, 160], [150, -40], [-100, -130], [95, 130], [-175, -20], [10, 120], [-30, -110]];
     for (const [x, z] of outdoor) spots.push({ x, z, y: this.game.world.groundAt(x, z), rot: Math.random() * 6 });
     const g = await M.model('treasure_chest');
+    // coffre fusionné (corps) + couvercle séparé pour l'animation
+    const lid0 = g.scene.getObjectByName('treasure_chest_lid');
+    const proto = new THREE.Group();
+    proto.add(mergeByMaterial(g.scene, g.scene, (o) => o === lid0));
+    const lidPivot = new THREE.Group();
+    lidPivot.name = 'treasure_chest_lid';
+    lidPivot.position.copy(lid0.position);
+    lidPivot.add(mergeByMaterial(lid0, lid0));
+    proto.add(lidPivot);
     for (const s of spots) {
-      const o = g.scene.clone(true);
+      const o = proto.clone(true);
       o.position.set(s.x, s.y, s.z);
       o.rotation.y = s.rot;
       o.scale.setScalar(1.1);

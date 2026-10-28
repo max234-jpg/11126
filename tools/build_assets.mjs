@@ -89,11 +89,11 @@ if (want('sky')) {
 }
 
 // ---------- Modèles glTF ----------
-async function optimize(doc, { tex = 1024, ratio = 1, anim = false } = {}) {
+async function optimize(doc, { tex = 1024, ratio = 1, anim = false, error = 0.004 } = {}) {
   await doc.transform(
     dedup(),
     weld(),
-    ...(ratio < 1 ? [simplify({ simplifier: MeshoptSimplifier, ratio, error: 0.004, lockBorder: true })] : []),
+    ...(ratio < 1 ? [simplify({ simplifier: MeshoptSimplifier, ratio, error, lockBorder: error <= 0.004 })] : []),
     ...(anim ? [resample()] : []),
     prune(),
     textureCompress({ encoder: sharp, targetFormat: 'webp', resize: [tex, tex], quality: 82 }),
@@ -108,14 +108,14 @@ if (want('model')) {
   console.log('Modèles Poly Haven…');
   for (const [id, cfg] of Object.entries(POLYHAVEN_MODELS)) {
     const doc = await io.read(path.join(SRC, 'models', id, `${id}.gltf`));
-    writePack(`model_${id}.js`, [[`model/${id}`, 'model/gltf-binary', await optimize(doc, { tex: cfg.tex, ratio: cfg.simplify ?? 1 })]]);
+    writePack(`model_${id}.js`, [[`model/${id}`, 'model/gltf-binary', await optimize(doc, { tex: cfg.tex, ratio: cfg.simplify ?? 1, error: cfg.error ?? 0.004 })]]);
   }
 }
 
 if (want('car')) {
   console.log('Voiture…');
   const doc = await io.read(path.join(SRC, 'car', 'CarConcept.glb'));
-  writePack('model_car.js', [['model/car', 'model/gltf-binary', await optimize(doc, { tex: 1024, ratio: 0.6 })]]);
+  writePack('model_car.js', [['model/car', 'model/gltf-binary', await optimize(doc, { tex: 1024, ratio: 0.3, error: 0.01 })]]);
 }
 
 // ---------- Animations (squelette universel Quaternius) ----------

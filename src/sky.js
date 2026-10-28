@@ -9,8 +9,7 @@ export async function createSky(engine) {
   // Direction du soleil = pixel le plus lumineux de l'HDRI
   let best = 0, bx = 0, by = 0;
   for (let y = 0; y < hdr.height / 2; y++) for (let x = 0; x < hdr.width; x++) {
-    const k = (y * hdr.width + x) * 4;
-    const l = hdr.data[k] * 0.2126 + hdr.data[k + 1] * 0.7152 + hdr.data[k + 2] * 0.0722;
+    const l = hdr.lum((y * hdr.width + x) * 4);
     if (l > best) { best = l; bx = x; by = y; }
   }
   const u = (bx + 0.5) / hdr.width, v = 1 - (by + 0.5) / hdr.height;

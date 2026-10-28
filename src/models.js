@@ -1,6 +1,7 @@
 // Chargement / duplication des modèles 3D Poly Haven, instanciation GPU pour les objets répétés.
 import * as THREE from 'three';
 import * as A from './assets.js';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 const cache = new Map();
 
@@ -128,4 +129,35 @@ export function toFloat(src) {
   }
   if (src.index) geo.setIndex(src.index.clone());
   return geo;
+}
+
+// Fusionne tous les maillages d'un sous-arbre par matériau (moins d'appels de rendu).
+// Les géométries sont exprimées dans le repère de `relativeTo`.
+export function mergeByMaterial(root, relativeTo, skip = () => false) {
+  root.updateWorldMatrix(true, true);
+  relativeTo.updateWorldMatrix(true, false);
+  const inv = relativeTo.matrixWorld.clone().invert();
+  const groups = new Map();
+  root.traverse((o) => {
+    if (!o.isMesh || skip(o)) return;
+    let hidden = false;
+    for (let p = o; p && p !== root.parent; p = p.parent) if (!p.visible) hidden = true;
+    if (hidden) return;
+    const g = toFloat(o.geometry);
+    if (!g.attributes.normal) g.computeVertexNormals();
+    for (const k of Object.keys(g.attributes)) if (!['position', 'normal', 'uv'].includes(k)) g.deleteAttribute(k);
+    if (!g.attributes.uv) g.setAttribute('uv', new THREE.Float32BufferAttribute(new Float32Array(g.attributes.position.count * 2), 2));
+    if (!g.index) { const idx = []; for (let i = 0; i < g.attributes.position.count; i++) idx.push(i); g.setIndex(idx); }
+    g.applyMatrix4(inv.clone().multiply(o.matrixWorld));
+    const m = o.material;
+    if (!groups.has(m)) groups.set(m, []);
+    groups.get(m).push(g);
+  });
+  const out = new THREE.Group();
+  for (const [mat, geos] of groups) {
+    const mesh = new THREE.Mesh(geos.length === 1 ? geos[0] : mergeGeometries(geos, false), mat);
+    mesh.castShadow = true; mesh.receiveShadow = true;
+    out.add(mesh);
+  }
+  return out;
 }

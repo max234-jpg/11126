@@ -2,6 +2,7 @@
 // sur le relief, roues motrices et directrices, collisions, son du moteur.
 import * as THREE from 'three';
 import * as A from './assets.js';
+import { mergeByMaterial } from './models.js';
 import { WATER } from './map.js';
 
 const PAINTS = [0x8f0f12, 0x1f3d7a, 0xd8d8d8, 0x111214, 0xc9a227, 0x2f6b3a];
@@ -28,9 +29,12 @@ async function prototype() {
   scene.position.set(-center.x, -box.min.y, -center.z);
   inner.updateMatrixWorld(true);
   const size = box.getSize(new THREE.Vector3());
-  // matériaux : peinture recolorable, vitres sans transmission (coût réduit)
+  // matériaux : peinture recolorable, vitres sans transmission (coût réduit),
+  // pièces mécaniques et intérieures regroupées sur un même matériau sombre
+  const dark = new THREE.MeshStandardMaterial({ color: 0x1c1d20, roughness: 0.7, metalness: 0.2, name: 'dark' });
   scene.traverse((o) => {
     if (!o.isMesh) return;
+    if (/^(Interior|Floormat|Dashboard|Mechanical|Panel Sides|Hardware)/.test(o.material.name || '') && !/^Interior 3/.test(o.material.name)) o.material = dark;
     o.castShadow = true; o.receiveShadow = true;
     const mats = Array.isArray(o.material) ? o.material : [o.material];
     mats.forEach((m) => {
@@ -39,7 +43,20 @@ async function prototype() {
     });
   });
   const wheelBase = front.distanceTo(rear);
-  proto = { inner, size, wheelBase, track: FL.distanceTo(FR) };
+  // fusion par matériau : carrosserie d'un bloc + 4 roues (au lieu d'une centaine d'objets)
+  const isWheel = (o) => { for (let p = o; p; p = p.parent) if (/^Wheel(Front|Rear)(L|R)$/.test(p.name)) return true; return false; };
+  const body = mergeByMaterial(scene, inner, isWheel);
+  const wheels = [];
+  for (const n of ['WheelFrontL', 'WheelFrontR', 'WheelRearL', 'WheelRearR']) {
+    const w = scene.getObjectByName(n);
+    const pivot = new THREE.Object3D();
+    pivot.position.copy(w.getWorldPosition(new THREE.Vector3()));   // repère aligné sur la voiture
+    inner.add(pivot); pivot.updateWorldMatrix(true, false);
+    const merged = mergeByMaterial(w, pivot);
+    inner.remove(pivot);
+    wheels.push({ name: n, pos: pivot.position.clone(), mesh: merged });
+  }
+  proto = { body, wheels, size, wheelBase, track: FL.distanceTo(FR) };
   return proto;
 }
 
@@ -47,28 +64,20 @@ export class Car {
   constructor(game, p, x, z, yaw, paint) {
     this.game = game;
     this.root = new THREE.Group();
-    const inner = p.inner.clone(true);
-    this.root.add(inner);
-    this.wheels = [];
-    inner.traverse((o) => {
-      if (/^Wheel(Front|Rear)(L|R)$/.test(o.name)) this.wheels.push({ o, front: o.name.includes('Front'), q0: o.quaternion.clone() });
-      if (o.isMesh) {
-        const mats = Array.isArray(o.material) ? o.material : [o.material];
-        const nm = mats.map((m) => {
-          if (/^Paint 1/.test(m.name || '')) { const c = m.clone(); c.color.setHex(paint); return c; }
-          return m;
-        });
-        o.material = Array.isArray(o.material) ? nm : nm[0];
-      }
+    const body = p.body.clone(true);
+    body.traverse((o) => {
+      if (o.isMesh && /^Paint 1/.test(o.material.name || '')) { o.material = o.material.clone(); o.material.color.setHex(paint); }
     });
-    this.root.updateMatrixWorld(true);
-    // axe latéral (rotation des roues) exprimé dans le repère du parent de chaque roue
-    for (const w of this.wheels) {
-      const pq = w.o.parent.getWorldQuaternion(new THREE.Quaternion()).invert();
-      const rq = this.root.getWorldQuaternion(new THREE.Quaternion());
-      w.axis = new THREE.Vector3(1, 0, 0).applyQuaternion(rq).applyQuaternion(pq).normalize();
-      w.upAxis = new THREE.Vector3(0, 1, 0).applyQuaternion(rq).applyQuaternion(pq).normalize();
-    }
+    this.root.add(body);
+    // chaque roue : pivot de braquage (axe Y) puis pivot de rotation (axe X)
+    this.wheels = p.wheels.map((w) => {
+      const steer = new THREE.Object3D(), spin = new THREE.Object3D();
+      steer.position.copy(w.pos);
+      steer.add(spin);
+      spin.add(w.mesh.clone(true));
+      this.root.add(steer);
+      return { steer, spin, front: w.name.includes('Front') };
+    });
     this.halfL = p.size.z / 2; this.halfW = p.size.x / 2; this.height = p.size.y;
     this.wheelBase = p.wheelBase; this.track = p.track;
     this.pos = new THREE.Vector3(x, 0, z);
@@ -166,11 +175,9 @@ export class Car {
     this.root.rotateY(this.yaw);
     this.root.rotateX(this.pitch);
     this.root.rotateZ(this.roll);
-    const q = new THREE.Quaternion(), qs = new THREE.Quaternion();
     for (const w of this.wheels) {
-      q.setFromAxisAngle(w.axis, this.spin);
-      if (w.front) { qs.setFromAxisAngle(w.upAxis, this.steer); q.premultiply(qs); }
-      w.o.quaternion.copy(q).multiply(w.q0);
+      w.spin.rotation.x = this.spin;
+      if (w.front) w.steer.rotation.y = this.steer;
     }
     this.game.world.moveBox(this.collider, this.pos.x, this.pos.z, this.yaw, this.pos.y, this.pos.y + 1.4);
   }
@@ -231,6 +238,10 @@ export class Vehicles {
   }
 
   update(dt) {
-    for (const c of this.cars) if (!c.driver) c.idle(dt);
+    const cam = this.game.camera.position;
+    for (const c of this.cars) {
+      if (!c.driver) c.idle(dt);
+      c.root.visible = c.driver?.isPlayer || Math.hypot(c.pos.x - cam.x, c.pos.z - cam.z) < 230;
+    }
   }
 }

@@ -76,9 +76,10 @@ export async function gltf(name) {
 
 export function hdr(name) {
   const data = bytes(name);
-  const loader = new RGBELoader().setDataType(THREE.FloatType);
+  // demi-flottants : filtrables partout en WebGL 2 (Safari compris)
+  const loader = new RGBELoader().setDataType(THREE.HalfFloatType);
   const parsed = loader.parse(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength));
-  const tex = new THREE.DataTexture(parsed.data, parsed.width, parsed.height, THREE.RGBAFormat, THREE.FloatType);
+  const tex = new THREE.DataTexture(parsed.data, parsed.width, parsed.height, THREE.RGBAFormat, THREE.HalfFloatType);
   tex.colorSpace = THREE.LinearSRGBColorSpace;
   tex.flipY = true;
   tex.mapping = THREE.EquirectangularReflectionMapping;
@@ -86,7 +87,8 @@ export function hdr(name) {
   tex.magFilter = THREE.LinearFilter;
   tex.generateMipmaps = false;
   tex.needsUpdate = true;
-  return { texture: tex, data: parsed.data, width: parsed.width, height: parsed.height };
+  const lum = (i) => THREE.DataUtils.fromHalfFloat(parsed.data[i]) * 0.2126 + THREE.DataUtils.fromHalfFloat(parsed.data[i + 1]) * 0.7152 + THREE.DataUtils.fromHalfFloat(parsed.data[i + 2]) * 0.0722;
+  return { texture: tex, lum, width: parsed.width, height: parsed.height };
 }
 
 // Matériau PBR standard à partir d'un jeu de textures Poly Haven / ambientCG (diff, nor, arm)

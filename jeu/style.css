@@ -68,7 +68,7 @@ table.keys td:first-child{font-weight:800;color:#ffcf47;white-space:nowrap}
 #hitm{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;opacity:0;background:
  linear-gradient(45deg,#0000 45%,#fff 45% 55%,#0000 55%),linear-gradient(-45deg,#0000 45%,#fff 45% 55%,#0000 55%)}
 #hitm.on{opacity:1}#hitm.head{filter:hue-rotate(0) sepia(1) saturate(8)}#hitm.kill{transform:scale(1.5);filter:sepia(1) saturate(10) hue-rotate(-40deg)}
-#prompt{position:absolute;left:50%;top:62%;transform:translateX(-50%);background:#0b141cd0;border-radius:10px;padding:9px 16px;font-size:16px;font-weight:600}
+#prompt{position:absolute;left:50%;top:74%;transform:translateX(-50%);background:#0b141cd0;border-radius:10px;padding:9px 16px;font-size:16px;font-weight:600}
 kbd{display:inline-block;background:#ffcf47;color:#1b1206;border-radius:6px;padding:1px 8px;margin-right:6px;font-weight:900;font-family:inherit}
 #feed{position:absolute;right:16px;top:230px;display:flex;flex-direction:column;gap:5px;align-items:flex-end}
 .kf{background:#0b141cb3;border-radius:8px;padding:5px 10px;font-size:13px;animation:fin .25s}

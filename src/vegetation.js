@@ -43,10 +43,10 @@ async function makeTreeVariants() {
     t.options.seed = seed;
     // version allégée pour le temps réel : moins de sections, feuilles moins nombreuses mais plus grandes
     const br = t.options.branch;
-    for (const k of Object.keys(br.sections)) br.sections[k] = Math.max(2, Math.round(br.sections[k] * 0.6));
+    for (const k of Object.keys(br.sections)) br.sections[k] = Math.max(2, Math.round(br.sections[k] * 0.5));
     for (const k of Object.keys(br.segments)) br.segments[k] = Math.max(3, Math.round(br.segments[k] * 0.75));
-    t.options.leaves.count = Math.max(1, Math.round(t.options.leaves.count * 0.55));
-    t.options.leaves.size *= 1.3;
+    t.options.leaves.count = Math.max(1, Math.round(t.options.leaves.count * 0.4));
+    t.options.leaves.size *= 1.45;
     t.generate();
     const bg = t.branchesMesh.geometry, lg = t.leavesMesh.geometry;
     bg.computeBoundingBox();
@@ -223,7 +223,7 @@ export async function createVegetation(engine, world) {
   const chunked = (list) => {
     const m = new Map();
     for (const t of list) {
-      const k = Math.floor(t.x / 128) + ',' + Math.floor(t.z / 128);
+      const k = Math.floor(t.x / 160) + ',' + Math.floor(t.z / 160);
       if (!m.has(k)) m.set(k, []);
       m.get(k).push(t);
     }
@@ -271,9 +271,13 @@ export async function createVegetation(engine, world) {
     const rad = Math.max(v.size.x, v.size.z) * r.scale * 0.42;
     world.addCircle(r.x, r.z, rad, r.y, r.y + v.size.y * r.scale, { kind: 'rock', walkable: rad > 1.2 });
   }
-  const boulderParts = await M.parts('boulder_01');
-  M.instanceParts(boulderParts, boulders, group);
-  for (const b of boulders) world.addCircle(b.x, b.z, 0.75 * b.scale, b.y, b.y + boulderParts[0].size.y * b.scale, { kind: 'rock' });
+  // gros blocs : mêmes rochers moussus, à plus grande échelle
+  for (const b of boulders) { b.v = Math.floor(Math.random() * 6); b.scale *= 1.6; }
+  M.instanceParts(rockParts, boulders, group);
+  for (const b of boulders) {
+    const v = rockParts[b.v % rockParts.length];
+    world.addCircle(b.x, b.z, Math.max(v.size.x, v.size.z) * b.scale * 0.42, b.y, b.y + v.size.y * b.scale, { kind: 'rock' });
+  }
   const bushParts = [...(await M.parts('shrub_03')), ...(await M.parts('shrub_04'))];
   for (const v of bushParts) v.material.side = THREE.DoubleSide;
   M.instanceParts(bushParts, bushes, group, { shadows: true });

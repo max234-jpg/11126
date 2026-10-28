@@ -56,6 +56,7 @@ export class Combat {
   // Le joueur vise au centre de l'écran : on trouve le point visé puis on tire depuis le canon.
   fireFromCamera(p) {
     const cam = this.game.camera;
+    cam.updateMatrixWorld();
     const dir = cam.getWorldDirection(new THREE.Vector3());
     // dispersion : faible en visée, plus forte en mouvement
     const spread = (p.aiming ? 0.004 : 0.02) + Math.hypot(p.vel.x, p.vel.z) * 0.0025;
