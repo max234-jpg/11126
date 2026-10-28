@@ -9,7 +9,7 @@ export class Loot {
     this.game = game;
     this.chests = [];
     this.items = [];
-    this.glowMat = new THREE.MeshBasicMaterial({ color: 0xffd36b, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false });
+    this.glowMat = new THREE.MeshBasicMaterial({ color: 0x8a6a22, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false });
   }
 
   async init(houses) {
@@ -92,7 +92,7 @@ export class Loot {
         c.anim = Math.min(1, c.anim + dt * 2.2);
         c.lid.rotation.x = c.lidRot0 - 1.9 * (1 - Math.pow(1 - c.anim, 3));
       }
-      if (!c.open) c.light.material.opacity = 0.25 + Math.sin(performance.now() / 300) * 0.1;
+      if (!c.open) c.light.material.opacity = 0.4 + Math.sin(performance.now() / 300) * 0.12;
     }
     for (let i = this.items.length - 1; i >= 0; i--) {
       const it = this.items[i];

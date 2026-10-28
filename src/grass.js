@@ -67,7 +67,7 @@ export function createGrass(engine, heightTex, lots, groundTex) {
         varying float vY; varying float vShade; varying vec3 vGround;
         ${GLSL_NOISE}
         float heightAtW(vec2 w){
-          vec2 g = w + uHalf; vec2 f = fract(g); ivec2 i = ivec2(floor(g));
+          vec2 g = clamp(w + uHalf, vec2(0.0), vec2(uN - 2.0)); vec2 f = fract(g); ivec2 i = ivec2(floor(g));
           float a = texelFetch(tH, i, 0).r, b = texelFetch(tH, i + ivec2(1,0), 0).r;
           float c = texelFetch(tH, i + ivec2(0,1), 0).r, d = texelFetch(tH, i + ivec2(1,1), 0).r;
           return mix(mix(a,b,f.x), mix(c,d,f.x), f.y);
@@ -85,7 +85,7 @@ export function createGrass(engine, heightTex, lots, groundTex) {
           float dens = texture2D(tD, (wp + uHalf + 0.5) / uN).r;
           float dist = length(wp - cameraPosition.xz);
           float fade = 1.0 - smoothstep(uRadius * 0.55, uRadius, dist);
-          bladeH = (0.28 + h3 * 0.42) * step(h3, dens * 1.15) * fade * smoothstep(0.05, 0.35, dens);
+          bladeH = (0.2 + h3 * 0.32) * step(h3, dens * 1.15) * fade * smoothstep(0.05, 0.35, dens);
           bladeRot = h2 * 6.2831;
           bladeWorld = vec3(wp.x, heightAtW(wp) - 0.02, wp.y);
           float wind = sin(uTime * 1.7 + wp.x * 0.35 + wp.y * 0.21) * 0.5 + sin(uTime * 3.1 + wp.x * 1.3) * 0.2 + (vnoise(wp * 0.15 + uTime * 0.4) - 0.5);
@@ -104,7 +104,7 @@ export function createGrass(engine, heightTex, lots, groundTex) {
           float y = position.y;
           vY = y;
           float c = cos(bladeRot), s = sin(bladeRot);
-          float wdt = 0.055 + 0.025 * vShade;
+          float wdt = 0.032 + 0.018 * vShade;
           vec3 lp = vec3(position.x * wdt, y * bladeH, 0.0);
           lp.x += bladeBend.y * y * y * bladeH;
           lp.z += bladeBend.x * y * y * bladeH;
@@ -116,7 +116,11 @@ export function createGrass(engine, heightTex, lots, groundTex) {
         diffuseColor.rgb = vGround * mix(0.45, 1.25, vY) * (0.85 + 0.3 * vShade);`)
       .replace('#include <normal_fragment_begin>', '#include <normal_fragment_begin>\nnormal = normalize(vNormal);')
       .replace('#include <aomap_fragment>', `
-        reflectedLight.indirectDiffuse *= mix(0.45, 1.0, vY);`);
+        reflectedLight.indirectDiffuse *= mix(0.45, 1.0, vY);`)
+      .replace('#include <dithering_fragment>', `#include <dithering_fragment>
+        // garde-fou : jamais de valeur invalide ni de reflet extrême (évite les halos du bloom)
+        if (!(gl_FragColor.r >= 0.0) || !(gl_FragColor.g >= 0.0) || !(gl_FragColor.b >= 0.0)) gl_FragColor.rgb = vec3(0.05, 0.08, 0.02);
+        gl_FragColor.rgb = min(gl_FragColor.rgb, vec3(1.2));`);
   };
   const mesh = new THREE.Mesh(geo, mat);
   mesh.frustumCulled = false;
@@ -129,7 +133,7 @@ export function createGrass(engine, heightTex, lots, groundTex) {
     mesh,
     setDensity(q) {
       const radius = 18 + 14 * q;
-      const spacing = 0.21 / Math.sqrt(Math.max(0.2, q));
+      const spacing = 0.17 / Math.sqrt(Math.max(0.2, q));
       const grid = Math.ceil((radius * 2) / spacing);
       uniforms.uRadius.value = radius;
       uniforms.uSpacing.value = spacing;

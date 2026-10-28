@@ -29,7 +29,7 @@ export class Storm {
           float a = 0.14 + 0.2 * s + streak * 0.18;
           a *= smoothstep(400.0, 120.0, vW.y);
           float dc = length(cameraPosition.xz - vW.xz);
-          a *= mix(0.08, 1.0, smoothstep(200.0, 40.0, dc));
+          a *= smoothstep(150.0, 25.0, dc);
           gl_FragColor = vec4(col * 1.6, a);
         }`,
     });
@@ -88,6 +88,9 @@ export class Storm {
     this.wall.position.x = this.cur.x;
     this.wall.position.z = this.cur.z;
     this.wall.scale.set(Math.max(0.5, this.cur.r), 1, Math.max(0.5, this.cur.r));
+    // le mur n'est dessiné que lorsqu'on s'en approche
+    const cam = this.game.camera.position;
+    this.wall.visible = this.game.state !== 'menu' && Math.abs(Math.hypot(cam.x - this.cur.x, cam.z - this.cur.z) - this.cur.r) < 150;
   }
 
   outside(p) { return Math.hypot(p.x - this.cur.x, p.z - this.cur.z) > this.cur.r; }

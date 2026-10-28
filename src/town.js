@@ -12,7 +12,7 @@ const WALL_STYLES = {
   stucco: { wall: 'white_stucco', roof: 'clay_roof_tiles_02', tint: 0xfff6ea },
   brick: { wall: 'red_brick_03', roof: 'grey_roof_tiles', tint: 0xffffff },
   beige: { wall: 'beige_wall_001', roof: 'clay_roof_tiles_02', tint: 0xf3e2c8 },
-  yellow: { wall: 'yellow_plaster', roof: 'grey_roof_tiles', tint: 0xffffff },
+  yellow: { wall: 'yellow_plaster', roof: 'grey_roof_tiles', tint: [1.55, 1.42, 1.1] },
 };
 const FLOORS = ['laminate_floor_02', 'herringbone_parquet', 'floor_tiles_06'];
 
@@ -27,7 +27,8 @@ export async function createTown(engine, world, game) {
   // ---- matériaux partagés ----
   const ext = {};
   for (const [k, s] of Object.entries(WALL_STYLES)) {
-    ext[k] = await A.pbr(s.wall, { color: s.tint });
+    ext[k] = await A.pbr(s.wall, { color: Array.isArray(s.tint) ? 0xffffff : s.tint });
+    if (Array.isArray(s.tint)) { ext[k] = ext[k].clone(); ext[k].color.setRGB(...s.tint); }
     ext[k + '_roof'] = await A.pbr(s.roof);
   }
   const interior = (await A.pbr('painted_plaster_wall', { color: 0xfffaf2 })).clone();
@@ -268,8 +269,13 @@ export async function createTown(engine, world, game) {
     town.add(mesh);
   }
   const INTERIOR = ['sofa_02', 'CoffeeTable_01', 'ArmChair_01', 'wooden_bookshelf_worn', 'Television_01', 'ClassicNightstand_01', 'potted_plant_04', 'GothicBed_01', 'painted_wooden_chair_02'];
+  // certains modèles Poly Haven contiennent deux variantes côte à côte : on n'en garde qu'une
+  const FILTERS = {
+    fire_hydrant: (o) => !/aged/.test(o.material.name || ''),
+    metal_trash_can: (o) => !/rust/.test(o.material.name || ''),
+  };
   for (const [id, list] of instances) {
-    const meshes = await M.instanced(id, list, town);
+    const meshes = await M.instanced(id, list, town, { filter: FILTERS[id] || null });
     if (INTERIOR.includes(id)) for (const m of meshes) { m.material.envMapIntensity = 0.85; m.castShadow = false; }
   }
   return town;
