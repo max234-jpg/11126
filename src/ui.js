@@ -1,6 +1,6 @@
 // Interface : menu principal, casier, boutique, options, HUD, mini-carte, fil des éliminations.
 import { SKINS } from './character.js';
-import { H, N, HALF, LOTS, ROAD_D, WATER } from './map.js';
+import { H, N, HALF, LOTS, ROAD_D, WATER, BUILDING_LOTS, TOWERS } from './map.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const html = (s) => { const t = document.createElement('template'); t.innerHTML = s.trim(); return t.content.firstChild; };
@@ -198,6 +198,9 @@ export class UI {
     x.putImageData(img, 0, 0);
     x.fillStyle = '#d9cfc0';
     for (const l of LOTS) { x.save(); x.translate(l.x + HALF, l.z + HALF); x.rotate(-l.rot); x.fillRect(-6, -5, 12, 10); x.restore(); }
+    x.fillStyle = '#b9b2a6';
+    for (const l of BUILDING_LOTS) { x.save(); x.translate(l.x + HALF, l.z + HALF); x.rotate(-l.rot); x.fillRect(-7.5, -6.8, 15, 11.5); x.restore(); }
+    for (const t of TOWERS) x.fillRect(t.x + HALF - 8.5, t.z + HALF - 8, 17, 16);
     return c;
   }
 

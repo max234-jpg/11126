@@ -98,6 +98,8 @@ export async function createRoads(engine, world) {
       add(s > 0 ? 5 : -8, a, s > 0 ? 8 : -5, b);   // Avenue du Port
     }
   }
+  // coins du carrefour (sous les feux)
+  for (const [sx, sz] of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) add(Math.min(sx * 5, sx * 8), Math.min(sz * 5, sz * 8), Math.max(sx * 5, sx * 8), Math.max(sz * 5, sz * 8));
   const sw = new THREE.Mesh(top.geometry(), pave);
   sw.receiveShadow = true;
   const curb = new THREE.Mesh(side.geometry(), curbMat);

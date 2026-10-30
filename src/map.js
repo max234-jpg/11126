@@ -105,6 +105,16 @@ export const LOTS = [];
 // quelques parcelles deviennent un parc / un parking pour aérer le village
 export const PARKS = [LOTS.splice(5, 1)[0], LOTS.splice(13, 1)[0]];
 export const PARKING = LOTS.splice(18, 1)[0];
+// centre-ville : les parcelles les plus proches du carrefour deviennent des immeubles avec boutiques
+export const BUILDING_LOTS = [];
+for (let i = LOTS.length - 1; i >= 0; i--) {
+  if (Math.abs(LOTS[i].x) === 30 || Math.abs(LOTS[i].z) === 30) BUILDING_LOTS.push(LOTS.splice(i, 1)[0]);
+}
+// tours d'habitation derrière les rues principales (silhouette de la ville)
+export const TOWERS = [
+  { x: 47, z: 47, floors: 11, seed: 1 }, { x: -47, z: 47, floors: 9, seed: 2 },
+  { x: -47, z: -47, floors: 10, seed: 3 }, { x: 47, z: -47, floors: 8, seed: 4 },
+];
 
 // ---------------- Grille de hauteurs ----------------
 export const H = new Float32Array(N * N);      // hauteur finale
@@ -168,8 +178,9 @@ export function inTown(x, z, pad = 0) {
 }
 
 export function nearLot(x, z, pad = 0) {
-  for (const l of [...LOTS, ...PARKS, PARKING]) {
-    if (Math.abs(x - l.x) < 9 + pad && Math.abs(z - l.z) < 9 + pad) return true;
+  for (const l of [...LOTS, ...PARKS, PARKING, ...BUILDING_LOTS]) {
+    if (Math.abs(x - l.x) < 10 + pad && Math.abs(z - l.z) < 10 + pad) return true;
   }
+  for (const t of TOWERS) if (Math.abs(x - t.x) < 11 + pad && Math.abs(z - t.z) < 11 + pad) return true;
   return false;
 }

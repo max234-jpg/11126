@@ -52,5 +52,12 @@
  "char_Male.js": 761336,
  "char_Female.js": 788804,
  "char_hair.js": 647857,
- "tex_water.js": 87010
+ "tex_water.js": 87010,
+ "tex_concrete_wall_008.js": 197603,
+ "tex_brick_wall_09.js": 716883,
+ "tex_rectangular_facade_tiles.js": 302108,
+ "tex_plastered_wall_02.js": 462351,
+ "tex_painted_metal_shutter.js": 294239,
+ "tex_mossy_rock.js": 953770,
+ "tex_wood_planks_grey.js": 418820
 }

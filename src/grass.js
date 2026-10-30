@@ -30,9 +30,10 @@ export function createGrass(engine, heightTex, lots, groundTex) {
   const { tex: dens, data } = densityTexture();
   // pas d'herbe dans l'emprise des maisons
   for (const l of lots) {
-    for (let dz = -8; dz <= 8; dz++) for (let dx = -8; dx <= 8; dx++) {
+    const h = l.h || 7.5, r = Math.ceil(h);
+    for (let dz = -r; dz <= r; dz++) for (let dx = -r; dx <= r; dx++) {
       const i = Math.round(l.x + dx + HALF), j = Math.round(l.z + dz + HALF);
-      if (Math.abs(dx) <= 7.5 && Math.abs(dz) <= 7.5) data[j * N + i] = 0;
+      data[j * N + i] = 0;
     }
   }
   dens.needsUpdate = true;
