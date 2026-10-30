@@ -1,4 +1,4 @@
-// Test automatique : ouvre JOUER.html en file:// dans Chromium headless, lance une partie
+// Test automatique : ouvre la page du jeu (celle de l'application) en file:// dans Chromium headless, lance une partie
 // et simule le jeu image par image (sans rendu) pour vérifier la logique.
 // Usage : node tests/smoke.mjs
 import { createRequire } from 'node:module';
@@ -10,10 +10,15 @@ try { ({ chromium } = require('playwright')); } catch { ({ chromium } = require(
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 const page = await browser.newPage({ viewport: { width: 480, height: 270 } });
+// simule le pont de l'application Mac (window.webkit.messageHandlers.jeu)
+await page.addInitScript(() => {
+  window.__appMessages = [];
+  window.webkit = { messageHandlers: { jeu: { postMessage: (m) => window.__appMessages.push(m) } } };
+});
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
 page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
-await page.goto('file://' + path.join(root, 'JOUER.html') + '?q=basse');
+await page.goto('file://' + path.join(root, 'Battle Royale.app/Contents/Resources/jeu/index.html') + '?q=basse');
 await page.waitForFunction(() => window.__game && window.__game.state === 'menu' || /Erreur/.test(document.getElementById('boot-msg')?.textContent || ''), null, { timeout: 300000 });
 await page.evaluate(() => { window.__stop = true; });
 
@@ -82,6 +87,20 @@ const results = await page.evaluate(() => {
   delete b.update;
   g.input.buttons = 0;
   ok('tir', b.health < hp0 || !b.alive, `santé du bot ${hp0} -> ${Math.max(0, b.health).toFixed(0)}, munitions ${p.mag}/${p.reserve}` + (b.health < hp0 ? '' : ` [joueur ${p.pos.toArray().map((v) => v.toFixed(1))} cam ${g.camera.position.toArray().map((v) => v.toFixed(1))} bot ${b.pos.toArray().map((v) => v.toFixed(1))} voitures ${g.vehicles.cars.map((c) => c.pos.x.toFixed(0) + ',' + c.pos.z.toFixed(0)).join(' ')}]`));
+
+  // application Mac : capture de la souris par l'app et caméra pilotée par ses déplacements
+  {
+    if (g.state !== 'playing') g.resume();
+    g.input.lock();
+    const yaw0 = p.camYaw;
+    window.__nativeMouse(120, 0); g.frame(1 / 30);
+    const turned = Math.abs(p.camYaw - yaw0) > 0.05;
+    window.__nativeUnlocked(); g.frame(1 / 30);
+    const paused = g.state === 'paused';
+    g.resume();
+    ok('app Mac (souris)', turned && paused && window.__appMessages.includes('lock') && document.querySelector('[data-act=quitapp]'),
+      `messages ${window.__appMessages.join(',')}, rotation ${turned}, pause à la perte du focus ${paused}`);
+  }
 
   // danse
   g.input.pressed.add('KeyB'); g.frame(1 / 30); run(10);

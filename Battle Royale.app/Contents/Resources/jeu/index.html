@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Battle Royale — Île réaliste</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="boot">
+  <div class="boot-card">
+    <h1>BATTLE ROYALE</h1>
+    <p class="sub">Île de San Calma</p>
+    <div class="bar"><span id="boot-bar"></span></div>
+    <p id="boot-msg">Chargement des textures photo-réalistes…</p>
+  </div>
+</div>
+<div id="ui"></div>
+<script>
+// Chargeur hors ligne : chaque paquet jeu/assets/*.js appelle __A(nom, type, base64).
+// Fonctionne en ouvrant ce fichier directement (file://), sans serveur ni installation.
+window.__ASSETS__ = {};
+function __A(name, mime, b64) { window.__ASSETS__[name] = { mime: mime, b64: b64 }; }
+(function () {
+  var bar = document.getElementById('boot-bar'), msg = document.getElementById('boot-msg');
+  function fail(what) {
+    msg.innerHTML = 'Impossible de charger <b>' + what + '</b>.<br>Le dossier de l’application semble incomplet : télécharge-la à nouveau.';
+    msg.style.color = '#ff9a8a';
+  }
+  function load(src, cb) {
+    var s = document.createElement('script');
+    s.src = src; s.onload = cb; s.onerror = function () { fail(src); };
+    document.body.appendChild(s);
+  }
+  load('assets/manifest.js', function () {
+    var list = window.__MANIFEST__, total = 0, done = 0, i = 0;
+    list.forEach(function (e) { total += e[1]; });
+    (function next() {
+      if (i >= list.length) {
+        msg.textContent = 'Construction de l’île…';
+        return load('js/game.js', function () {});
+      }
+      var e = list[i++];
+      load('assets/' + e[0], function () {
+        done += e[1];
+        bar.style.width = (done / total * 70).toFixed(1) + '%';
+        next();
+      });
+    })();
+  });
+})();
+</script>
+</body>
+</html>

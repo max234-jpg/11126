@@ -12,7 +12,7 @@ const page = await browser.newPage({ viewport: { width: +w, height: +h } });
 const logs = [];
 page.on('console', m => logs.push(m.type() + ': ' + m.text()));
 page.on('pageerror', e => logs.push('PAGEERROR: ' + e.message));
-await page.goto('file://' + path.join(root, 'JOUER.html') + (query ? '?' + query : ''));
+await page.goto('file://' + path.join(root, 'Battle Royale.app/Contents/Resources/jeu/index.html') + (query ? '?' + query : ''));
 const t0 = Date.now();
 try {
   await page.waitForFunction(n => (window.__frames || 0) >= n || /Erreur/.test(document.getElementById('boot-msg')?.textContent || ''), +frames, { timeout: 240000, polling: 500 });

@@ -8,7 +8,7 @@ const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 const page = await browser.newPage({ viewport: { width: 320, height: 200 } });
 page.on('pageerror', (e) => console.log('ERR', e.message));
-await page.goto('file://' + path.join(root, 'JOUER.html') + '?q=basse');
+await page.goto('file://' + path.join(root, 'Battle Royale.app/Contents/Resources/jeu/index.html') + '?q=basse');
 await page.waitForFunction(() => window.__game && window.__game.state === 'menu', null, { timeout: 300000 });
 const r = await page.evaluate(() => {
   window.__stop = true;

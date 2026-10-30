@@ -40,6 +40,7 @@ export class UI {
           <button data-act="shop">🛍️ BOUTIQUE</button>
           <button data-act="options">⚙️ OPTIONS</button>
           <button data-act="help">⌨️ COMMANDES</button>
+          <button data-act="quitapp" class="app-only">⏻ QUITTER</button>
           <p class="wallet">🪙 <b class="m-coins">0</b> pièces</p>
         </div>
         <div class="menu-panel hidden" id="panel"></div>
@@ -60,6 +61,8 @@ export class UI {
       const b = e.target.closest('[data-act]');
       if (b) this.action(b.dataset.act, b);
     });
+    // le bouton Quitter n'existe que dans l'application Mac
+    if (!game.input.bridge) for (const b of this.root.querySelectorAll('.app-only')) b.remove();
     this.mapImage = this.renderMap();
     this.mm = $('#mm').getContext('2d');
     this.updateWallet();
@@ -77,6 +80,7 @@ export class UI {
     else if (act === 'help') this.panel('help');
     else if (act === 'resume') g.resume();
     else if (act === 'quit' || act === 'menu') g.toMenu();
+    else if (act === 'quitapp') g.input.bridge?.postMessage('quit');
     else if (act === 'equip') { g.equipSkin(el.dataset.id); this.panel(this.curPanel); }
     else if (act === 'buy') { g.buySkin(el.dataset.id); this.panel(this.curPanel); }
     else if (act === 'close') this.hide(this.curPanelEl, true);

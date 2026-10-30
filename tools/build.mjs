@@ -6,7 +6,7 @@ const opts = {
   bundle: true,
   format: 'iife',
   target: ['safari15', 'chrome100'],
-  outfile: 'jeu/js/game.js',
+  outfile: 'Battle Royale.app/Contents/Resources/jeu/js/game.js',
   minify: !process.argv.includes('--dev'),
   sourcemap: false,
   legalComments: 'eof',

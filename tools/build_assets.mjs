@@ -1,5 +1,5 @@
 // Convertit assets_src/ en paquets jeu/assets/*.js (base64) chargeables depuis file://
-// (double-clic sur JOUER.html, sans serveur web).
+// (page chargée par l'application Mac, sans serveur web).
 // Usage : node tools/build_assets.mjs
 import fs from 'node:fs';
 import path from 'node:path';
@@ -12,7 +12,7 @@ import { POLYHAVEN_TEXTURES, POLYHAVEN_MODELS, AMBIENTCG_TEXTURES } from './asse
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const SRC = path.join(ROOT, 'assets_src');
-const OUT = path.join(ROOT, 'jeu', 'assets');
+const OUT = path.join(ROOT, 'Battle Royale.app', 'Contents', 'Resources', 'jeu', 'assets');
 const UBC = path.join(SRC, 'ubc', 'Universal Base Characters[Standard]');
 const ONLY = process.argv[2]; // filtre optionnel (ex: "char")
 

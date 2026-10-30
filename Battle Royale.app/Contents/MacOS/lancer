@@ -1,13 +1,5 @@
 #!/bin/bash
-# Application Mac minimale : ouvre JOUER.html (situé à côté de l'app) dans Chrome ou Safari.
-APPDIR="$(cd "$(dirname "$0")/../.." && pwd)"
-PAGE="$(dirname "$APPDIR")/JOUER.html"
-URL="file://$PAGE"
-URL="${URL// /%20}"   # espaces encodés pour Chrome
-for APP in "Google Chrome" "Brave Browser" "Microsoft Edge" "Chromium"; do
-  if open -Ra "$APP" 2>/dev/null; then
-    open -na "$APP" --args --app="$URL" --start-fullscreen --autoplay-policy=no-user-gesture-required
-    exit 0
-  fi
-done
-open "$PAGE"
+# Exécutable de l'application : lance la fenêtre native du jeu (Resources/app.js)
+# avec l'interpréteur JavaScript intégré à macOS (osascript), présent sur tous les Mac.
+RES="$(cd "$(dirname "$0")/../Resources" && pwd)"
+exec /usr/bin/osascript -l JavaScript "$RES/app.js" "$RES"

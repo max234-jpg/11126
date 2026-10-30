@@ -5,10 +5,16 @@
   <key>CFBundleName</key><string>Battle Royale</string>
   <key>CFBundleDisplayName</key><string>Battle Royale</string>
   <key>CFBundleIdentifier</key><string>local.battleroyale.sancalma</string>
-  <key>CFBundleVersion</key><string>1.0</string>
-  <key>CFBundleShortVersionString</key><string>1.0</string>
+  <key>CFBundleVersion</key><string>2.0</string>
+  <key>CFBundleShortVersionString</key><string>2.0</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleExecutable</key><string>lancer</string>
+  <key>CFBundleIconFile</key><string>icone</string>
+  <key>CFBundleDevelopmentRegion</key><string>fr</string>
+  <key>LSApplicationCategoryType</key><string>public.app-category.action-games</string>
   <key>LSMinimumSystemVersion</key><string>11.0</string>
+  <key>NSHighResolutionCapable</key><true/>
+  <key>NSSupportsAutomaticGraphicsSwitching</key><true/>
+  <key>NSHumanReadableCopyright</key><string>Jeu personnel. Ressources CC0 (Poly Haven, ambientCG, Quaternius), voiture CC-BY 4.0 (Khronos).</string>
 </dict>
 </plist>

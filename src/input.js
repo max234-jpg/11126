@@ -10,15 +10,20 @@ export class Input {
     this.wheel = 0;
     this.enabled = false;
     this.sensitivity = 1;
+    // Dans l'application Mac, la souris est capturée nativement (curseur figé, déplacements transmis par l'app)
+    this.bridge = window.webkit?.messageHandlers?.jeu || null;
+    this.nativeLocked = false;
+    window.__nativeMouse = (dx, dy) => { if (this.nativeLocked) { this.dx += dx; this.dy += dy; } };
+    window.__nativeUnlocked = () => this.setNativeLock(false, false);
     addEventListener('keydown', (e) => {
       if (['Space', 'ArrowUp', 'ArrowDown', 'Tab'].includes(e.code)) e.preventDefault();
       if (!this.keys.has(e.code)) this.pressed.add(e.code);
       this.keys.add(e.code);
     });
     addEventListener('keyup', (e) => this.keys.delete(e.code));
-    addEventListener('blur', () => this.keys.clear());
+    addEventListener('blur', () => { this.keys.clear(); this.buttons = 0; if (this.nativeLocked) this.unlock(); });
     addEventListener('mousemove', (e) => {
-      if (!this.locked) return;
+      if (!this.locked || this.bridge) return;
       this.dx += e.movementX; this.dy += e.movementY;
     });
     addEventListener('mousedown', (e) => {
@@ -31,9 +36,24 @@ export class Input {
     addEventListener('wheel', (e) => { this.wheel += Math.sign(e.deltaY); }, { passive: true });
   }
 
-  get locked() { return document.pointerLockElement === this.canvas; }
-  lock() { try { const p = this.canvas.requestPointerLock(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* Safari ancien */ } }
-  unlock() { if (document.pointerLockElement) document.exitPointerLock(); }
+  get locked() { return this.bridge ? this.nativeLocked : document.pointerLockElement === this.canvas; }
+
+  setNativeLock(v, tellApp = true) {
+    if (this.nativeLocked === v) return;
+    this.nativeLocked = v;
+    if (tellApp) try { this.bridge.postMessage(v ? 'lock' : 'unlock'); } catch (e) { /* app absente */ }
+    document.dispatchEvent(new Event('pointerlockchange'));
+  }
+
+  lock() {
+    if (this.bridge) return this.setNativeLock(true);
+    try { const p = this.canvas.requestPointerLock(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* Safari ancien */ }
+  }
+
+  unlock() {
+    if (this.bridge) return this.setNativeLock(false);
+    if (document.pointerLockElement) document.exitPointerLock();
+  }
 
   down(code) { return this.keys.has(code); }
   hit(code) { return this.pressed.has(code); }

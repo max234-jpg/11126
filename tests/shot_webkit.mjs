@@ -15,7 +15,7 @@ const logs = [];
 page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') logs.push(m.type() + ': ' + m.text()); });
 page.on('pageerror', (e) => logs.push('PAGEERROR: ' + e.message));
 const t0 = Date.now();
-await page.goto('file://' + path.join(root, 'JOUER.html') + '?' + query);
+await page.goto('file://' + path.join(root, 'Battle Royale.app/Contents/Resources/jeu/index.html') + '?' + query);
 await page.waitForFunction(() => window.__game && ['playing', 'menu'].includes(window.__game.state) && window.__frames > 3, null, { timeout: 400000 });
 const url = await page.evaluate(async (code) => {
   const g = window.__game;
