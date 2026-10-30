@@ -39,8 +39,13 @@ export async function createWater(engine, sky, heightTex) {
       }
       void main(){
         vec2 huv = (vW.xz + uHalf + 0.5) / uN;
-        float ground = texture2D(tH, huv).r;
+        // interpolation bilinéaire manuelle (les textures flottantes ne sont pas filtrées partout, ex. Safari)
+        vec2 hg = clamp(vW.xz + uHalf, vec2(0.0), vec2(uN - 2.0)); vec2 hf = fract(hg); ivec2 hi = ivec2(floor(hg));
+        float ground = mix(mix(texelFetch(tH, hi, 0).r, texelFetch(tH, hi + ivec2(1, 0), 0).r, hf.x),
+                           mix(texelFetch(tH, hi + ivec2(0, 1), 0).r, texelFetch(tH, hi + ivec2(1, 1), 0).r, hf.x), hf.y);
         if (huv.x < 0.0 || huv.x > 1.0 || huv.y < 0.0 || huv.y > 1.0) ground = -14.0;
+        // au-dessus de la berge : rien à dessiner (évite une frange d'écume en dents de scie)
+        if (ground > uLevel + 0.04) discard;
         float depth = max(0.0, uLevel - ground);
         vec2 p = vW.xz;
         vec3 n1 = texture2D(tNor, p * 0.031 + vec2(uTime * 0.011, uTime * 0.007)).xzy * 2.0 - 1.0;

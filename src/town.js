@@ -40,6 +40,13 @@ export async function createTown(engine, world, game) {
   const trim = new THREE.MeshStandardMaterial({ color: 0xf2efe8, roughness: 0.45 });
   const glass = new THREE.MeshPhysicalMaterial({ color: 0xa9c4cc, metalness: 0, roughness: 0.04, transparent: true, opacity: 0.28, envMapIntensity: 1.6, specularIntensity: 1, side: THREE.DoubleSide, depthWrite: false });
   const roofUnder = new THREE.MeshStandardMaterial({ color: 0x6b5442, roughness: 0.9 });
+  // volets en bois peint (rainures des planches dans la normal map), une couleur par maison
+  const planks = (await A.pbr('wood_planks_grey')).clone();
+  planks.color.setRGB(1.75, 1.5, 1.2); // bois clair, légèrement grisé par le temps
+  const SHUTTERS = [0x4f7a5e, 0x48698f, 0x8c9396, 0x8e4a3c, 0xeeeae0, 0x2f4a3e].map((c) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.55, normalMap: planks.normalMap, normalScale: new THREE.Vector2(0.8, 0.8) }));
+  const zinc = new THREE.MeshStandardMaterial({ color: 0x8e9498, metalness: 0.7, roughness: 0.38 });
+  const pavers = await A.pbr('concrete_pavement', { color: 0xd8d2c8 });
+  const mailboxMat = new THREE.MeshStandardMaterial({ color: 0x24282c, metalness: 0.5, roughness: 0.45 });
 
   const Y0 = 0.35, H = 3.0, T = 0.24;
 
@@ -71,6 +78,7 @@ export async function createTown(engine, world, game) {
     const HM = new THREE.Matrix4().compose(new THREE.Vector3(lot.x, ground, lot.z), new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), lot.rot), new THREE.Vector3(1, 1, 1));
 
     const bExt = new Bucket(2.5), bInt = new Bucket(2.5), bFloor = new Bucket(2), bTrim = new Bucket(1), bGlass = new Bucket(1), bWood = new Bucket(1.2);
+    const bShut = new Bucket(1), bFence = new Bucket(1.6), bZinc = new Bucket(1), bPave = new Bucket(1.2), bMail = new Bucket(1);
     const colliders = [];   // [cx, cz, hx, hz, y0, y1, walkable]
 
     const px = w * 0.1;                     // cloison salon / chambre
@@ -124,6 +132,13 @@ export async function createTown(engine, world, game) {
           // vitre infranchissable
           if (axis === 'x') colliders.push([start + c, mid, ww / 2, 0.08, Y0 + o.v0, Y0 + o.v1]);
           else colliders.push([mid, start + c, 0.08, ww / 2, Y0 + o.v0, Y0 + o.v1]);
+          // volets ouverts, plaqués contre la façade de part et d'autre
+          if (kind === 'ext') for (const sg of [-1, 1]) {
+            const u = start + c + sg * (ww / 2 + 0.4), f0 = pos + outSign * 0.01, f1 = pos + outSign * 0.065;
+            const a0 = Math.min(f0, f1), a1 = Math.max(f0, f1);
+            if (axis === 'x') Bucket.box(allOf(bShut), u - 0.36, cy - hh / 2, a0, u + 0.36, cy + hh / 2, a1);
+            else Bucket.box(allOf(bShut), a0, cy - hh / 2, u - 0.36, a1, cy + hh / 2, u + 0.36);
+          }
         } else if (o.door) {
           const tw = kind === 'part' ? 0.16 : T + 0.04;
           put(-ww / 2 + 0.04, 0, 0.08, hh, tw, bTrim); put(ww / 2 - 0.04, 0, 0.08, hh, tw, bTrim);
@@ -143,9 +158,41 @@ export async function createTown(engine, world, game) {
     // dalle + sol
     Bucket.box({ py: bFloor, px: bExt, nx: bExt, pz: bExt, nz: bExt }, -w / 2, -0.45, -d / 2, w / 2, Y0, d / 2);
     colliders.push([0, 0, w / 2, d / 2, -0.45, Y0, true]);
-    // marche devant la porte
-    Bucket.box({ py: bTrim, px: bTrim, nx: bTrim, pz: bTrim, nz: bTrim }, doorX - 0.9, -0.3, d / 2, doorX + 0.9, Y0 / 2, d / 2 + 0.7);
-    colliders.push([doorX, d / 2 + 0.35, 0.9, 0.35, -0.3, Y0 / 2, true]);
+    // perron devant la porte
+    Bucket.box({ py: bTrim, px: bTrim, nx: bTrim, pz: bTrim, nz: bTrim }, doorX - 1.3, -0.3, d / 2, doorX + 1.3, Y0 / 2, d / 2 + 1.5);
+    colliders.push([doorX, d / 2 + 0.75, 1.3, 0.75, -0.3, Y0 / 2, true]);
+    // auvent sur deux poteaux
+    for (const sg of [-1, 1]) {
+      Bucket.box(allOf(bTrim), doorX + sg * 1.12 - 0.07, Y0 / 2, d / 2 + 1.28, doorX + sg * 1.12 + 0.07, Y0 + 2.5, d / 2 + 1.42);
+      colliders.push([doorX + sg * 1.12, d / 2 + 1.35, 0.09, 0.09, Y0 / 2, Y0 + 2.5]);
+    }
+    Bucket.box(allOf(bTrim), doorX - 1.25, Y0 + 2.42, d / 2 + 1.24, doorX + 1.25, Y0 + 2.56, d / 2 + 1.46);
+    // allée de dalles jusqu'au trottoir
+    for (let z = d / 2 + 1.65; z < 7.75; z += 0.68) {
+      const j = (Math.floor(z * 7) % 3 - 1) * 0.05;
+      Bucket.box(allOf(bPave), doorX - 0.55 + j, -0.15, z, doorX + 0.55 + j, 0.035, Math.min(z + 0.6, 7.8));
+    }
+    // boîte aux lettres
+    Bucket.box(allOf(bWood), doorX + 1.05, -0.2, 7.0, doorX + 1.13, 1.0, 7.08);
+    Bucket.box(allOf(bMail), doorX + 0.93, 1.0, 6.82, doorX + 1.25, 1.27, 7.34);
+    Bucket.box(allOf(bMail), doorX + 0.92, 1.18, 7.28, doorX + 0.94, 1.36, 7.32); // drapeau
+    colliders.push([doorX + 1.09, 7.08, 0.18, 0.28, -0.2, 1.3]);
+    // clôture en planches autour du jardin arrière (ouvertures le long des pignons)
+    {
+      const fx = w / 2 + 1.4, fz = -9.2, top = 1.75;
+      const panel = (x0, z0, x1, z1) => {
+        Bucket.box(allOf(bFence), x0, -0.2, z0, x1, top, z1);
+        colliders.push([(x0 + x1) / 2, (z0 + z1) / 2, (x1 - x0) / 2 + 0.02, (z1 - z0) / 2 + 0.02, -0.2, top]);
+      };
+      panel(-fx, fz - 0.03, fx, fz + 0.03);
+      panel(-fx - 0.03, fz, -fx + 0.03, -d / 2 + 0.6);
+      panel(fx - 0.03, fz, fx + 0.03, -d / 2 + 0.6);
+      // poteaux et lisse haute
+      for (let x = -fx; x <= fx + 0.01; x += (2 * fx) / Math.round(fx)) Bucket.box(allOf(bWood), x - 0.06, -0.2, fz - 0.09, x + 0.06, top + 0.08, fz + 0.09);
+      for (const sx of [-fx, fx]) for (let z = fz + 2; z < -d / 2 + 0.6; z += 2) Bucket.box(allOf(bWood), sx - 0.09, -0.2, z - 0.06, sx + 0.09, top + 0.08, z + 0.06);
+      for (const sx of [-fx, fx]) Bucket.box(allOf(bWood), sx - 0.09, -0.2, -d / 2 + 0.48, sx + 0.09, top + 0.08, -d / 2 + 0.6);
+      Bucket.box(allOf(bWood), -fx - 0.06, top, fz - 0.07, fx + 0.06, top + 0.05, fz + 0.07);
+    }
     // plafond
     bInt.quad([-w / 2, Y0 + H, -d / 2], [w / 2, Y0 + H, -d / 2], [w / 2, Y0 + H, d / 2], [-w / 2, Y0 + H, d / 2], [0, -1, 0]);
     // pignons
@@ -164,6 +211,10 @@ export async function createTown(engine, world, game) {
     add('trim', bTrim, trim);
     add('wood', bWood, wood);
     add('glass', bGlass, glass, false);
+    add('shut' + (lot.seed % SHUTTERS.length), bShut, SHUTTERS[lot.seed % SHUTTERS.length]);
+    add('fence', bFence, planks);
+    add('pave', bPave, pavers, false);
+    add('mail', bMail, mailboxMat);
 
     // toit à deux pans
     const o = 0.55, slope = rh / (d / 2);
@@ -178,6 +229,26 @@ export async function createTown(engine, world, game) {
     const cap = slab(1, w + 2 * o, 0.18, 0.36);
     put('under', roofUnder, cap.top, HM.clone().multiply(M4(0, ridge + 0.17, 0)));
     put('under', roofUnder, cap.und, HM.clone().multiply(M4(0, ridge + 0.17, 0)));
+    // auvent du perron : petit pan de tuiles incliné
+    {
+      const pl = Math.hypot(1.5, 0.3), pa = Math.atan2(0.3, 1.5);
+      const sl = slab(2.2, 2.7, 0.1, pl + 0.15);
+      const mm = HM.clone().multiply(new THREE.Matrix4().makeTranslation(doorX, Y0 + 2.72, d / 2 + 0.78)).multiply(new THREE.Matrix4().makeRotationX(pa));
+      put('roof_' + lot.style, ext[lot.style + '_roof'], sl.top, mm);
+      put('under', roofUnder, sl.und, mm);
+    }
+    // gouttières le long des avant-toits et descentes aux quatre coins
+    for (const s of [1, -1]) {
+      const zg = s * (ze + 0.02);
+      Bucket.box(allOf(bZinc), -w / 2 - o, ye - 0.12, zg - 0.07, w / 2 + o, ye + 0.01, zg + 0.07);
+      for (const sx of [-1, 1]) {
+        // descente plaquée sur le pignon, près de l'angle
+        const xd = sx * (w / 2 + 0.07), zd = s * (d / 2 - 0.2);
+        Bucket.box(allOf(bZinc), xd - 0.045, ye - 0.2, Math.min(zg, zd) - 0.045, xd + 0.045, ye - 0.12, Math.max(zg, zd) + 0.045);
+        Bucket.box(allOf(bZinc), xd - 0.045, -0.05, zd - 0.045, xd + 0.045, ye - 0.12, zd + 0.045);
+      }
+    }
+    put('zinc', zinc, bZinc.geometry(), HM);
     // cheminée
     const ch = new Bucket(2.5);
     Bucket.box(allOf(ch), -0.35, -1.1, -0.35, 0.35, 1.1, 0.35);
@@ -220,6 +291,11 @@ export async function createTown(engine, world, game) {
       lot, w, d, ground, floorY: ground + Y0, toWorld,
       spots: [toWorld(bedC - 0.2, d / 2 - T - 0.9), toWorld(livC - 0.5, -0.6)], // emplacements de coffres / butin
       door: toWorld(doorX, d / 2 + 1.2),
+      // emprise sans herbe : maison, perron, allée (coordonnées locales)
+      bare(wx, wz) {
+        const dx = wx - lot.x, dz = wz - lot.z, x = dx * cr - dz * sr, z = dx * sr + dz * cr;
+        return (Math.abs(x) < w / 2 + 1.0 && Math.abs(z) < d / 2 + 1.0) || (Math.abs(x - doorX) < 1.6 && z > 0 && z < d / 2 + 2.2) || (Math.abs(x - doorX) < 1.0 && z > 0 && z < 9);
+      },
     });
   }
 

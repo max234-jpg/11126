@@ -80,8 +80,9 @@ export class Game {
     this.parking = PARKING;
     await this.progress('Forêts et rochers…', 0.5);
     this.veg = await createVegetation(this.engine, this.world);
-    this.grass = createGrass(this.engine, hTex, [...LOTS, ...BUILDING_LOTS.map((l) => ({ ...l, h: 9.5 })), ...TOWERS.map((t) => ({ ...t, h: 10 }))], terrain.diffArray);
+    this.grass = createGrass(this.engine, hTex, [...HOUSES.map((h) => ({ x: h.lot.x, z: h.lot.z, h: 11, bare: h.bare })), ...BUILDING_LOTS.map((l) => ({ ...l, h: 9.5 })), ...TOWERS.map((t) => ({ ...t, h: 10 }))], terrain.diffArray);
     this.grass.setDensity(this.engine.q.grass);
+    this.grass.setSun(this.sky.sunDir);
     this.engine.onQuality = (q) => { this.grass.setDensity(q.grass); this.sky.setShadowSize(q.shadow); };
     await this.progress('Personnages et animations…', 0.7);
     await loadCharacters();
