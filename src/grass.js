@@ -1,7 +1,7 @@
 // Herbe haute animée : ~150 000 brins générés entièrement sur GPU autour de la caméra,
 // posés sur le relief, absents des routes, plages, rochers et maisons.
 import * as THREE from 'three';
-import { HALF, N, H, ROAD_D } from './map.js';
+import { HALF, N, H, ROAD_D, waterLevelAt } from './map.js';
 import { makeNoise } from './noise.js';
 import { GLSL_NOISE } from './terrain.js';
 
@@ -11,6 +11,7 @@ function densityTexture() {
   for (let j = 1; j < N - 1; j++) for (let i = 1; i < N - 1; i++) {
     const k = j * N + i, x = i - HALF, z = j - HALF, h = H[k];
     if (h < 2.0 || ROAD_D[k] < 0.6) continue;
+    if (h > 4 && h < 60 && waterLevelAt(x, z) > h - 0.4) continue;
     const gx = (H[k + 1] - H[k - 1]) / 2, gz = (H[k + N] - H[k - N]) / 2;
     const ny = 1 / Math.hypot(gx, 1, gz);
     if (ny < 0.8) continue;
@@ -58,6 +59,7 @@ export function createGrass(engine, heightTex, lots, groundTex) {
     tH: { value: heightTex }, tD: { value: dens }, tG: { value: groundTex }, uHalf: { value: HALF }, uN: { value: N }, uTime: { value: 0 },
   };
   const mat = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 0.75, color: 0xffffff });
+  mat.userData.noAO = true;
   mat.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, uniforms);
     sh.vertexShader = sh.vertexShader

@@ -5,7 +5,71 @@ export const HALF = 320;            // l'univers va de -320 à +320 m
 export const N = 641;               // une valeur de hauteur par mètre
 export const WATER = 0;             // niveau de la mer
 export const TOWN = { x: 0, z: 0, r: 88, h: 4.2 };
-const MOUNTAIN = { x: 140, z: -125 };
+
+// ---------------- Massif du nord-est : plateau, lac d'altitude, falaise et cascades ----------------
+const M_ANGLE = -0.73;
+const M_DIR = { x: -Math.cos(M_ANGLE), z: -Math.sin(M_ANGLE) };   // de la falaise vers le centre de l'île
+const M_LAT = { x: -M_DIR.z, z: M_DIR.x };
+const M_C = { x: Math.cos(M_ANGLE) * 142, z: Math.sin(M_ANGLE) * 142 }; // pied du sommet de la falaise
+export const MASSIF = { c: M_C, dir: M_DIR, lat: M_LAT, angle: M_ANGLE };
+// repère local (u vers l'île, v latéral) -> monde
+export function massifToWorld(u, v) { return [M_C.x + M_DIR.x * u + M_LAT.x * v, M_C.z + M_DIR.z * u + M_LAT.z * v]; }
+export const LAKES = [
+  { name: 'Lac du Belvédère', u: -17, v: 0, ru: 15, rv: 13, level: 56 },
+  { name: 'Bassin des Cascades', u: 14, v: 0, ru: 12, rv: 22, level: 9.5 },
+].map((l) => { const [x, z] = massifToWorld(l.u, l.v); return { ...l, x, z }; });
+export const FALLS = [
+  { u: 0.2, v: 0, top: 55.7, bottom: 9.5, width: 8.5 },
+  { u: 1.2, v: -15, top: 40, bottom: 9.5, width: 3.2 },
+  { u: 1.0, v: 13, top: 47, bottom: 9.5, width: 2.2 },
+];
+
+function massifShape(x, z, land) {
+  const dx = x - M_C.x, dz = z - M_C.z;
+  const u = dx * M_DIR.x + dz * M_DIR.z, v = dx * M_LAT.x + dz * M_LAT.z, av = Math.abs(v);
+  if (u > 80 || u < -130 || av > 130) return null;
+  const rid = nz.ridged(x * 0.016, z * 0.016, 5), rid2 = nz2.ridged(x * 0.03 + 4, z * 0.03, 4);
+  // corps de la montagne et sommets (crêtes en bruit « ridged »)
+  const su = u < -28 ? 40 : 54;
+  const env = Math.exp(-((u + 28) ** 2) / (su * su) - (v * v) / (52 * 52));
+  const body = env * (74 * (0.7 + 0.42 * rid) + 8 * rid2);
+  const peaks = 112 * Math.exp(-((u + 47) ** 2) / (27 * 27) - ((v - 9) ** 2) / (38 * 38)) * (0.66 + 0.5 * rid);
+  let top = Math.max(body, peaks);
+  // corniche du lac d'altitude
+  const eS = ((u + 15) / 24) ** 2 + (v / 27) ** 2;
+  if (eS < 1) {
+    const shelf = Math.max(57 + 1.2 * nz2.fbm(x * 0.05, z * 0.05, 2), peaks * smoothstep(0.55, 1.0, eS));
+    top = lerp(top, shelf, smoothstep(1.0, 0.78, eS));
+  }
+  const eL = ((u + 17) / 15) ** 2 + (v / 13) ** 2;
+  if (eL < 1) top = 52 + 4.6 * Math.pow(eL, 0.7);
+  if (u > -4 && u < 1.5 && av < 3.6) top = Math.min(top, 55.3 + av * 0.12); // échancrure de la grande cascade
+  // loin du massif (top faible) on garde le relief d'origine, mer comprise
+  let S = lerp(land, Math.max(land, top), smoothstep(1, 8, top));
+  // gorge des cascades : falaise verticale puis bassin
+  if (u > -1) {
+    const eP = ((u - 14) / 12) ** 2 + (v / 22) ** 2;
+    const foot = eP < 1 ? 5 + 5.6 * eP : lerp(10.6, land, smoothstep(26, 46, u)); // la gorge s'ouvre vers l'île
+    // ligne de falaise irrégulière (avancées et renfoncements), droite seulement sous la grande cascade
+    const calm = (1 - Math.exp(-(((v + 15) / 4.5) ** 2))) * (1 - Math.exp(-(((v - 13) / 4) ** 2))); // paroi lisse derrière les petites cascades
+    const jag = (3.2 * nz.noise(v * 0.07, 1.7) + 1.1 * nz2.noise(v * 0.27, 3.3)) * smoothstep(3, 10, av) * calm;
+    const uc = u - jag, wdt = 4.5 + 2.5 * (0.5 + 0.5 * nz2.noise(v * 0.11, 9.1));
+    const front = lerp(top, foot, smoothstep(0, wdt, uc));
+    const cw = (1 - smoothstep(22, 34, av)) * (1 - smoothstep(44, 60, u));
+    S = lerp(S, front, cw);
+  }
+  return { S, w: 1 };
+}
+
+// niveau de l'eau à un endroit (mer, lac d'altitude ou bassin)
+export function waterLevelAt(x, z) {
+  for (const l of LAKES) {
+    const dx = x - l.x, dz = z - l.z;
+    const u = dx * M_DIR.x + dz * M_DIR.z, v = dx * M_LAT.x + dz * M_LAT.z;
+    if ((u / (l.ru + 2)) ** 2 + (v / (l.rv + 2)) ** 2 < 1) return l.level;
+  }
+  return WATER;
+}
 
 const nz = makeNoise(7);
 const nz2 = makeNoise(31);
@@ -19,21 +83,25 @@ function baseHeight(x, z) {
   const ang = Math.atan2(z, x);
   const d = Math.hypot(x, z) / islandRadius(ang);
   let land = Math.max(2.7, 5.6 + 4.2 * nz.fbm(x * 0.006, z * 0.006, 4)) + 1.2 * nz2.fbm(x * 0.03, z * 0.03, 3) + 0.6;
-  const dm = Math.hypot(x - MOUNTAIN.x, z - MOUNTAIN.z);
-  land += 40 * Math.exp(-(dm * dm) / (68 * 68)) * (0.65 + 0.5 * nz.ridged(x * 0.012, z * 0.012, 4));
   const dw = Math.hypot(x + 120, z + 95);
   land += 14 * Math.exp(-(dw * dw) / (55 * 55));
   const dt = Math.hypot(x - TOWN.x, z - TOWN.z);
   land = lerp(land, TOWN.h, smoothstep(TOWN.r + 30, TOWN.r, dt));
   // côte : plage douce puis fond marin
-  if (d > 1.0) return Math.max(-14, -2.6 - (d - 1) * 55);
-  if (d > 0.9) return lerp(1.1, -2.6, (d - 0.9) / 0.1);
-  return lerp(1.1, land, smoothstep(0.9, 0.76, d));
+  let h;
+  if (d > 1.0) h = Math.max(-14, -2.6 - (d - 1) * 55);
+  else if (d > 0.9) h = lerp(1.1, -2.6, (d - 0.9) / 0.1);
+  else h = lerp(1.1, land, smoothstep(0.9, 0.76, d));
+  // le massif s'ajoute au relief côtier : il plonge naturellement dans la mer
+  const m = massifShape(x, z, h);
+  return m ? lerp(h, m.S, m.w) : h;
 }
 
 // ---------------- Routes ----------------
 function ringPoint(a) {
-  const r = 0.64 * islandRadius(a);
+  // le boulevard contourne le massif par l'intérieur
+  let da = a - M_ANGLE; da = Math.atan2(Math.sin(da), Math.cos(da));
+  const r = 0.64 * islandRadius(a) * (1 - 0.34 * Math.exp(-((da / 0.42) ** 2)));
   return [Math.cos(a) * r, Math.sin(a) * r];
 }
 const RING_N = 64;

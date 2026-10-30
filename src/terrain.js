@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import * as A from './assets.js';
 import { H, N, HALF, ROAD_D } from './map.js';
 
-const LAYERS = ['Grass004', 'Ground037', 'coast_sand_01', 'aerial_rocks_02'];
+const LAYERS = ['Grass004', 'Ground037', 'coast_sand_01', 'mossy_rock'];
 
 async function textureArray(suffix, size, srgb) {
   const data = new Uint8Array(size * size * 4 * LAYERS.length);
@@ -46,7 +46,7 @@ export async function createTerrain(engine) {
   ]);
 
   // Maillage : 2 m entre sommets autour du centre, suffisamment fin pour les talus
-  const SEG = 400, SIZE = HALF * 2;
+  const SEG = 640, SIZE = HALF * 2; // 1 m entre sommets : falaises nettes
   const geo = new THREE.PlaneGeometry(SIZE, SIZE, SEG, SEG);
   geo.rotateX(-Math.PI / 2);
   const pos = geo.attributes.position;
@@ -76,7 +76,7 @@ export async function createTerrain(engine) {
         uniform sampler2DArray tDiff, tNor, tArm;
         varying float vRoad; varying vec3 vWPos; varying vec3 vWNor;
         ${GLSL_NOISE}
-        vec4 W; vec3 splatN; vec3 splatArm;
+        vec4 W; vec3 splatN; vec3 splatArm; vec3 rockN;
         // échantillonnage anti-répétition : deux échelles + rotation
         vec4 sampleL(sampler2DArray t, vec2 uv, float l){
           vec4 a = texture(t, vec3(uv, l));
@@ -89,7 +89,8 @@ export async function createTerrain(engine) {
         float n1 = fbm2(vWPos.xz * 0.045);
         float n2 = fbm2(vWPos.xz * 0.21 + 7.0);
         float wSand = 1.0 - smoothstep(1.25, 2.0, vWPos.y + (n1 - 0.5) * 1.2);
-        float wRock = smoothstep(0.24, 0.42, slope + (n2 - 0.5) * 0.12);
+        float wRock = smoothstep(0.24, 0.42, slope + (n2 - 0.5) * 0.12) + smoothstep(68.0, 92.0, vWPos.y + n1 * 10.0);
+        wRock = clamp(wRock, 0.0, 1.0);
         float wDirt = smoothstep(0.74, 0.92, n1 + n2 * 0.25) * 0.75 + (1.0 - smoothstep(0.3, 3.5, vRoad + n2 * 1.5));
         wDirt = clamp(wDirt, 0.0, 1.0);
         W = vec4(1.0, 0.0, 0.0, 0.0);
@@ -100,11 +101,27 @@ export async function createTerrain(engine) {
         vec2 sc = vec2(0.33, 0.25);
         vec3 col = vec3(0.0); splatN = vec3(0.0); splatArm = vec3(0.0);
         float scales[4] = float[4](0.33, 0.28, 0.2, 0.09);
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
           vec2 tuv = uv * scales[i];
           col += sampleL(tDiff, tuv, float(i)).rgb * W[i] * (i == 1 ? 0.82 : 1.0);
           splatN += (sampleL(tNor, tuv, float(i)).xyz * 2.0 - 1.0) * W[i];
           splatArm += sampleL(tArm, tuv, float(i)).rgb * W[i];
+        }
+        // roche : projection sur les 3 axes (pas d'étirement sur les falaises verticales)
+        {
+          vec3 Nn = normalize(vWNor);
+          vec3 bw = pow(abs(Nn), vec3(4.0)); bw /= (bw.x + bw.y + bw.z);
+          vec3 p = vWPos * 0.12;
+          vec2 uvX = p.zy, uvY = p.xz, uvZ = p.xy;
+          col += (texture(tDiff, vec3(uvX, 3.0)).rgb * bw.x + texture(tDiff, vec3(uvY, 3.0)).rgb * bw.y + texture(tDiff, vec3(uvZ, 3.0)).rgb * bw.z) * W.a;
+          splatArm += (texture(tArm, vec3(uvX, 3.0)).rgb * bw.x + texture(tArm, vec3(uvY, 3.0)).rgb * bw.y + texture(tArm, vec3(uvZ, 3.0)).rgb * bw.z) * W.a;
+          vec3 tX = texture(tNor, vec3(uvX, 3.0)).xyz * 2.0 - 1.0;
+          vec3 tY = texture(tNor, vec3(uvY, 3.0)).xyz * 2.0 - 1.0;
+          vec3 tZ = texture(tNor, vec3(uvZ, 3.0)).xyz * 2.0 - 1.0;
+          tX = vec3(tX.xy * 1.3 + Nn.zy, abs(Nn.x));
+          tY = vec3(tY.xy * 1.3 + Nn.xz, abs(Nn.y));
+          tZ = vec3(tZ.xy * 1.3 + Nn.xy, abs(Nn.z));
+          rockN = normalize(tX.zyx * bw.x + tY.xzy * bw.y + tZ.xyz * bw.z);
         }
         // variation de teinte à grande échelle (herbe plus sèche / plus verte)
         float macro = fbm2(vWPos.xz * 0.008);
@@ -115,15 +132,16 @@ export async function createTerrain(engine) {
         #elif DBG == 2
         diffuseColor.rgb = W.rgb;
         #endif`)
-      .replace('#include <roughnessmap_fragment>', 'float roughnessFactor = clamp(splatArm.g * 1.05, 0.35, 1.0);')
+      .replace('#include <roughnessmap_fragment>', 'float roughnessFactor = clamp(splatArm.g * 1.05, mix(0.35, 0.65, W.a), 1.0);')
       .replace('#include <metalnessmap_fragment>', 'float metalnessFactor = 0.0;')
       .replace('#include <normal_fragment_maps>', `{
           vec3 Nw = normalize(vWNor);
           vec3 T = normalize(vec3(1.0, 0.0, 0.0) - Nw * Nw.x);
           vec3 B = normalize(cross(Nw, T));
-          vec3 tn = normalize(splatN);
+          vec3 tn = normalize(splatN + vec3(0.0, 0.0, 0.001));
           tn.xy *= 1.2;
           vec3 nw = normalize(T * tn.x - B * tn.y + Nw * tn.z);
+          nw = normalize(mix(nw, rockN, W.a));
           #if DBG != 1
           normal = normalize((viewMatrix * vec4(nw, 0.0)).xyz);
           #endif

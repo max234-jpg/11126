@@ -105,6 +105,24 @@ export class Audio {
     n.connect(f); f.connect(g); g.connect(this.master); n.start(t, Math.random()); n.stop(t + 0.4);
   }
 
+  // grondement des cascades : bruit filtré dont le volume dépend de la distance
+  waterfall() {
+    let gain = null;
+    return {
+      set: (dist) => {
+        if (!this.ctx) return;
+        if (!gain) {
+          const c = this.ctx, n = this.src(true), lp = c.createBiquadFilter(), hp = c.createBiquadFilter();
+          lp.type = 'lowpass'; lp.frequency.value = 1400; hp.type = 'highpass'; hp.frequency.value = 120;
+          gain = c.createGain(); gain.gain.value = 0;
+          n.connect(hp); hp.connect(lp); lp.connect(gain); gain.connect(this.master); n.start(0, 0.3);
+        }
+        const v = dist > 220 ? 0 : 0.45 / (1 + dist * 0.045);
+        gain.gain.setTargetAtTime(v, this.ctx.currentTime, 0.3);
+      },
+    };
+  }
+
   // moteur de voiture : renvoie un objet {set(rpm01, gas), stop()}
   engine() {
     if (!this.ctx) return { set() {}, stop() {} };

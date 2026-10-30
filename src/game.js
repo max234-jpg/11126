@@ -19,6 +19,7 @@ import { Storm } from './storm.js';
 import { Loot } from './loot.js';
 import { Vehicles } from './vehicles.js';
 import { createTrafficLights } from './trafficlights.js';
+import { createWaterfalls } from './waterfall.js';
 import { Input } from './input.js';
 import { Audio } from './audio.js';
 import { UI } from './ui.js';
@@ -69,6 +70,7 @@ export class Game {
     const terrain = await createTerrain(this.engine);
     const hTex = heightTexture();
     this.water = await createWater(this.engine, this.sky, hTex);
+    this.falls = createWaterfalls(this.engine, this.audio);
     await this.progress('Routes et village…', 0.3);
     await createRoads(this.engine, this.world);
     await createTown(this.engine, this.world, this);
@@ -350,6 +352,7 @@ export class Game {
     this.sky.follow(focus);
     this.water.update(this.time);
     this.lights.update(dt);
+    this.falls.update(this.time, dt, this.camera.position);
     this.veg.update(this.time);
     this.grass.update(this.time, this.camera.position);
     input.endFrame();

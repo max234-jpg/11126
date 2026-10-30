@@ -1,6 +1,6 @@
 // Interface : menu principal, casier, boutique, options, HUD, mini-carte, fil des éliminations.
 import { SKINS } from './character.js';
-import { H, N, HALF, LOTS, ROAD_D, WATER, BUILDING_LOTS, TOWERS } from './map.js';
+import { H, N, HALF, LOTS, ROAD_D, WATER, BUILDING_LOTS, TOWERS, waterLevelAt } from './map.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const html = (s) => { const t = document.createElement('template'); t.innerHTML = s.trim(); return t.content.firstChild; };
@@ -184,7 +184,8 @@ export class UI {
     for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
       const k = j * N + i, h = H[k], p = k * 4;
       let r, g, b;
-      if (h < WATER) { const d = Math.min(1, -h / 12); r = 40 - d * 30; g = 150 - d * 90; b = 170 - d * 50; }
+      const wl = h > 3 ? waterLevelAt(i - HALF, j - HALF) : WATER;
+      if (h < wl) { const d = Math.min(1, (wl - h) / 12); r = 40 - d * 30; g = 150 - d * 90; b = 170 - d * 50; }
       else if (h < 2) { r = 214; g = 199; b = 150; }
       else {
         const gx = (H[Math.min(k + 1, N * N - 1)] - H[Math.max(k - 1, 0)]), gz = (H[Math.min(k + N, N * N - 1)] - H[Math.max(k - N, 0)]);

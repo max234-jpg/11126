@@ -79,6 +79,15 @@ export class Engine {
       const ao = new GTAOPass(this.scene, this.camera, size.x, size.y);
       ao.updateGtaoMaterial({ radius: 0.6, distanceExponent: 1.5, thickness: 1.5, scale: 1.0, samples: 12 });
       ao.blendIntensity = 0.85;
+      // l'occlusion ambiante ignore les surfaces transparentes, découpées (feuillage) ou déformées sur GPU (herbe)
+      ao.overrideVisibility = function () {
+        const cache = this._visibilityCache;
+        this.scene.traverse((o) => {
+          cache.set(o, o.visible);
+          const m = o.material;
+          if (o.isPoints || o.isLine || o.isSprite || (m && !Array.isArray(m) && (m.transparent || m.alphaTest > 0 || m.userData.noAO))) o.visible = false;
+        });
+      };
       this.composer.addPass(ao);
     }
     if (q.bloom) this.composer.addPass(new UnrealBloomPass(new THREE.Vector2(size.x / 2, size.y / 2), 0.18, 0.5, 0.92));

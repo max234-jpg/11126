@@ -1,7 +1,7 @@
 // Acteur = joueur ou bot : physique (marche, course, saut, nage), santé, munitions, animations.
 import * as THREE from 'three';
 import { Character } from './character.js';
-import { heightAt, WATER, HALF } from './map.js';
+import { heightAt, waterLevelAt, HALF } from './map.js';
 
 export const RADIUS = 0.36, HEIGHT = 1.8;
 const SWIM_DEPTH = 1.3;   // profondeur d'eau à partir de laquelle on nage
@@ -47,10 +47,11 @@ export class Actor {
   move(dt, wishX, wishZ, speed, jump) {
     const world = this.game.world;
     const ground = heightAt(this.pos.x, this.pos.z);
-    const depth = WATER - ground;
-    this.swimming = depth > SWIM_DEPTH && this.pos.y < WATER + 0.25;
+    const level = waterLevelAt(this.pos.x, this.pos.z);   // mer, lac d'altitude ou bassin
+    const depth = level - ground;
+    this.swimming = depth > SWIM_DEPTH && this.pos.y < level + 0.25;
     if (this.swimming) {
-      const target = WATER - 0.1; // les animations de nage placent le corps autour de la racine
+      const target = level - 0.1; // les animations de nage placent le corps autour de la racine
       this.vel.y = 0;
       this.pos.y += (target - this.pos.y) * Math.min(1, dt * 4);
       speed = Math.min(speed, 4.2);

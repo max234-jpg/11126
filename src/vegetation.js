@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { Tree } from '@dgreenheck/ez-tree';
 import * as A from './assets.js';
 import * as M from './models.js';
-import { heightAt, normalAt, roadDist, inTown, nearLot, islandRadius, HALF } from './map.js';
+import { heightAt, normalAt, roadDist, inTown, nearLot, islandRadius, waterLevelAt, HALF } from './map.js';
 import { makeNoise, mulberry32, smoothstep } from './noise.js';
 
 const windUniforms = { uTime: { value: 0 } };
@@ -35,7 +35,7 @@ function addWind(mat, strength, heightScale) {
 }
 
 async function makeTreeVariants() {
-  const presets = [['Oak Medium', 11, 101], ['Oak Large', 14, 202], ['Ash Medium', 12, 303], ['Aspen Medium', 13, 404], ['Pine Medium', 13, 505], ['Ash Large', 15, 606]];
+  const presets = [['Oak Medium', 11, 101], ['Oak Large', 14, 202], ['Ash Medium', 12, 303], ['Oak Small', 9, 404], ['Pine Medium', 13, 505], ['Ash Large', 15, 606]];
   const variants = [];
   for (const [name, height, seed] of presets) {
     const t = new Tree();
@@ -178,6 +178,8 @@ export async function createVegetation(engine, world) {
     const px = x + (rnd() - 0.5) * STEP * 0.9, pz = z + (rnd() - 0.5) * STEP * 0.9;
     const h = heightAt(px, pz);
     if (h < 0.6) continue;
+    const lake = waterLevelAt(px, pz);
+    if (lake > 0 && h < lake + 0.8) continue; // pas d'arbres dans les lacs
     const n = normalAt(px, pz);
     const rd = roadDist(px, pz);
     const town = inTown(px, pz, 4) || nearLot(px, pz, 3);
@@ -191,7 +193,8 @@ export async function createVegetation(engine, world) {
     }
     if (h < 2.5 || rd < 3 || town) continue;
     if (n[1] < 0.78) {
-      if (r < 0.32) rocks.push({ x: px, z: pz, y: h - 0.25, rot: rnd() * 6.28, scale: 0.8 + rnd() * 1.6, v: Math.floor(rnd() * 6) });
+      // pas de rochers suspendus sur les parois quasi verticales
+      if (n[1] > 0.6 && r < 0.32) rocks.push({ x: px, z: pz, y: h - 0.25, rot: rnd() * 6.28, scale: 0.8 + rnd() * 1.6, v: Math.floor(rnd() * 6) });
       continue;
     }
     const pTree = forest > 0.12 ? 0.3 : forest > -0.05 ? 0.07 : 0.02;

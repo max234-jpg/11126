@@ -2,7 +2,7 @@
 // reflet du soleil, écume sur le rivage, vaguelettes animées.
 import * as THREE from 'three';
 import * as A from './assets.js';
-import { HALF, N } from './map.js';
+import { HALF, N, LAKES, MASSIF } from './map.js';
 import { GLSL_NOISE } from './terrain.js';
 
 export async function createWater(engine, sky, heightTex) {
@@ -15,6 +15,7 @@ export async function createWater(engine, sky, heightTex) {
       tNor: { value: null }, tSky: { value: null }, tH: { value: null },
       uSun: { value: new THREE.Vector3() },
       uHalf: { value: HALF }, uN: { value: N },
+      uLevel: { value: 0 }, uShallow: { value: new THREE.Color(0.07, 0.42, 0.42) }, uDeep: { value: new THREE.Color(0.008, 0.07, 0.13) },
     }]),
     vertexShader: `
       #include <fog_pars_vertex>
@@ -28,7 +29,7 @@ export async function createWater(engine, sky, heightTex) {
       }`,
     fragmentShader: `
       #include <fog_pars_fragment>
-      uniform float uTime, uHalf, uN; uniform sampler2D tNor, tSky, tH; uniform vec3 uSun;
+      uniform float uTime, uHalf, uN, uLevel; uniform sampler2D tNor, tSky, tH; uniform vec3 uSun, uShallow, uDeep;
       varying vec3 vW;
       ${GLSL_NOISE}
       vec3 skyLookup(vec3 d){
@@ -40,7 +41,7 @@ export async function createWater(engine, sky, heightTex) {
         vec2 huv = (vW.xz + uHalf + 0.5) / uN;
         float ground = texture2D(tH, huv).r;
         if (huv.x < 0.0 || huv.x > 1.0 || huv.y < 0.0 || huv.y > 1.0) ground = -14.0;
-        float depth = max(0.0, -ground);
+        float depth = max(0.0, uLevel - ground);
         vec2 p = vW.xz;
         vec3 n1 = texture2D(tNor, p * 0.031 + vec2(uTime * 0.011, uTime * 0.007)).xzy * 2.0 - 1.0;
         vec3 n2 = texture2D(tNor, p * 0.083 - vec2(uTime * 0.017, -uTime * 0.013)).xzy * 2.0 - 1.0;
@@ -52,8 +53,8 @@ export async function createWater(engine, sky, heightTex) {
         float fres = 0.02 + 0.98 * pow(1.0 - max(dot(N, V), 0.0), 5.0);
         vec3 R = reflect(-V, N);
         vec3 refl = skyLookup(R);
-        vec3 shallow = vec3(0.07, 0.42, 0.42);
-        vec3 deep = vec3(0.008, 0.07, 0.13);
+        vec3 shallow = uShallow;
+        vec3 deep = uDeep;
         vec3 body = mix(shallow, deep, smoothstep(0.5, 11.0, depth));
         // lumière du soleil diffusée dans l'eau
         body *= 0.55 + 0.6 * max(uSun.y, 0.0);
@@ -85,8 +86,27 @@ export async function createWater(engine, sky, heightTex) {
   mesh.renderOrder = 2;
   mesh.name = 'eau';
   engine.scene.add(mesh);
+  // lacs de montagne : même rendu, niveau et couleur propres (eau douce, plus verte)
+  const mats = [mat];
+  for (const l of LAKES) {
+    const m = mat.clone();
+    m.uniforms.tNor.value = nor; m.uniforms.tSky.value = sky.skyTex; m.uniforms.tH.value = heightTex;
+    m.uniforms.uSun.value.copy(sky.sunDir);
+    m.uniforms.uLevel.value = l.level;
+    m.uniforms.uShallow.value.setRGB(0.08, 0.36, 0.3);
+    m.uniforms.uDeep.value.setRGB(0.01, 0.08, 0.07);
+    const g = new THREE.CircleGeometry(1, 72);
+    g.rotateX(-Math.PI / 2);
+    const lake = new THREE.Mesh(g, m);
+    lake.scale.set(l.rv + 1.5, 1, l.ru + 1.5);
+    lake.rotation.y = Math.atan2(MASSIF.dir.x, MASSIF.dir.z);
+    lake.position.set(l.x, l.level, l.z);
+    lake.renderOrder = 2;
+    engine.scene.add(lake);
+    mats.push(m);
+  }
   return {
     mesh,
-    update(t) { mat.uniforms.uTime.value = t; },
+    update(t) { for (const m of mats) m.uniforms.uTime.value = t; },
   };
 }
