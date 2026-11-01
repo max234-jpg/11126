@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111418">
+<title>Scanner Wi-Fi</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>📄 Scanner Wi-Fi</h1>
+  <span id="status" class="badge">…</span>
+</header>
+
+<nav>
+  <button data-tab="cam" class="active">📷 Caméra</button>
+  <button data-tab="scans">🗂️ Scans <span id="count"></span></button>
+  <button data-tab="settings">⚙️ Réglages</button>
+</nav>
+
+<main>
+  <!-- ======================= CAMÉRA ======================= -->
+  <section id="tab-cam" class="tab active">
+    <div class="live">
+      <img id="live" alt="Image de la caméra">
+      <label class="overlay-toggle"><input type="checkbox" id="overlay" checked> Contour auto</label>
+    </div>
+
+    <div class="modes" id="modes">
+      <button data-mode="couleur">🎨 Couleur</button>
+      <button data-mode="gris">⚫ Gris</button>
+      <button data-mode="nb">📝 N&amp;B</button>
+      <button data-mode="photo">🖼️ Photo</button>
+    </div>
+
+    <div class="row">
+      <label for="frames">Images combinées : <b id="framesVal">5</b></label>
+      <input type="range" id="frames" min="1" max="10" value="5">
+    </div>
+    <p class="hint">Plus d'images = moins de bruit (gardez la caméra immobile).</p>
+
+    <div class="actions">
+      <label class="btn secondary" title="Importer une photo">
+        📁 Importer
+        <input type="file" id="upload" accept="image/*" multiple hidden>
+      </label>
+      <button id="scanBtn" class="shutter" aria-label="Scanner"><span></span></button>
+      <button class="btn secondary" id="goScans">🗂️ Scans</button>
+    </div>
+  </section>
+
+  <!-- ======================= SCANS ======================= -->
+  <section id="tab-scans" class="tab">
+    <div class="toolbar">
+      <button class="btn" id="pdfBtn">📕 Exporter en PDF</button>
+      <button class="btn secondary" id="selAll">Tout sélectionner</button>
+      <button class="btn danger" id="delSel">🗑️ Supprimer</button>
+    </div>
+    <p class="hint" id="selInfo">Touchez un scan pour l'ouvrir. Cochez-en plusieurs pour un PDF.</p>
+    <div id="grid" class="grid"></div>
+    <p id="empty" class="empty">Aucun scan pour l'instant.</p>
+  </section>
+
+  <!-- ======================= RÉGLAGES ======================= -->
+  <section id="tab-settings" class="tab">
+    <form id="cfgForm" class="card">
+      <label>Adresse de la caméra
+        <input id="source" placeholder="ex. http://192.168.1.50:81/stream" autocomplete="off" spellcheck="false">
+      </label>
+      <label>Type
+        <select id="kind">
+          <option value="auto">Automatique</option>
+          <option value="mjpeg">Flux vidéo HTTP (MJPEG)</option>
+          <option value="snapshot">Photo HTTP (snapshot)</option>
+          <option value="rtsp">Flux RTSP</option>
+          <option value="device">Webcam USB (numéro)</option>
+        </select>
+      </label>
+      <div class="two">
+        <label>Identifiant <input id="user" autocomplete="off"></label>
+        <label>Mot de passe <input id="password" type="password" autocomplete="off"></label>
+      </div>
+      <div class="toolbar">
+        <button class="btn" type="submit">💾 Enregistrer et connecter</button>
+        <button class="btn secondary" type="button" id="discoverBtn">🔎 Chercher sur le Wi-Fi</button>
+      </div>
+      <div id="discover"></div>
+    </form>
+
+    <div class="card help">
+      <h3>Exemples d'adresses</h3>
+      <ul>
+        <li><b>ESP32-CAM</b> : <code>http://IP:81/stream</code> ou <code>http://IP/capture</code></li>
+        <li><b>Appli « IP Webcam » (Android)</b> : <code>http://IP:8080/video</code></li>
+        <li><b>Caméra IP (Tapo, Imou, Reolink…)</b> : <code>rtsp://identifiant:motdepasse@IP:554/stream1</code></li>
+        <li><b>Caméra avec photo</b> : <code>http://IP/snapshot.jpg</code></li>
+        <li><b>Webcam USB du PC</b> : <code>0</code></li>
+      </ul>
+      <p>L'adresse IP de la caméra se trouve dans son application ou dans la page de votre box Internet.</p>
+    </div>
+  </section>
+</main>
+
+<!-- ======================= ÉDITEUR ======================= -->
+<div id="editor" class="editor" hidden>
+  <div class="ed-head">
+    <button class="icon" id="edClose" aria-label="Fermer">✕</button>
+    <span id="edTitle">Scan</span>
+    <a class="icon" id="edDl" aria-label="Télécharger" download>⬇️</a>
+  </div>
+
+  <div class="ed-view" id="edView">
+    <img id="edImg" alt="Résultat">
+    <div id="cropWrap" class="crop" hidden>
+      <img id="cropImg" alt="Original">
+      <svg id="cropSvg"></svg>
+    </div>
+    <div id="busy" class="busy" hidden><div class="spinner"></div></div>
+  </div>
+
+  <div class="ed-tools" id="edTools">
+    <div class="modes" id="edModes">
+      <button data-mode="couleur">🎨 Couleur</button>
+      <button data-mode="gris">⚫ Gris</button>
+      <button data-mode="nb">📝 N&amp;B</button>
+      <button data-mode="photo">🖼️ Photo</button>
+    </div>
+    <div class="toolbar center">
+      <button class="btn secondary" id="rotL">↺</button>
+      <button class="btn secondary" id="rotR">↻</button>
+      <button class="btn secondary" id="cropBtn">✂️ Recadrer</button>
+      <button class="btn danger" id="edDel">🗑️</button>
+    </div>
+  </div>
+
+  <div class="ed-tools" id="cropTools" hidden>
+    <p class="hint center">Déplacez les 4 coins sur les bords du document.</p>
+    <div class="toolbar center">
+      <button class="btn secondary" id="cropAuto">🪄 Auto</button>
+      <button class="btn secondary" id="cropFull">⬜ Tout</button>
+      <button class="btn secondary" id="cropCancel">Annuler</button>
+      <button class="btn" id="cropOk">✔ Valider</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
