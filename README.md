@@ -17,25 +17,41 @@ Il tourne sur votre PC et s'utilise depuis un navigateur, **sur le PC ou sur vot
 
 ## 🚀 Installation et lancement
 
-Il faut **Python 3.9 ou plus** sur le PC : <https://www.python.org/downloads/>
-(sous Windows, cochez « Add Python to PATH » pendant l'installation).
+### 🍎 Mac : une seule commande
 
-- **Windows** : double-cliquez sur `demarrer.bat`
-- **Mac / Linux** : lancez `./demarrer.sh`
+1. Ouvrez l'app **Terminal** (⌘ + Espace, tapez « Terminal », Entrée).
+2. Collez cette ligne puis appuyez sur Entrée :
 
-La première fois, l'installation prend quelques minutes. Ensuite la fenêtre affiche :
+```bash
+curl -fsSL https://raw.githubusercontent.com/max234-jpg/11126/claude/beautiful-sagan-70bpjg/installer-mac.sh | sh
+```
+
+Le scanner s'installe dans le dossier `ScannerWifi` de votre dossier personnel et s'ouvre dans le navigateur.
+Un raccourci **« Scanner Wi-Fi »** est créé sur le Bureau : double-cliquez dessus les fois suivantes.
+(Si le Mac propose d'installer les « outils de ligne de commande », acceptez puis recollez la commande.)
+
+### 🪟 Windows
+
+Installez **Python** (<https://www.python.org/downloads/>, cochez « Add Python to PATH »),
+téléchargez le [ZIP](https://github.com/max234-jpg/11126/archive/refs/heads/claude/beautiful-sagan-70bpjg.zip),
+décompressez-le et double-cliquez sur `demarrer.bat`.
+
+### 📱 Sur le téléphone
+
+Au lancement, la fenêtre affiche :
 
 ```
   Scanner Wi-Fi démarré !
-  Sur ce PC        : http://localhost:5000
-  Sur le téléphone : http://192.168.1.23:5000   (même réseau Wi-Fi)
+  Sur ce PC        : http://localhost:8765
+  Sur le téléphone : http://192.168.1.23:8765   (même réseau Wi-Fi)
 ```
 
-Ouvrez l'adresse « téléphone » dans le navigateur de votre téléphone (connecté au même Wi-Fi).
+Ouvrez l'adresse « téléphone » sur votre téléphone (connecté au même Wi-Fi),
+ou scannez le **QR code** affiché dans l'onglet ⚙️ Réglages.
 Astuce : « Ajouter à l'écran d'accueil » pour l'avoir comme une appli.
 
-> Si le téléphone n'arrive pas à se connecter, autorisez Python dans le pare-feu Windows
-> (une fenêtre le propose au premier lancement : cochez « Réseaux privés »).
+> Si le téléphone n'arrive pas à se connecter : autorisez Python quand l'ordinateur demande
+> d'accepter les connexions entrantes (Mac : « Autoriser » ; Windows : cochez « Réseaux privés »).
 
 ## 📷 Connecter la caméra
 

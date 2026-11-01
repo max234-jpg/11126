@@ -102,3 +102,6 @@ code { background: var(--bg); padding: 1px 6px; border-radius: 6px; font-size: .
 .toast { position: fixed; left: 50%; top: max(64px, calc(env(safe-area-inset-top) + 56px)); text-align: center; transform: translateX(-50%); background: var(--panel2);
   padding: 10px 16px; border-radius: 10px; z-index: 50; max-width: calc(100% - 32px); box-shadow: 0 4px 20px rgba(0,0,0,.4); }
 .toast[hidden] { display: none; }
+.phone { display: flex; gap: 14px; align-items: center; }
+.phone img { background: #fff; border-radius: 8px; flex: none; }
+.phone h3 { margin: 0 0 4px; font-size: 1rem; } .phone p { margin: 0 0 6px; font-size: .85rem; color: var(--muted); }

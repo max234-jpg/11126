@@ -248,6 +248,16 @@ $("#cropAuto").addEventListener("click", async () => { showCrop(false); await re
 $("#cropOk").addEventListener("click", async () => { showCrop(false); await reprocess({ corners }); });
 
 // ---------------------------------------------------------------- configuration caméra
+async function loadInfo() {
+  try {
+    const i = await api("/api/info");
+    $("#phoneUrl").textContent = i.phone_url;
+    $("#qr").src = "/api/qr.svg";
+    $("#qr").onerror = () => ($("#qr").hidden = true);
+  } catch { /* rien */ }
+}
+loadInfo();
+
 async function loadConfig() {
   const c = await api("/api/config");
   $("#source").value = c.source; $("#kind").value = c.kind || "auto";

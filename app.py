@@ -1,7 +1,7 @@
 """Scanner Wi-Fi : serveur web.
 
 Lancement :   python app.py
-Puis ouvrez  http://<adresse-du-PC>:5000  depuis votre téléphone (même Wi-Fi).
+Puis ouvrez  http://<adresse-du-PC>:8765  depuis votre téléphone (même Wi-Fi).
 """
 import io
 import ipaddress
@@ -11,6 +11,7 @@ import socket
 import threading
 import time
 import uuid
+import webbrowser
 from concurrent.futures import ThreadPoolExecutor
 
 import cv2
@@ -30,6 +31,9 @@ app = Flask(__name__, static_folder=os.path.join(BASE, "static"), static_url_pat
 app.config["MAX_CONTENT_LENGTH"] = 40 * 1024 * 1024
 camera = Camera()
 _lock = threading.Lock()
+
+# 8765 et pas 5000 : sur Mac, le port 5000 est déjà pris par AirPlay.
+PORT = int(os.environ.get("PORT", "8765"))
 
 DEFAULT_CONFIG = {"source": "", "kind": "auto", "user": "", "password": "",
                   "mode": "couleur", "frames": 5}
@@ -371,11 +375,33 @@ def discover():
     return jsonify({"me": me, "devices": results})
 
 
+@app.get("/api/info")
+def info():
+    return jsonify({"phone_url": f"http://{local_ip()}:{PORT}"})
+
+
+@app.get("/api/qr.svg")
+def qr_svg():
+    """QR code de l'adresse à ouvrir sur le téléphone."""
+    try:
+        import qrcode
+        import qrcode.image.svg
+    except ImportError:
+        abort(404)
+    img = qrcode.make(f"http://{local_ip()}:{PORT}", image_factory=qrcode.image.svg.SvgPathFillImage,
+                      box_size=10, border=2)
+    buf = io.BytesIO()
+    img.save(buf)
+    return Response(buf.getvalue(), mimetype="image/svg+xml", headers={"Cache-Control": "no-store"})
+
+
 if __name__ == "__main__":
     apply_config(load_config())
-    port = int(os.environ.get("PORT", "5000"))
+    port = PORT
     ip = local_ip()
     print("\n  Scanner Wi-Fi démarré !")
     print(f"  Sur ce PC        : http://localhost:{port}")
     print(f"  Sur le téléphone : http://{ip}:{port}   (même réseau Wi-Fi)\n")
+    if os.environ.get("NO_BROWSER") != "1":
+        threading.Timer(1.5, lambda: webbrowser.open(f"http://localhost:{port}")).start()
     app.run(host="0.0.0.0", port=port, threaded=True, debug=False)
