@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portfolio Dev Web</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one 1120px column. Hero = pitch on the left, a browser window showing a Lighthouse report on the right. */
+:root{
+  --paper:#f5f6fb; --surface:#ffffff; --ink:#12142b; --muted:#585d7c; --line:#dde0ee;
+  --accent:#2f45ff; --accent-ink:#ffffff; --accent-soft:#e6e9ff;
+  --signal:#ffd84d; --signal-ink:#12142b;
+  --good:#0a9a55; --good-track:#d9f2e5;
+  --bar:#12142b; --bar-ink:#f5f6fb;
+  --f-display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-body:"IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#0d0f20; --surface:#161a33; --ink:#eef0ff; --muted:#a2a7c8; --line:#2a2f55;
+  --accent:#8794ff; --accent-ink:#0d0f20; --accent-soft:#222859;
+  --good:#3ddc84; --good-track:#173a2a;
+  --bar:#eef0ff; --bar-ink:#0d0f20; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#0d0f20; --surface:#161a33; --ink:#eef0ff; --muted:#a2a7c8; --line:#2a2f55;
+  --accent:#8794ff; --accent-ink:#0d0f20; --accent-soft:#222859;
+  --good:#3ddc84; --good-track:#173a2a;
+  --bar:#eef0ff; --bar-ink:#0d0f20; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none!important;animation:none!important} }
+body{background:var(--paper); color:var(--ink); font-family:var(--f-body); font-size:16px; line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-bottom:84px}
+.wrap{max-width:1120px; margin:0 auto}
+h1,h2,h3{font-family:var(--f-display); line-height:1.05; text-wrap:balance; margin:0}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent); outline-offset:3px; border-radius:6px}
+.mono{font-family:var(--f-mono); font-size:13px; letter-spacing:.02em}
+.eyebrow{font-family:var(--f-mono); font-size:12px; text-transform:uppercase; letter-spacing:.12em; color:var(--muted)}
+
+/* nav */
+nav{display:flex; align-items:center; justify-content:space-between; gap:16px; padding-block:22px; flex-wrap:wrap}
+.logo{font-family:var(--f-display); font-weight:800; font-size:22px; text-decoration:none; display:flex; align-items:baseline; gap:8px}
+.logo span{font-family:var(--f-mono); font-weight:400; font-size:12px; color:var(--muted)}
+.navlinks{display:flex; gap:22px; align-items:center; flex-wrap:wrap}
+.navlinks a{text-decoration:none; color:var(--muted); font-weight:500}
+.navlinks a:hover{color:var(--ink)}
+.btn{display:inline-flex; align-items:center; gap:8px; padding:12px 20px; border-radius:999px; font-weight:600; text-decoration:none; border:2px solid var(--ink); font-family:var(--f-body); font-size:15px; cursor:pointer; background:transparent; color:var(--ink); transition:transform .15s, background .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.navlinks .btn{color:var(--ink)}
+
+/* hero */
+.hero{display:grid; grid-template-columns:1.15fr .85fr; gap:56px; align-items:center; padding-block:48px 72px}
+.hero > *{min-width:0}
+.status{display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border:1px solid var(--line); border-radius:999px; background:var(--surface)}
+.status i{width:8px; height:8px; border-radius:50%; background:var(--good); box-shadow:0 0 0 4px var(--good-track)}
+.hero h1{font-size:clamp(40px, 6.2vw, 74px); font-weight:800; letter-spacing:-.025em; margin-block:22px 22px}
+mark{background:linear-gradient(transparent 58%, var(--signal) 58%); color:inherit; padding:0 .06em}
+.lead{font-size:19px; color:var(--muted); max-width:34em}
+.ctas{display:flex; gap:12px; flex-wrap:wrap; margin-top:30px}
+.facts{display:flex; gap:32px; flex-wrap:wrap; margin-top:40px; padding-top:24px; border-top:1px solid var(--line)}
+.facts b{display:block; font-family:var(--f-display); font-size:30px; font-weight:800; font-variant-numeric:tabular-nums}
+.facts span{color:var(--muted); font-size:14px}
+
+/* browser + lighthouse */
+.browser{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); box-shadow:0 30px 60px -30px rgba(18,20,43,.35); overflow:hidden}
+.chrome{display:flex; align-items:center; gap:12px; padding:12px 14px; border-bottom:1px solid var(--line)}
+.dots{display:flex; gap:6px}
+.dots i{width:10px; height:10px; border-radius:50%; background:var(--line)}
+.url{flex:1; min-width:0; background:var(--paper); border-radius:8px; padding:6px 12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.url::after{content:"|"; margin-left:2px; color:var(--accent); animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.report{padding:26px 22px 24px}
+.report h3{font-size:18px; margin-bottom:4px}
+.gauges{display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin-top:22px}
+.gauge{text-align:center; min-width:0}
+.gauge svg{width:100%; max-width:76px; height:auto; display:block; margin:0 auto}
+.gauge .track{fill:none; stroke:var(--good-track); stroke-width:6}
+.gauge .val{fill:none; stroke:var(--good); stroke-width:6; stroke-linecap:round; transform:rotate(-90deg); transform-origin:50% 50%}
+.gauge text{fill:var(--good); font-family:var(--f-mono); font-size:17px; font-weight:500}
+.gauge span{display:block; font-size:12px; color:var(--muted); margin-top:8px; line-height:1.3}
+.vitals{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:24px}
+.vital{border:1px solid var(--line); border-radius:10px; padding:10px 12px}
+.vital b{font-family:var(--f-mono); font-weight:500; font-size:18px; color:var(--good)}
+.vital span{display:block; font-size:12px; color:var(--muted)}
+
+/* sections */
+section{padding-block:72px; border-top:1px solid var(--line)}
+.head{display:flex; justify-content:space-between; align-items:end; gap:24px; flex-wrap:wrap; margin-bottom:36px}
+.head h2{font-size:clamp(30px, 4vw, 46px); font-weight:800; letter-spacing:-.02em; margin-top:10px}
+.head p{color:var(--muted); max-width:30em}
+
+.offers{display:grid; grid-template-columns:repeat(3, 1fr); gap:20px}
+.offer{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:28px; display:flex; flex-direction:column; gap:18px; min-width:0}
+.offer.star{border:2px solid var(--accent); position:relative}
+.offer.star .tag{position:absolute; top:-13px; left:24px; background:var(--accent); color:var(--accent-ink); padding:3px 10px; border-radius:999px; font-family:var(--f-mono); font-size:12px}
+.offer h3{font-size:22px}
+.price{font-family:var(--f-display); font-size:40px; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
+.price small{font-family:var(--f-body); font-size:15px; font-weight:400; color:var(--muted); letter-spacing:0}
+.offer ul{list-style:none; padding:0; margin:0; display:grid; gap:9px}
+.offer li{padding-left:26px; position:relative}
+.offer li::before{content:"✓"; position:absolute; left:0; color:var(--good); font-weight:700}
+.offer .btn{margin-top:auto; justify-content:center}
+
+.projects{display:grid; grid-template-columns:repeat(3, 1fr); gap:20px}
+.project{min-width:0; text-decoration:none; display:flex; flex-direction:column; gap:14px}
+.thumb{aspect-ratio:4/3; max-width:100%; border-radius:var(--r); overflow:hidden; border:1px solid var(--line); padding:14px; display:grid; grid-template-rows:auto 1fr auto; gap:10px; transition:transform .2s}
+.project:hover .thumb{transform:translateY(-4px) rotate(-.4deg)}
+.thumb .t-nav{display:flex; justify-content:space-between; align-items:center}
+.thumb .t-nav i{display:block; height:6px; border-radius:3px}
+.thumb .t-hero{display:flex; flex-direction:column; justify-content:center; gap:8px}
+.thumb .t-hero b{font-family:var(--f-display); font-size:20px; line-height:1.05}
+.thumb .t-hero i{display:block; height:6px; border-radius:3px; opacity:.55}
+.thumb .t-cards{display:grid; grid-template-columns:repeat(3, 1fr); gap:6px}
+.thumb .t-cards i{height:30px; border-radius:6px}
+.p1{background:#2b1a12; color:#f6e3c6} .p1 i{background:#e9a35b}
+.p2{background:#e8f0e2; color:#14301d} .p2 i{background:#2f7a45}
+.p3{background:#f1f1f1; color:#161616} .p3 i{background:#161616}
+.project h3{font-size:20px}
+.project p{color:var(--muted); font-size:15px}
+.chip{display:inline-block; font-family:var(--f-mono); font-size:11px; padding:2px 8px; border-radius:999px; background:var(--accent-soft); color:var(--accent); margin-right:6px}
+
+.steps{display:grid; grid-template-columns:repeat(4, 1fr); gap:20px; counter-reset:s}
+.step{min-width:0; padding-top:18px; border-top:3px solid var(--ink)}
+.step .n{font-family:var(--f-mono); color:var(--accent); font-size:13px}
+.step h3{font-size:21px; margin-block:8px}
+.step p{color:var(--muted); font-size:15px}
+
+.promises{display:grid; grid-template-columns:repeat(3, 1fr); gap:20px}
+.promise{min-width:0; padding:24px; border-radius:var(--r); background:var(--accent-soft)}
+.promise h3{font-size:20px; margin-bottom:8px}
+.promise p{color:var(--muted); font-size:15px}
+
+.faq{display:grid; gap:12px; max-width:760px}
+details{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px 20px}
+summary{cursor:pointer; font-weight:600; font-size:17px; list-style:none; display:flex; justify-content:space-between; gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+"; font-family:var(--f-mono); color:var(--accent); font-size:20px; line-height:1}
+details[open] summary::after{content:"−"}
+details p{color:var(--muted); margin-top:12px; max-width:62ch}
+
+.contact{display:grid; grid-template-columns:.9fr 1.1fr; gap:48px; align-items:start}
+.contact > *{min-width:0}
+.contact h2{font-size:clamp(34px, 4.6vw, 54px); font-weight:800; letter-spacing:-.02em; margin-block:10px 18px}
+.contact .lead{font-size:17px}
+.mail{margin-top:24px; display:inline-block; padding:10px 14px; border:1px dashed var(--line); border-radius:10px; user-select:all}
+form{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:26px; display:grid; gap:16px}
+.row{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+label{display:grid; gap:6px; font-size:14px; font-weight:500}
+input, select, textarea{font:inherit; font-size:15px; padding:11px 12px; border:1px solid var(--line); border-radius:10px; background:var(--paper); color:var(--ink); width:100%}
+textarea{min-height:110px; resize:vertical}
+.sent{padding:12px 14px; border-radius:10px; background:var(--good-track); color:var(--ink); font-size:14px}
+
+footer{padding-block:32px; border-top:1px solid var(--line); color:var(--muted); font-size:14px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap}
+
+/* edit toolbar (not part of the site) */
+.editbar{position:fixed; left:0; right:0; bottom:0; z-index:20; background:var(--bar); color:var(--bar-ink);
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-top:12px; padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px))}
+.editbar .wrap{display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:space-between}
+.editbar p{font-size:14px; min-width:0; flex:1 1 280px}
+.editbar .tools{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+.editbar button{font:inherit; font-size:14px; font-weight:600; padding:8px 14px; border-radius:999px; border:1.5px solid var(--bar-ink); background:transparent; color:var(--bar-ink); cursor:pointer}
+.editbar button.on{background:var(--signal); color:var(--signal-ink); border-color:var(--signal)}
+.editbar .saved{font-family:var(--f-mono); font-size:12px; opacity:.75}
+html.editing #site [contenteditable], html.editing #site{caret-color:var(--accent)}
+html.editing #site h1, html.editing #site h2, html.editing #site h3, html.editing #site p, html.editing #site li, html.editing #site .price, html.editing #site summary{outline:1px dashed var(--accent); outline-offset:4px}
+
+@media (max-width: 900px){
+  .hero{grid-template-columns:1fr; gap:40px; padding-block:24px 56px}
+  .offers, .projects, .promises{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .contact{grid-template-columns:1fr; gap:32px}
+}
+@media (max-width: 520px){
+  .navlinks a:not(.btn){display:none}
+  .steps, .row{grid-template-columns:1fr}
+  .gauges{grid-template-columns:repeat(2, 1fr); row-gap:18px}
+  section{padding-block:56px}
+}
+</style>
+</head>
+<body>
+
+<main id="site">
+<div class="wrap">
+  <nav>
+    <a class="logo" href="#top" id="top">Ton Nom <span>dev web freelance</span></a>
+    <div class="navlinks">
+      <a href="#offres">Offres</a>
+      <a href="#projets">Projets</a>
+      <a href="#methode">Méthode</a>
+      <a class="btn" href="#contact">Demander un devis</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <span class="status mono"><i></i>Disponible pour de nouveaux projets · nov. 2026</span>
+      <h1>Des sites <mark>rapides</mark> qui transforment vos visiteurs en clients.</h1>
+      <p class="lead">Je conçois et développe des sites sur mesure pour les indépendants, artisans et PME. Première maquette en 72 h, mise en ligne en 2 à 3 semaines.</p>
+      <div class="ctas">
+        <a class="btn primary" href="#contact">Demander un devis gratuit →</a>
+        <a class="btn" href="#projets">Voir les projets</a>
+      </div>
+      <div class="facts">
+        <div><b>72 h</b><span>pour la 1<sup>re</sup> maquette</span></div>
+        <div><b>&lt; 1 s</b><span>de chargement visé</span></div>
+        <div><b>0 €</b><span>l'appel découverte</span></div>
+      </div>
+    </div>
+
+    <div class="browser" aria-label="Exemple de rapport de performance Google Lighthouse">
+      <div class="chrome">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="url mono">pagespeed.web.dev / votre-site.fr</div>
+      </div>
+      <div class="report">
+        <p class="eyebrow">Rapport Lighthouse · mobile</p>
+        <h3>L'objectif sur chaque site livré</h3>
+        <div class="gauges">
+          <div class="gauge"><svg viewBox="0 0 64 64"><circle class="track" cx="32" cy="32" r="26"/><circle class="val" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="0"/><text x="32" y="38" text-anchor="middle">100</text></svg><span>Performance</span></div>
+          <div class="gauge"><svg viewBox="0 0 64 64"><circle class="track" cx="32" cy="32" r="26"/><circle class="val" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="0"/><text x="32" y="38" text-anchor="middle">100</text></svg><span>Accessibilité</span></div>
+          <div class="gauge"><svg viewBox="0 0 64 64"><circle class="track" cx="32" cy="32" r="26"/><circle class="val" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="0"/><text x="32" y="38" text-anchor="middle">100</text></svg><span>Bonnes pratiques</span></div>
+          <div class="gauge"><svg viewBox="0 0 64 64"><circle class="track" cx="32" cy="32" r="26"/><circle class="val" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="0"/><text x="32" y="38" text-anchor="middle">100</text></svg><span>SEO</span></div>
+        </div>
+        <div class="vitals">
+          <div class="vital"><b>0,8 s</b><span>LCP · affichage du contenu</span></div>
+          <div class="vital"><b>0</b><span>CLS · décalage de mise en page</span></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="offres">
+    <div class="head">
+      <div><p class="eyebrow">Offres</p><h2>Un prix clair, sans surprise.</h2></div>
+      <p>Hébergement, nom de domaine et mise en ligne inclus la première année. Paiement en 2 fois : 40 % au démarrage, 60 % à la livraison.</p>
+    </div>
+    <div class="offers">
+      <article class="offer">
+        <h3>Site vitrine</h3>
+        <div class="price">690 € <small>dès</small></div>
+        <ul><li>Jusqu'à 5 pages</li><li>Adapté mobile et tablette</li><li>Formulaire de contact</li><li>Référencement Google de base</li><li>Livré en 10 jours</li></ul>
+        <a class="btn" href="#contact">Choisir cette offre</a>
+      </article>
+      <article class="offer star">
+        <span class="tag">Le plus demandé</span>
+        <h3>Site pro sur mesure</h3>
+        <div class="price">1 490 € <small>dès</small></div>
+        <ul><li>Design 100 % personnalisé</li><li>Pages illimitées + blog</li><li>Réservation ou prise de rendez-vous</li><li>SEO local (Google Maps)</li><li>Vous modifiez vos textes vous-même</li></ul>
+        <a class="btn primary" href="#contact">Choisir cette offre</a>
+      </article>
+      <article class="offer">
+        <h3>Maintenance</h3>
+        <div class="price">49 € <small>/ mois</small></div>
+        <ul><li>Mises à jour et sauvegardes</li><li>Sécurité et certificat SSL</li><li>1 h de modifications par mois</li><li>Rapport de visites mensuel</li><li>Sans engagement</li></ul>
+        <a class="btn" href="#contact">Choisir cette offre</a>
+      </article>
+    </div>
+  </section>
+
+  <section id="projets">
+    <div class="head">
+      <div><p class="eyebrow">Projets</p><h2>Quelques réalisations.</h2></div>
+      <p>Chaque site est pensé pour un objectif précis : plus d'appels, plus de réservations ou plus de ventes.</p>
+    </div>
+    <div class="projects">
+      <a class="project" href="#contact">
+        <div class="thumb p1"><div class="t-nav"><b class="mono">LE COMPTOIR</b><i style="width:40px"></i></div><div class="t-hero"><b>Cuisine de saison, au cœur du quartier.</b><i style="width:70%"></i></div><div class="t-cards"><i></i><i></i><i></i></div></div>
+        <div><span class="chip">Restaurant</span><span class="chip">Exemple à remplacer</span></div>
+        <h3>Restaurant · réservation en ligne</h3>
+        <p>Site vitrine avec menu, galerie photo et réservation de table connectée.</p>
+      </a>
+      <a class="project" href="#contact">
+        <div class="thumb p2"><div class="t-nav"><b class="mono">VERT COACHING</b><i style="width:40px"></i></div><div class="t-hero"><b>Retrouvez la forme en 12 semaines.</b><i style="width:60%"></i></div><div class="t-cards"><i></i><i></i><i></i></div></div>
+        <div><span class="chip">Coach</span><span class="chip">Exemple à remplacer</span></div>
+        <h3>Coach sportif · prise de rendez-vous</h3>
+        <p>Page de vente, agenda en ligne et paiement des séances.</p>
+      </a>
+      <a class="project" href="#contact">
+        <div class="thumb p3"><div class="t-nav"><b class="mono">ATELIER BOIS</b><i style="width:40px"></i></div><div class="t-hero"><b>Menuiserie sur mesure depuis 1998.</b><i style="width:75%"></i></div><div class="t-cards"><i></i><i></i><i></i></div></div>
+        <div><span class="chip">Artisan</span><span class="chip">Exemple à remplacer</span></div>
+        <h3>Artisan · demande de devis</h3>
+        <p>Portfolio de chantiers, avis Google intégrés et formulaire de devis.</p>
+      </a>
+    </div>
+  </section>
+
+  <section id="methode">
+    <div class="head">
+      <div><p class="eyebrow">Méthode</p><h2>De l'idée au site en ligne, en 4 étapes.</h2></div>
+    </div>
+    <div class="steps">
+      <div class="step"><span class="n">Étape 1 · 30 min</span><h3>Appel découverte</h3><p>On parle de votre activité, de vos clients et de vos objectifs. Gratuit et sans engagement.</p></div>
+      <div class="step"><span class="n">Étape 2 · 72 h</span><h3>Maquette</h3><p>Vous voyez votre futur site avant la moindre ligne de code, et vous validez.</p></div>
+      <div class="step"><span class="n">Étape 3 · 1 à 2 sem.</span><h3>Développement</h3><p>Je construis le site. Deux séries de retouches sont incluses.</p></div>
+      <div class="step"><span class="n">Étape 4 · 1 jour</span><h3>Mise en ligne</h3><p>Le site est publié et je vous forme pour le modifier vous-même.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <div><p class="eyebrow">Garanties</p><h2>Vous ne prenez aucun risque.</h2></div>
+    </div>
+    <div class="promises">
+      <div class="promise"><h3>Délai tenu</h3><p>La date de livraison est écrite dans le devis. En cas de retard de ma part, 10 % de remise.</p></div>
+      <div class="promise"><h3>Votre site vous appartient</h3><p>Code, nom de domaine et accès vous sont remis. Vous restez libre de partir.</p></div>
+      <div class="promise"><h3>Retouches incluses</h3><p>Pas satisfait de la maquette ? On la reprend jusqu'à ce qu'elle vous plaise.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><div><p class="eyebrow">Questions fréquentes</p><h2>Vous vous demandez peut-être…</h2></div></div>
+    <div class="faq">
+      <details><summary>Pourquoi pas Wix ou un site à 9 €/mois ?</summary><p>Ces outils conviennent pour démarrer, mais les sites sont souvent lents et se ressemblent tous. Un site sur mesure charge plus vite, ressort mieux sur Google et donne une image plus professionnelle.</p></details>
+      <details><summary>Est-ce que je pourrai modifier mon site moi-même ?</summary><p>Oui. Je vous installe une interface simple pour changer vos textes, photos et prix, et je vous montre comment l'utiliser.</p></details>
+      <details><summary>Je n'ai pas encore de textes ni de photos.</summary><p>Pas de problème. Je peux rédiger les textes avec vous et utiliser des photos libres de droits en attendant les vôtres.</p></details>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="contact">
+      <div>
+        <p class="eyebrow">Contact</p>
+        <h2>Parlons de votre projet.</h2>
+        <p class="lead">Décrivez votre besoin en quelques lignes. Je vous réponds sous 24 h avec une première estimation.</p>
+        <p class="mail mono">ton.email@exemple.fr</p>
+      </div>
+      <form id="devis">
+        <div class="row">
+          <label for="f-name">Nom<input id="f-name" name="name" placeholder="Marie Dupont" required></label>
+          <label for="f-mail">E-mail<input id="f-mail" name="email" type="email" placeholder="marie@monentreprise.fr" required></label>
+        </div>
+        <label for="f-type">Type de site
+          <select id="f-type" name="type"><option>Site vitrine</option><option selected>Site pro sur mesure</option><option>Boutique en ligne</option><option>Refonte d'un site existant</option></select>
+        </label>
+        <label for="f-budget">Budget
+          <select id="f-budget" name="budget"><option>Moins de 1 000 €</option><option selected>1 000 à 2 500 €</option><option>Plus de 2 500 €</option><option>Je ne sais pas encore</option></select>
+        </label>
+        <label for="f-msg">Votre projet<textarea id="f-msg" name="msg" placeholder="Je suis fleuriste à Lyon et je voudrais un site pour prendre les commandes de bouquets…"></textarea></label>
+        <button class="btn primary" type="submit" style="justify-content:center">Envoyer ma demande →</button>
+        <p class="sent" id="sent" hidden>Maquette : ce formulaire n'envoie rien pour l'instant. Sur ton vrai site, il sera branché sur ton e-mail (Formspree, Netlify Forms…).</p>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Ton Nom · Développeur web freelance</span>
+    <span class="mono">SIRET à compléter · Mentions légales</span>
+  </footer>
+</div>
+</main>
+
+<div class="editbar" role="region" aria-label="Outils d'édition">
+  <div class="wrap">
+    <p>Brouillon de ta page. Active l'édition puis clique sur un texte pour remplacer « Ton Nom », les prix et les projets.</p>
+    <div class="tools">
+      <span class="saved" id="saved" aria-live="polite"></span>
+      <button type="button" id="toggle">Modifier les textes</button>
+      <button type="button" id="reset">Réinitialiser</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY = 'portfolio-dev-web-draft-v1';
+  var site = document.getElementById('site');
+  var original = site.innerHTML;
+  var saved = document.getElementById('saved');
+  var toggle = document.getElementById('toggle');
+  var reset = document.getElementById('reset');
+  var editing = false, resetArmed = false, t;
+
+  try { var draft = localStorage.getItem(KEY); if (draft) { site.innerHTML = draft; saved.textContent = 'Brouillon restauré'; } } catch(e) {}
+
+  function setEditing(on){
+    editing = on;
+    site.contentEditable = on ? 'true' : 'false';
+    document.documentElement.classList.toggle('editing', on);
+    toggle.classList.toggle('on', on);
+    toggle.textContent = on ? 'Terminer' : 'Modifier les textes';
+  }
+  toggle.addEventListener('click', function(){ setEditing(!editing); });
+
+  site.addEventListener('input', function(){
+    if (!editing) return;
+    clearTimeout(t);
+    t = setTimeout(function(){
+      try { localStorage.setItem(KEY, site.innerHTML); saved.textContent = 'Enregistré dans ce navigateur'; }
+      catch(e) { saved.textContent = 'Enregistrement impossible ici'; }
+    }, 300);
+  });
+
+  reset.addEventListener('click', function(){
+    if (!resetArmed) { resetArmed = true; reset.textContent = 'Confirmer ?'; setTimeout(function(){ resetArmed = false; reset.textContent = 'Réinitialiser'; }, 3000); return; }
+    resetArmed = false; reset.textContent = 'Réinitialiser';
+    try { localStorage.removeItem(KEY); } catch(e) {}
+    setEditing(false);
+    site.innerHTML = original;
+    saved.textContent = 'Page réinitialisée';
+  });
+
+  // Links: no navigation while editing so clicks place the caret
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('#site a');
+    if (a && editing) e.preventDefault();
+  });
+  document.addEventListener('submit', function(e){
+    e.preventDefault();
+    var s = document.getElementById('sent'); if (s) s.hidden = false;
+  });
+})();
+</script>
+</body>
+</html>
