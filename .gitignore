@@ -1,0 +1,7 @@
+__pycache__/
+captures/
+camera_config.json
+build/
+dist/
+*.spec
+.venv/
