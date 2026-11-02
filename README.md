@@ -47,12 +47,18 @@ pip install -r requirements.txt
    `ESP32-CAM`…). Windows peut signaler « Pas d'Internet » : c'est normal.
 3. Lancer le logiciel :
    - Windows : double-cliquer sur **`lancer.bat`**
-   - macOS / Linux : `./lancer.sh`
-   - ou directement :
+   - macOS / Linux : dans le Terminal, depuis le dossier du logiciel, taper
+     `./lancer.sh` (le premier lancement installe tout automatiquement)
+   - ou directement (sur Mac, la commande s'appelle `python3`, pas `python`) :
 
 ```bash
-python camera_viewer.py
+python3 camera_viewer.py
 ```
+
+> 🍎 **Mac (macOS 15 et plus)** : au premier lancement, autorisez l'accès au
+> **réseau local** quand macOS le demande (ou dans *Réglages Système →
+> Confidentialité et sécurité → Réseau local → Terminal*), sinon la caméra
+> ne peut pas être trouvée.
 
 ### Touches dans la fenêtre vidéo
 
