@@ -26,13 +26,17 @@ from __future__ import annotations
 
 import argparse
 import base64
+import collections
 import datetime as _dt
+import errno
 import hashlib
 import ipaddress
 import json
 import os
 import re
+import platform
 import socket
+import subprocess
 import sys
 import threading
 import time
@@ -54,6 +58,26 @@ try:
 except ImportError:  # pragma: no cover - message pour l'utilisateur
     print("OpenCV n'est pas installé. Lancez :  pip install -r requirements.txt")
     sys.exit(1)
+
+IS_MAC = sys.platform == "darwin"
+IS_WIN = sys.platform.startswith("win")
+
+
+def _raise_file_limit() -> int:
+    """macOS limite à 256 fichiers ouverts : trop peu pour scanner vite le réseau."""
+    try:
+        import resource
+        soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+        want = 4096 if hard == resource.RLIM_INFINITY else min(4096, hard)
+        if soft < want:
+            resource.setrlimit(resource.RLIMIT_NOFILE, (want, hard))
+            soft = want
+        return soft
+    except Exception:
+        return 512 if IS_WIN else 256
+
+
+MAX_WORKERS = max(32, min(400, _raise_file_limit() - 64))
 
 APP_DIR = Path(__file__).resolve().parent
 CONFIG_FILE = APP_DIR / "camera_config.json"
@@ -207,27 +231,51 @@ def candidate_hosts() -> list[str]:
     return hosts
 
 
+def tcp_check(host: str, port: int, timeout: float = 0.6) -> str:
+    """'open', 'refused' (appareil présent, port fermé), 'timeout' ou 'err:<errno>'."""
+    for _ in range(3):
+        try:
+            with socket.create_connection((host, port), timeout=timeout):
+                return "open"
+        except ConnectionRefusedError:
+            return "refused"
+        except socket.timeout:
+            return "timeout"
+        except OSError as e:
+            if e.errno == errno.EMFILE:  # trop de fichiers ouverts : on réessaie
+                time.sleep(0.2)
+                continue
+            return f"err:{e.errno}"
+    return "timeout"
+
+
 def port_open(host: str, port: int, timeout: float = 0.6) -> bool:
-    try:
-        with socket.create_connection((host, port), timeout=timeout):
-            return True
-    except OSError:
-        return False
+    return tcp_check(host, port, timeout) == "open"
 
 
-def scan_network(hosts: list[str], ports: list[int], timeout: float = 0.6) -> dict[str, list[int]]:
-    """Retourne {hôte: [ports ouverts]} pour les hôtes qui répondent."""
+SCAN_ERRORS: collections.Counter = collections.Counter()
+
+
+def scan_network(hosts: list[str], ports: list[int], timeout: float = 0.6,
+                 alive: set[str] | None = None) -> dict[str, list[int]]:
+    """Retourne {hôte: [ports ouverts]}. Les hôtes qui répondent (même port
+    fermé) sont ajoutés à `alive`."""
     found: dict[str, list[int]] = {}
     lock = threading.Lock()
 
     def probe(hp: tuple[str, int]) -> None:
         h, p = hp
-        if port_open(h, p, timeout):
-            with lock:
+        st = tcp_check(h, p, timeout)
+        with lock:
+            if st == "open":
                 found.setdefault(h, []).append(p)
+            if st in ("open", "refused") and alive is not None:
+                alive.add(h)
+            if st.startswith("err:"):
+                SCAN_ERRORS[st] += 1
 
     pairs = [(h, p) for h in hosts for p in ports]
-    with ThreadPoolExecutor(max_workers=200) as ex:
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as ex:
         list(ex.map(probe, pairs))
     for h in found:
         found[h].sort()
@@ -544,13 +592,209 @@ def discover(user: str | None, password: str | None, only_ip: str | None = None,
 
     log(f"Recherche des appareils sur le réseau ({len(hosts)} adresses)…")
     t0 = time.time()
-    hp = scan_network(hosts, ALL_PORTS)
-    log(f"  {len(hp)} appareil(s) trouvé(s) en {time.time() - t0:.1f} s")
+    alive: set[str] = set()
+    hp = scan_network(hosts, ALL_PORTS, alive=alive)
+    others = [h for h in hosts if h in alive and h not in hp]
+    log(f"  {len(hp)} appareil(s) avec un port vidéo en {time.time() - t0:.1f} s"
+        + (f" ; autre(s) appareil(s) présent(s) : {', '.join(others)}" if others else ""))
+    if SCAN_ERRORS:
+        log(f"  erreurs réseau : {dict(SCAN_ERRORS)}")
     if not hp:
         return []
 
     log("Recherche du flux vidéo…")
     return find_streams(hp, creds, stop_at_first=stop_at_first)
+
+
+# --------------------------------------------------------------------------- #
+#  Diagnostic : pourquoi la caméra n'est pas trouvée ?                        #
+# --------------------------------------------------------------------------- #
+
+def _run(cmd: list[str], timeout: float = 8) -> str:
+    try:
+        return subprocess.run(cmd, capture_output=True, text=True, timeout=timeout,
+                              errors="ignore").stdout
+    except Exception:
+        return ""
+
+
+def default_gateway() -> str | None:
+    if IS_MAC:
+        m = re.search(r"gateway:\s*([\d.]+)", _run(["route", "-n", "get", "default"]))
+    elif IS_WIN:
+        m = re.search(r"(?:Gateway|Passerelle)[^:\r\n]*:\s*([\d.]+)", _run(["ipconfig"]))
+    else:
+        m = re.search(r"default via ([\d.]+)", _run(["ip", "route", "show", "default"]))
+    if m:
+        return m.group(1)
+    ips = local_ipv4_addresses()
+    return str(ipaddress.ip_network(f"{ips[0]}/24", strict=False).network_address + 1) if ips else None
+
+
+def ping(host: str) -> bool:
+    if IS_WIN:
+        cmd = ["ping", "-n", "2", "-w", "1000", host]
+    elif IS_MAC:
+        cmd = ["ping", "-c", "2", "-t", "3", host]
+    else:
+        cmd = ["ping", "-c", "2", "-w", "3", host]
+    out = _run(cmd, 6)
+    return bool(re.search(r"ttl[=:]", out, re.I))
+
+
+def arp_entry(host: str) -> str:
+    out = _run(["arp", "-a", host] if IS_WIN else ["arp", "-n", host], 5)
+    m = re.search(r"([0-9a-fA-F]{1,2}[:-]){5}[0-9a-fA-F]{1,2}", out)
+    return m.group(0) if m else ""
+
+
+def full_port_scan(host: str, timeout: float = 0.5) -> tuple[list[int], collections.Counter]:
+    """Teste les 65535 ports TCP d'un appareil."""
+    opened: list[int] = []
+    stats: collections.Counter = collections.Counter()
+    lock = threading.Lock()
+    done = [0]
+
+    def probe(port: int) -> None:
+        st = tcp_check(host, port, timeout)
+        with lock:
+            stats[st] += 1
+            if st == "open":
+                opened.append(port)
+                log(f"     port TCP ouvert : {port}")
+            done[0] += 1
+            if done[0] % 8192 == 0:
+                log(f"     … {done[0] * 100 // 65535} %")
+
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as ex:
+        list(ex.map(probe, range(1, 65536)))
+    return sorted(opened), stats
+
+
+def _broadcast_targets(gw: str | None) -> list[str]:
+    t = ["255.255.255.255"]
+    for ip in local_ipv4_addresses():
+        t.append(str(ipaddress.ip_network(f"{ip}/24", strict=False).broadcast_address))
+    if gw:
+        t.append(gw)
+    return list(dict.fromkeys(t))
+
+
+def udp_probe(payload: bytes, port: int, targets: list[str],
+              timeout: float = 2.0) -> list[tuple[str, bytes]]:
+    replies: list[tuple[str, bytes]] = []
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        s.settimeout(0.3)
+        s.bind(("", 0))
+        for t in targets:
+            try:
+                s.sendto(payload, (t, port))
+            except OSError:
+                pass
+        end = time.time() + timeout
+        while time.time() < end:
+            try:
+                data, addr = s.recvfrom(4096)
+                replies.append((addr[0], data))
+            except socket.timeout:
+                continue
+            except OSError:
+                break
+        s.close()
+    except OSError:
+        pass
+    return replies
+
+
+def parse_pppp_id(data: bytes) -> str:
+    """Réponse 'PunchPkt' du protocole P2P CS2/PPPP : préfixe + numéro + code."""
+    body = data[4:]
+    if len(body) < 12:
+        return data.hex()
+    prefix = body[:8].split(b"\0")[0].decode(errors="ignore")
+    serial = int.from_bytes(body[8:12], "big")
+    check = body[12:20].split(b"\0")[0].decode(errors="ignore")
+    return f"{prefix}-{serial:06d}-{check}"
+
+
+def diagnose(target: str | None = None) -> None:
+    log("\n================ DIAGNOSTIC ================")
+    log(f"Système : {platform.system()} {platform.release()}  —  Python {platform.python_version()}")
+    ips = local_ipv4_addresses()
+    log(f"Adresse(s) de cet ordinateur : {', '.join(ips) or 'aucune'}")
+    gw = default_gateway()
+    host = target or gw
+    log(f"Passerelle (normalement la caméra) : {gw or 'inconnue'}")
+    if not host:
+        log("→ Pas de réseau : connectez l'ordinateur au Wi-Fi de la caméra.")
+        return
+
+    log(f"\n[1] Ping de {host} : " + ("répond ✔" if ping(host) else "ne répond pas ✘"))
+    mac = arp_entry(host)
+    log(f"[2] Adresse matérielle (MAC) de {host} : {mac or 'inconnue'}")
+
+    st = tcp_check(host, 80, 1.5)
+    meaning = {
+        "open": "port 80 ouvert ✔",
+        "refused": "l'appareil répond (port 80 fermé) ✔",
+        "timeout": "aucune réponse TCP",
+    }.get(st, f"ERREUR {st}")
+    log(f"[3] Connexion TCP à {host} : {meaning}")
+    blocked = st in (f"err:{errno.EHOSTUNREACH}", f"err:{errno.ENETUNREACH}",
+                     f"err:{errno.EPERM}", f"err:{errno.EACCES}")
+    if blocked and IS_MAC:
+        log("   ⚠  macOS BLOQUE l'accès au réseau local pour le Terminal.")
+        log("      Réglages Système → Confidentialité et sécurité → Réseau local")
+        log("      → activez « Terminal », puis quittez complètement le Terminal")
+        log("      (Cmd+Q) et relancez-le.")
+
+    log("[4] Recherche de caméras P2P (UDP 32108 / 32100)…")
+    targets = _broadcast_targets(gw)
+    pppp = udp_probe(b"\xf1\x30\x00\x00", 32108, targets) + \
+        udp_probe(b"\xf1\x30\x00\x00", 32100, targets)
+    seen = set()
+    for addr, data in pppp:
+        if data[:1] == b"\xf1" and (addr, data[:2]) not in seen:
+            seen.add((addr, data[:2]))
+            log(f"     réponse P2P de {addr} : type 0x{data[1]:02x}  id={parse_pppp_id(data)}")
+    if not seen:
+        log("     aucune")
+
+    log("[5] Recherche XMEye / iCSee (UDP 34569)…")
+    xm = udp_probe(bytes.fromhex("ff00000000000000000000000000fa0500000000"), 34569, targets)
+    for addr, data in xm[:3]:
+        log(f"     réponse de {addr} : {data[20:200].decode(errors='ignore')!r}")
+    if not xm:
+        log("     aucune")
+
+    log("[6] Recherche UPnP / SSDP…")
+    ssdp = udp_probe(b"M-SEARCH * HTTP/1.1\r\nHOST: 239.255.255.250:1900\r\n"
+                     b"MAN: \"ssdp:discover\"\r\nMX: 1\r\nST: ssdp:all\r\n\r\n",
+                     1900, ["239.255.255.250"] + targets)
+    srv: dict[str, str] = {}
+    for a, d in ssdp:
+        m = re.search(rb"SERVER:\s*([^\r\n]+)", d, re.I)
+        srv.setdefault(a, m.group(1).decode(errors="ignore")[:80] if m else "?")
+    for a, sv in list(srv.items())[:5]:
+        log(f"     {a} : {sv}")
+    if not ssdp:
+        log("     aucune")
+
+    if blocked:
+        log("\n(Scan complet des ports ignoré : l'accès réseau est bloqué.)")
+    else:
+        log(f"[7] Scan complet des 65535 ports TCP de {host} (jusqu'à 1-2 minutes)…")
+        opened, stats = full_port_scan(host)
+        log(f"     ports ouverts : {opened or 'aucun'}")
+        errs = {k: v for k, v in stats.items() if k.startswith("err")}
+        if errs:
+            log(f"     erreurs : {errs}")
+
+    log("\n=> Copiez tout ce texte (depuis « DIAGNOSTIC ») et envoyez-le,")
+    log("   avec le NOM DE L'APPLICATION de la caméra et le NOM DU WI-FI de la caméra.")
+    log("============================================\n")
 
 
 # --------------------------------------------------------------------------- #
@@ -785,7 +1029,13 @@ def main(argv: list[str] | None = None) -> int:
                     help="rechercher et lister les flux, sans afficher la vidéo")
     ap.add_argument("--new", action="store_true",
                     help="ignorer l'adresse mémorisée et refaire une recherche")
+    ap.add_argument("--diag", action="store_true",
+                    help="diagnostic détaillé si la caméra n'est pas trouvée")
     args = ap.parse_args(argv)
+
+    if args.diag:
+        diagnose(args.ip)
+        return 0
 
     if args.url:
         url = with_auth(args.url, args.user or "", args.password or "")
@@ -812,6 +1062,7 @@ def main(argv: list[str] | None = None) -> int:
         log("  • Si la caméra a un mot de passe :  --user admin --password VOTRE_MDP")
         log("  • Certaines mini-caméras bon marché n'utilisent qu'un protocole")
         log("    propriétaire chiffré : voir le README (section « Ça ne marche pas »).")
+        diagnose(args.ip)
         return 1
 
     if args.scan:
