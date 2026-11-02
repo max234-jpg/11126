@@ -191,7 +191,8 @@ def parse_punch(payload: bytes, addr, encoding: str) -> DeviceInfo | None:
     return DeviceInfo(addr[0], addr[1], prefix, serial, suffix, encoding, payload[:20])
 
 
-def discover(targets: list[str], timeout: float = 3.0, port: int = DISCOVERY_PORT) -> list[DeviceInfo]:
+def discover(targets: list[str], timeout: float = 3.0, port: int = DISCOVERY_PORT,
+             stop_on: str | None = None) -> list[DeviceInfo]:
     """Envoie une recherche LAN (en clair et obfusquée) et collecte les caméras."""
     found: dict[tuple[str, str], DeviceInfo] = {}
     probes = [enc(packet(T_LAN_SEARCH)) for _, enc in ENCODINGS.values()]
@@ -226,6 +227,8 @@ def discover(targets: list[str], timeout: float = 3.0, port: int = DISCOVERY_POR
                     dev = parse_punch(p[1], addr, name)
                     if dev:
                         found.setdefault((addr[0], dev.dev_id), dev)
+                        if stop_on and addr[0] == stop_on:
+                            return list(found.values())
                     break
     finally:
         s.close()
@@ -265,7 +268,12 @@ class Session:
         self.ready = threading.Event()
         self.closed = threading.Event()
         self.last_rx = time.time()
+        self.last_any_rx = time.time()
         self.last_video = 0.0
+        # Accusé de réception : 0xD1 pour les caméras JSON (HDWiFiCam Pro, DGO…),
+        # 0xD2 pour les caméras binaires (YsxLite…). Une mauvaise valeur et la
+        # caméra garde ses paquets « en attente » et n'envoie jamais la vidéo.
+        self._ack_marker = 0xD1 if dev.is_json else 0xD2
         self._lock = threading.Lock()
         self._responses: dict[int, object] = {}
         self._resp_cond = threading.Condition()
@@ -331,6 +339,7 @@ class Session:
                 continue
             ptype, payload = p
             self.stats[f"type_{ptype:02x}"] += 1
+            self.last_any_rx = time.time()
             if ptype not in (T_ALIVE, T_ALIVE_ACK):
                 self.last_rx = time.time()
             if ptype == T_P2P_RDY:
@@ -339,7 +348,7 @@ class Session:
                 self.send(T_ALIVE_ACK)
             elif ptype == T_DRW and len(payload) >= 4:
                 _, ch, idx = struct.unpack(">BBH", payload[:4])
-                self.send(T_DRW_ACK, struct.pack(">BBHH", 0xD2, ch, 1, idx))
+                self.send(T_DRW_ACK, struct.pack(">BBHH", self._ack_marker, ch, 1, idx))
                 body = payload[4:]
                 self.stats[f"canal_{ch}"] += 1
                 if ch == CH_CMD:
@@ -452,7 +461,8 @@ class Session:
     def status_text(self) -> str:
         st = self.stats
         if not st["video_paquets"]:
-            return "Connecté à la caméra P2P - en attente de la vidéo…"
+            autres = {k: v for k, v in st.items() if k.startswith("canal_")}
+            return f"Connecté à la caméra P2P - en attente de la vidéo… {autres or ''}"
         return (f"P2P : {st['video_paquets']} paquets vidéo, {st['debuts_image']} débuts d'image, "
                 f"{st['images_completes']} images complètes")
 
@@ -491,6 +501,8 @@ class Session:
             if int(last.get("result", -1)) == 0:
                 self.log(f"     identification OK (utilisateur « {self.user} »)")
                 self.send_json(J_GET_PARMS)
+                self.wait_response(("json", J_GET_PARMS), 3.0)
+                time.sleep(0.5)  # comme l'appli : petite pause avant de demander la vidéo
                 self.start_video()
                 return
         raise PPPPError(f"mot de passe refusé ({last}). Utilisez --user/--password "
@@ -517,7 +529,8 @@ class Session:
             now = time.time()
             if now - self.last_rx > 1.0:
                 self.send(T_ALIVE)
-            if now - self.last_rx > 12:
+            if now - self.last_any_rx > 15:
+                self.debug("plus aucune réponse de la caméra : fin de session")
                 self.closed.set()
             elif now - self.last_video > 5:
                 self.start_video()  # le flux s'est arrêté : on le redemande
@@ -570,7 +583,8 @@ class PPPPCapture:
         self._h264 = None
         self.good = self.bad = 0
         self.log = log
-        devs = [d for d in discover([self.host], timeout=4) if d.addr == self.host] or \
+        devs = [d for d in discover([self.host], timeout=4, stop_on=self.host)
+                if d.addr == self.host] or \
             discover([self.host, "255.255.255.255"], timeout=3)
         if not devs:
             log(f"PPPP : aucune caméra ne répond sur {self.host}")
