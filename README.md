@@ -22,7 +22,8 @@ Le logiciel :
 
 1. détecte le petit réseau créé par la caméra ;
 2. trouve la caméra (recherche ONVIF + analyse des ports) ;
-3. devine l'adresse du flux vidéo (RTSP, MJPEG/HTTP, ONVIF) et les identifiants
+3. devine l'adresse du flux vidéo (RTSP, MJPEG/HTTP, ONVIF, ou protocole P2P
+   « PPPP » des mini-caméras type HDWiFiCam Pro) et les identifiants
    d'usine courants (`admin` / vide, `admin` / `admin`, `admin` / `123456`…) ;
 4. affiche la vidéo avec une latence minimale et se **reconnecte tout seul** en
    cas de coupure ;
@@ -125,6 +126,14 @@ L'exécutable se trouve ensuite dans `dist/CameraViewer.exe`.
   `python camera_viewer.py --scan` et regardez les ports ouverts affichés.
 - **Le pare-feu Windows** peut bloquer la recherche ONVIF : autorisez Python
   sur les réseaux privés quand Windows le demande.
+- **Caméras « P2P » sans aucun port ouvert** (applis *HDWiFiCam Pro*,
+  *365Cam*, *YsxLite*, *FtyCamPro*…) : elles utilisent le protocole UDP
+  « PPPP ». Le logiciel le gère directement : la caméra apparaît comme
+  `caméra P2P détectée : DGB-…` puis la vidéo s'affiche. Si le mot de passe
+  a été changé dans l'application :
+  `python3 camera_viewer.py --user admin --password MOT_DE_PASSE`
+  (mots de passe d'usine essayés automatiquement : `6666`, vide, `admin`,
+  `888888`, `123456`…). Adresse directe possible : `--url pppp://192.168.1.1`.
 - **Mini-caméras très bon marché** (applis *V380*, *YI IoT*, *Lookcam*,
   *CamHi*, *iCSee*, *Little Stars*, *HDWifiCam*…) : beaucoup proposent du
   RTSP (souvent `rtsp://IP:554/live/ch00_0` ou `rtsp://IP:8554/…`) et sont
@@ -137,3 +146,11 @@ L'exécutable se trouve ensuite dans `dist/CameraViewer.exe`.
 - **Image saccadée ou en retard** : rapprochez l'ordinateur de la caméra ;
   le logiciel n'affiche toujours que l'image la plus récente pour éviter
   d'accumuler du retard.
+
+## Remerciements
+
+La prise en charge du protocole P2P « PPPP » (`pppp.py`) s'appuie sur les
+travaux publics de rétro-ingénierie de
+[cam-reverse](https://github.com/DavidVentura/cam-reverse),
+[aiopppp](https://github.com/devbis/aiopppp) (licence Apache-2.0) et
+[Wladimir Palant](https://palant.info/2025/11/05/an-overview-of-the-pppp-protocol-for-iot-cameras/).

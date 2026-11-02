@@ -80,6 +80,8 @@ def _raise_file_limit() -> int:
 MAX_WORKERS = max(32, min(400, _raise_file_limit() - 64))
 
 APP_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(APP_DIR))
+import pppp  # noqa: E402  (protocole P2P des mini-caméras : HDWiFiCam Pro, etc.)
 CONFIG_FILE = APP_DIR / "camera_config.json"
 CAPTURE_DIR = APP_DIR / "captures"
 
@@ -590,6 +592,17 @@ def discover(user: str | None, password: str | None, only_ip: str | None = None,
             onvif_hosts.append(h)
     hosts = onvif_hosts + [h for h in hosts if h not in onvif_hosts]
 
+    log("Recherche de caméras P2P « PPPP » (HDWiFiCam Pro, 365Cam, YsxLite…)…")
+    targets = [only_ip] if only_ip else _broadcast_targets(default_gateway())
+    p2p_found: list[dict] = []
+    for dev in pppp.discover(targets, timeout=3.5):
+        log(f"  caméra P2P détectée : {dev}")
+        url = with_auth(f"pppp://{dev.addr}", user, password or "") if user is not None \
+            else f"pppp://{dev.addr}"
+        p2p_found.append({"url": url, "type": "pppp", "source": "pppp", "id": dev.dev_id})
+    if p2p_found and stop_at_first:
+        return p2p_found
+
     log(f"Recherche des appareils sur le réseau ({len(hosts)} adresses)…")
     t0 = time.time()
     alive: set[str] = set()
@@ -600,10 +613,10 @@ def discover(user: str | None, password: str | None, only_ip: str | None = None,
     if SCAN_ERRORS:
         log(f"  erreurs réseau : {dict(SCAN_ERRORS)}")
     if not hp:
-        return []
+        return p2p_found
 
     log("Recherche du flux vidéo…")
-    return find_streams(hp, creds, stop_at_first=stop_at_first)
+    return p2p_found + find_streams(hp, creds, stop_at_first=stop_at_first)
 
 
 # --------------------------------------------------------------------------- #
@@ -708,17 +721,6 @@ def udp_probe(payload: bytes, port: int, targets: list[str],
     return replies
 
 
-def parse_pppp_id(data: bytes) -> str:
-    """Réponse 'PunchPkt' du protocole P2P CS2/PPPP : préfixe + numéro + code."""
-    body = data[4:]
-    if len(body) < 12:
-        return data.hex()
-    prefix = body[:8].split(b"\0")[0].decode(errors="ignore")
-    serial = int.from_bytes(body[8:12], "big")
-    check = body[12:20].split(b"\0")[0].decode(errors="ignore")
-    return f"{prefix}-{serial:06d}-{check}"
-
-
 def diagnose(target: str | None = None) -> None:
     log("\n================ DIAGNOSTIC ================")
     log(f"Système : {platform.system()} {platform.release()}  —  Python {platform.python_version()}")
@@ -750,17 +752,19 @@ def diagnose(target: str | None = None) -> None:
         log("      → activez « Terminal », puis quittez complètement le Terminal")
         log("      (Cmd+Q) et relancez-le.")
 
-    log("[4] Recherche de caméras P2P (UDP 32108 / 32100)…")
+    log("[4] Recherche de caméras P2P « PPPP » (UDP 32108, en clair et obfusqué)…")
     targets = _broadcast_targets(gw)
-    pppp = udp_probe(b"\xf1\x30\x00\x00", 32108, targets) + \
-        udp_probe(b"\xf1\x30\x00\x00", 32100, targets)
-    seen = set()
-    for addr, data in pppp:
-        if data[:1] == b"\xf1" and (addr, data[:2]) not in seen:
-            seen.add((addr, data[:2]))
-            log(f"     réponse P2P de {addr} : type 0x{data[1]:02x}  id={parse_pppp_id(data)}")
-    if not seen:
+    if host not in targets:
+        targets.append(host)
+    devs = pppp.discover(targets, timeout=4)
+    for dev in devs:
+        log(f"     caméra P2P : {dev}")
+    if not devs:
         log("     aucune")
+        for port in (32100, 20190):
+            for name, (_, enc) in pppp.ENCODINGS.items():
+                for addr, data in udp_probe(enc(pppp.packet(pppp.T_LAN_SEARCH)), port, [host], 1.5):
+                    log(f"     réponse UDP {port} ({name}) de {addr} : {data[:24].hex(' ')}")
 
     log("[5] Recherche XMEye / iCSee (UDP 34569)…")
     xm = udp_probe(bytes.fromhex("ff00000000000000000000000000fa0500000000"), 34569, targets)
@@ -839,6 +843,8 @@ class JpegPoller:
 def open_capture(url: str, kind: str = "auto"):
     if kind == "jpeg":
         return JpegPoller(url)
+    if kind == "pppp" or url.startswith("pppp://"):
+        return pppp.PPPPCapture(url, log=log)
     params = []
     if hasattr(cv2, "CAP_PROP_OPEN_TIMEOUT_MSEC"):
         params = [cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 6000, cv2.CAP_PROP_READ_TIMEOUT_MSEC, 6000]
@@ -1008,6 +1014,8 @@ def save_config(stream: dict) -> None:
 
 
 def guess_kind(url: str) -> str:
+    if url.lower().startswith("pppp://"):
+        return "pppp"
     if url.lower().startswith("http"):
         kind = http_probe(url, "", "")
         return kind or "auto"
@@ -1021,7 +1029,7 @@ def guess_kind(url: str) -> str:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(
         description="Affiche en direct une caméra IP sans l'application du fabricant.")
-    ap.add_argument("--url", help="adresse complète du flux (rtsp://… ou http://…)")
+    ap.add_argument("--url", help="adresse complète du flux (rtsp://…, http://… ou pppp://IP)")
     ap.add_argument("--ip", help="adresse IP de la caméra (sinon : recherche automatique)")
     ap.add_argument("--user", help="identifiant de la caméra (souvent 'admin')")
     ap.add_argument("--password", help="mot de passe de la caméra")
@@ -1048,7 +1056,7 @@ def main(argv: list[str] | None = None) -> int:
             host = urllib.parse.urlsplit(cfg["url"]).hostname
             port = urllib.parse.urlsplit(cfg["url"]).port or (
                 554 if cfg["url"].startswith("rtsp") else 80)
-            if host and port_open(host, port, 1.5):
+            if host and (cfg.get("type") == "pppp" or port_open(host, port, 1.5)):
                 log("Caméra mémorisée trouvée.")
                 view(cfg["url"], cfg.get("type", "auto"))
                 return 0
