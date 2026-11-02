@@ -21,7 +21,9 @@ Deux variantes sont gérées :
 
 from __future__ import annotations
 
+import collections
 import json
+import os
 import socket
 import struct
 import threading
@@ -43,6 +45,9 @@ T_ALIVE_ACK = 0xE1
 T_CLOSE = 0xF0
 
 CH_CMD, CH_VIDEO, CH_AUDIO = 0, 1, 2
+
+# Mode débogage : chemin d'un fichier texte où tout est journalisé (ou None).
+DEBUG_FILE: str | None = None
 
 VIDEO_MARKER = b"\x55\xaa\x15\xa8"
 JPEG_SOI = b"\xff\xd8"
@@ -92,7 +97,23 @@ XOR_TABLE = bytes([
 XOR_KEY = (0x69, 0x97, 0xCC, 0x19)
 
 
+try:
+    import numpy as _np
+    _NP_TABLE = _np.frombuffer(XOR_TABLE, dtype=_np.uint8)
+    _NP_INDEX = _np.array([(XOR_KEY[p & 3] + p) & 0xFF for p in range(256)], dtype=_np.uint8)
+except ImportError:  # pragma: no cover
+    _np = None
+
+
 def xor_decode(data: bytes) -> bytes:
+    if _np is not None and len(data) > 64:
+        # La clé de chaque octet ne dépend que de l'octet chiffré précédent :
+        # on peut tout calculer d'un coup (indispensable pour suivre le débit vidéo).
+        c = _np.frombuffer(data, dtype=_np.uint8)
+        prev = _np.empty_like(c)
+        prev[0] = 0
+        prev[1:] = c[:-1]
+        return (c ^ _NP_TABLE[_NP_INDEX[prev]]).tobytes()
     out = bytearray(len(data))
     prev = 0
     for i, b in enumerate(data):
@@ -225,8 +246,21 @@ class Session:
         self._dec, self._enc = ENCODINGS[dev.encoding]
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.settimeout(0.5)
+        try:  # gros tampon de réception : la vidéo arrive en rafales
+            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 4 * 1024 * 1024)
+        except OSError:
+            pass
         self.sock.bind(("", 0))
         self.out_idx = 0
+        self.stats: collections.Counter = collections.Counter()
+        self._dbg = None
+        self._dbg_chunks = 0
+        if DEBUG_FILE:
+            try:
+                self._dbg = open(DEBUG_FILE, "a", encoding="utf-8")
+                self.debug(f"=== session {dev!r}")
+            except OSError:
+                self._dbg = None
         self.ticket = b"\0\0\0\0"
         self.ready = threading.Event()
         self.closed = threading.Event()
@@ -244,7 +278,16 @@ class Session:
         self.frame_cond = threading.Condition()
         self.frame: bytes | None = None
         self.frame_no = 0
+        self._last_emit = time.time()
         self._rx = threading.Thread(target=self._rx_loop, daemon=True)
+
+    def debug(self, msg: str) -> None:
+        if self._dbg:
+            try:
+                self._dbg.write(f"{time.strftime('%H:%M:%S')} {msg}\n")
+                self._dbg.flush()
+            except (OSError, ValueError):
+                pass
 
     # -- envoi -------------------------------------------------------------- #
     def send(self, ptype: int, payload: bytes = b"") -> None:
@@ -264,6 +307,7 @@ class Session:
         body = {"pro": J_NAMES.get(cmd, ""), "cmd": cmd, **kw,
                 "user": self.user, "pwd": self.password or "", "devmac": "0000"}
         js = json.dumps(body).encode()
+        self.debug(f">> {js.decode()}")
         self.send_drw(CH_CMD, b"\x06\x0a\xa0\x80" + struct.pack("<I", len(js)) + js)
 
     def send_bin(self, cmd: int, payload: bytes = b"") -> None:
@@ -286,6 +330,7 @@ class Session:
             if not p:
                 continue
             ptype, payload = p
+            self.stats[f"type_{ptype:02x}"] += 1
             if ptype not in (T_ALIVE, T_ALIVE_ACK):
                 self.last_rx = time.time()
             if ptype == T_P2P_RDY:
@@ -296,10 +341,13 @@ class Session:
                 _, ch, idx = struct.unpack(">BBH", payload[:4])
                 self.send(T_DRW_ACK, struct.pack(">BBHH", 0xD2, ch, 1, idx))
                 body = payload[4:]
+                self.stats[f"canal_{ch}"] += 1
                 if ch == CH_CMD:
                     self._on_command(body)
                 elif ch == CH_VIDEO:
                     self._on_video(idx, body)
+                elif self.stats[f"canal_{ch}"] <= 3:
+                    self.debug(f"<< canal {ch} idx={idx} len={len(body)} {body[:48].hex(' ')}")
             elif ptype == T_CLOSE:
                 self.closed.set()
 
@@ -310,12 +358,17 @@ class Session:
                 value = json.loads(body[8:].split(b"\0")[0].decode("utf-8", "ignore"))
                 key = ("json", int(value.get("cmd", -1)))
             except (ValueError, AttributeError):
+                self.debug(f"<< JSON illisible : {body[:120]!r}")
                 return
+            self.debug(f"<< {value}")
+            if key[1] not in (J_CHECK_USER,):
+                self.log(f"     réponse caméra : {value}")
         elif body[:2] == b"\x11\x0a" and len(body) >= 12:
             _, cmd, _, _ = struct.unpack("<2s3H", body[:8])
             rest = body[12:]
             value = xq_decode(rest) if rest else b""
             key = ("bin", cmd)
+            self.debug(f"<< bin 0x{cmd:04x} {value[:64].hex(' ')}")
             if cmd == B_USER_CHK_ACK and len(value) >= 8:
                 self.ticket = value[4:8]
         if key:
@@ -344,6 +397,11 @@ class Session:
 
     def _on_video(self, raw_idx: int, body: bytes) -> None:
         self.last_video = time.time()
+        self.stats["video_paquets"] += 1
+        self.stats["video_octets"] += len(body)
+        if self._dbg and self._dbg_chunks < 400:
+            self._dbg_chunks += 1
+            self.debug(f"<< video idx={raw_idx} len={len(body)} {body[:48].hex(' ')}")
         idx = self._unwrap(raw_idx)
         if body.startswith(VIDEO_MARKER):
             if len(body) > 4 and body[4] == 0x06:  # trame audio intercalée
@@ -351,10 +409,12 @@ class Session:
                 return
             self._chunks[idx] = body[0x20:]
             self._starts.add(idx)
+            self.stats["debuts_image"] += 1
         else:
             self._chunks[idx] = body
             if body.startswith(JPEG_SOI + b"\xff"):
                 self._starts.add(idx)
+                self.stats["debuts_image"] += 1
         self._assemble()
 
     def _assemble(self) -> None:
@@ -362,20 +422,39 @@ class Session:
         if len(starts) < 2:
             return
         # On part de l'image complète la plus récente.
-        for a, b in reversed(list(zip(starts, starts[1:]))):
+        pairs = list(zip(starts, starts[1:]))
+        for a, b in reversed(pairs):
             if all(i in self._chunks for i in range(a, b)):
-                data = b"".join(self._chunks[i] for i in range(a, b))
-                self._last_frame_start = a
-                with self.frame_cond:
-                    self.frame = data
-                    self.frame_no += 1
-                    self.frame_cond.notify_all()
+                self._emit(a, b"".join(self._chunks[i] for i in range(a, b)))
+                self.stats["images_completes"] += 1
                 break
+        else:
+            # Aucune image complète depuis un moment (paquets perdus) : on
+            # affiche quand même la plus récente, même incomplète.
+            if time.time() - self._last_emit > 0.25:
+                a, b = pairs[-1]
+                self._emit(a, b"".join(self._chunks.get(i, b"") for i in range(a, b)))
+                self.stats["images_incompletes"] += 1
         # Ménage : on oublie ce qui précède le dernier début d'image.
         keep_from = starts[-1] if len(starts) > 4 else self._last_frame_start
         for i in [i for i in self._chunks if i < keep_from]:
             del self._chunks[i]
         self._starts = {s for s in self._starts if s >= keep_from}
+
+    def _emit(self, start: int, data: bytes) -> None:
+        self._last_frame_start = start
+        self._last_emit = time.time()
+        with self.frame_cond:
+            self.frame = data
+            self.frame_no += 1
+            self.frame_cond.notify_all()
+
+    def status_text(self) -> str:
+        st = self.stats
+        if not st["video_paquets"]:
+            return "Connecté à la caméra P2P - en attente de la vidéo…"
+        return (f"P2P : {st['video_paquets']} paquets vidéo, {st['debuts_image']} débuts d'image, "
+                f"{st['images_completes']} images complètes")
 
     # -- cycle de vie ------------------------------------------------------- #
     def connect(self, timeout: float = 8.0) -> None:
@@ -457,10 +536,17 @@ class Session:
         if not self.closed.is_set():
             self.send(T_CLOSE)
         self.closed.set()
+        self.debug(f"=== fin de session, statistiques : {dict(self.stats)}")
         try:
             self.sock.close()
         except OSError:
             pass
+        if self._dbg:
+            try:
+                self._dbg.close()
+            except OSError:
+                pass
+            self._dbg = None
 
 
 # --------------------------------------------------------------------------- #
@@ -481,6 +567,8 @@ class PPPPCapture:
         self.session: Session | None = None
         self._last_no = 0
         self._warned = False
+        self._h264 = None
+        self.good = self.bad = 0
         self.log = log
         devs = [d for d in discover([self.host], timeout=4) if d.addr == self.host] or \
             discover([self.host, "255.255.255.255"], timeout=3)
@@ -505,12 +593,55 @@ class PPPPCapture:
         if no == self._last_no or data is None:
             return False, None
         self._last_no = no
-        img = self._cv2.imdecode(self._np.frombuffer(data, self._np.uint8),
-                                 self._cv2.IMREAD_COLOR)
-        if img is None and not self._warned:
-            self._warned = True
-            self.log(f"PPPP : format d'image inconnu (début : {data[:16].hex(' ')})")
+        img = self._decode(data)
+        if img is None:
+            self.bad += 1
+            if not self._warned:
+                self._warned = True
+                self.log(f"PPPP : image non décodable ({len(data)} octets, début : "
+                         f"{data[:32].hex(' ')})")
+                self.session.debug(f"image non décodable, début : {data[:256].hex(' ')}")
+        else:
+            self.good += 1
         return img is not None, img
+
+    def _decode(self, data: bytes):
+        cv2, np = self._cv2, self._np
+        soi = data.find(JPEG_SOI + b"\xff", 0, 512)
+        if soi >= 0:  # JPEG (éventuellement précédé d'un en-tête)
+            return cv2.imdecode(np.frombuffer(data[soi:], np.uint8), cv2.IMREAD_COLOR)
+        sc = data.find(b"\x00\x00\x01", 0, 512)
+        if sc >= 0:  # H.264 / H.265
+            return self._decode_h26x(data[max(0, sc - 1):])
+        return None
+
+    def _decode_h26x(self, data: bytes):
+        if self._h264 is None:
+            try:
+                import av  # PyAV (optionnel)
+                self._h264 = av.CodecContext.create("h264", "r")
+            except Exception:
+                self._h264 = False
+                self.log("PPPP : la caméra envoie de la vidéo H.264. Installez le décodeur :")
+                self.log("       .venv/bin/python -m pip install av     puis relancez.")
+        if not self._h264:
+            return None
+        img = None
+        try:
+            for pkt in self._h264.parse(data):
+                for fr in self._h264.decode(pkt):
+                    img = fr.to_ndarray(format="bgr24")
+        except Exception:
+            return None
+        return img
+
+    def status_text(self) -> str:
+        if not self.session:
+            return ""
+        txt = self.session.status_text()
+        if self.bad:
+            txt += f", {self.bad} non décodables"
+        return txt
 
     def set(self, *_):
         return False

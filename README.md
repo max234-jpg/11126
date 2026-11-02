@@ -96,6 +96,13 @@ Lister les flux trouvés sans ouvrir la vidéo :
 python camera_viewer.py --scan
 ```
 
+Journal détaillé pour les caméras P2P (écran noir, etc.), enregistré dans
+`captures/pppp_debug.txt` :
+
+```bash
+python3 camera_viewer.py --new --debug
+```
+
 Oublier la caméra mémorisée et refaire une recherche :
 
 ```bash

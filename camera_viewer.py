@@ -886,12 +886,17 @@ class FrameGrabber(threading.Thread):
             while not self._stop.is_set():
                 ok, frame = cap.read()
                 if not ok or frame is None:
+                    if hasattr(cap, "status_text"):  # caméra P2P
+                        self.status = cap.status_text()
+                        if cap.isOpened():
+                            continue  # connectée : on attend, sans se reconnecter
                     fails += 1
                     if fails > 25:
                         break
                     time.sleep(0.02)
                     continue
                 fails = 0
+                self.status = ""
                 with self._lock:
                     self.frame = frame
                     self.frame_id += 1
@@ -912,6 +917,12 @@ class FrameGrabber(threading.Thread):
         self._stop.set()
 
 
+def ascii_text(txt: str) -> str:
+    import unicodedata
+    txt = txt.replace("…", "...").replace("—", "-")
+    return unicodedata.normalize("NFKD", txt).encode("ascii", "ignore").decode()
+
+
 def timestamp() -> str:
     return _dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
@@ -927,6 +938,7 @@ def view(url: str, kind: str = "auto", title: str = "Camera IP - direct") -> Non
     writer = None
     rec_file = None
     last_id = -1
+    last_print = 0.0
     blank = None
     try:
         while True:
@@ -947,6 +959,10 @@ def view(url: str, kind: str = "auto", title: str = "Camera IP - direct") -> Non
             if frame is not None:
                 h, w = frame.shape[:2]
                 info += f"   {w}x{h}"
+            elif info and time.time() - last_print > 5:
+                last_print = time.time()
+                log(f"[état] {info}")
+            info = ascii_text(info)  # les polices OpenCV ne gèrent pas les accents
             cv2.putText(display, info, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 3)
             cv2.putText(display, info, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
             if writer is not None:
@@ -1037,6 +1053,8 @@ def main(argv: list[str] | None = None) -> int:
                     help="rechercher et lister les flux, sans afficher la vidéo")
     ap.add_argument("--new", action="store_true",
                     help="ignorer l'adresse mémorisée et refaire une recherche")
+    ap.add_argument("--debug", action="store_true",
+                    help="journal détaillé des caméras P2P dans captures/pppp_debug.txt")
     ap.add_argument("--diag", action="store_true",
                     help="diagnostic détaillé si la caméra n'est pas trouvée")
     args = ap.parse_args(argv)
@@ -1044,6 +1062,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.diag:
         diagnose(args.ip)
         return 0
+
+    if args.debug:
+        CAPTURE_DIR.mkdir(exist_ok=True)
+        pppp.DEBUG_FILE = str(CAPTURE_DIR / "pppp_debug.txt")
+        Path(pppp.DEBUG_FILE).write_text("", encoding="utf-8")
+        log(f"Mode débogage : journal dans {pppp.DEBUG_FILE}")
 
     if args.url:
         url = with_auth(args.url, args.user or "", args.password or "")
