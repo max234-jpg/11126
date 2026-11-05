@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebSell Local</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230c0c0d'/%3E%3Ccircle cx='32' cy='32' r='10' fill='%23d9ff3f'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="glow" aria-hidden="true"></div>
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="#/"><span class="brand-dot"></span><span>websell<i>/local</i></span></a>
+    <nav class="menu" id="menu">
+      <a href="#/" data-view="home"><span class="ico">⌂</span>Accueil</a>
+      <a href="#/campagnes" data-view="campagnes"><span class="ico">◎</span>Campagnes</a>
+      <a href="#/prospects" data-view="prospects"><span class="ico">◇</span>Prospects<b class="count" id="c-prospects"></b></a>
+      <a href="#/sites" data-view="sites"><span class="ico">▣</span>Sites<b class="count" id="c-sites"></b></a>
+      <a href="#/envois" data-view="envois"><span class="ico">✉</span>Envois<b class="count hot" id="c-drafts"></b></a>
+      <a href="#/reglages" data-view="reglages"><span class="ico">⚙</span>Réglages</a>
+    </nav>
+    <div class="side-foot" id="sidefoot"></div>
+  </aside>
+  <main class="main" id="view" tabindex="-1"></main>
+</div>
+<div class="drawer-bg" id="drawer-bg"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+<div class="toasts" id="toasts"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script type="module" src="/app.js"></script>
+</body>
+</html>
