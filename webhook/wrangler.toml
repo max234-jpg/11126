@@ -1,0 +1,7 @@
+name = "prospection-reponses"
+main = "worker.js"
+compatibility_date = "2025-06-01"
+
+[[kv_namespaces]]
+binding = "REPONSES"
+id = "A-REMPLIR"   # résultat de : npx wrangler kv namespace create REPONSES

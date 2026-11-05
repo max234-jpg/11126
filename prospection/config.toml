@@ -1,0 +1,107 @@
+# ─────────────────────────────────────────────────────────────────────
+#  Configuration de la prospection quotidienne
+#  Les champs « A-REMPLIR » doivent être complétés avant le premier envoi :
+#  tant qu'ils ne le sont pas, rien n'est envoyé.
+# ─────────────────────────────────────────────────────────────────────
+
+[general]
+objectif_par_jour = 100
+# "liens" : gratuit. Chaque matin une issue GitHub liste les 100 artisans avec
+#           un bouton WhatsApp, message déjà rédigé : tu n'as qu'à appuyer sur Envoyer.
+# "api"   : 100 % automatique via l'API WhatsApp Cloud officielle de Meta
+#           (numéro dédié et paiement par message, voir README).
+mode = "liens"
+# Garde-fou budget Google : 1 requête = 1 page de 20 fiches.
+max_requetes_google_par_jour = 60
+pages_par_recherche = 3        # Google renvoie au maximum 3 pages (60 fiches)
+# Les numéros des artisans sont des données personnelles : par défaut le
+# script refuse de tourner si le dépôt GitHub est public.
+autoriser_repo_public = false
+
+[expediteur]
+prenom = "A-REMPLIR"
+societe = "A-REMPLIR"
+
+[demo]
+# Lien du site de démo envoyé dans le message.
+#   {metier} → ex. "plombier", "electricien"  (une démo par métier)
+#   {slug}   → identifiant unique de l'entreprise (une démo perso par artisan)
+url = "https://A-REMPLIR.fr/demo/{metier}"
+
+[message]
+# Utilisé en mode "liens". En mode "api", c'est le modèle validé par Meta qui
+# est envoyé (voir README).
+# Variables : {prenom} {societe} {nom} {compliment} {url}
+texte = """Bonjour, je suis {prenom} de {societe}. J'ai trouvé « {nom} » sur Google Maps{compliment}, mais je n'ai pas vu de site internet.
+J'ai préparé un exemple de site pour votre activité : {url}
+Ça vous plairait que je l'adapte à votre entreprise ? Si ce n'est pas pour vous, répondez STOP et je ne vous recontacterai pas."""
+
+[whatsapp_api]
+version_graph = "v23.0"
+template = "demo_site_artisan"   # nom du modèle approuvé dans WhatsApp Manager
+langue = "fr"
+pause_entre_envois_s = 4
+
+[filtres]
+avis_minimum = 1          # les fiches à 0 avis sont souvent fausses ou abandonnées
+note_minimum = 0          # ex. 3.5 pour ne garder que les mieux notés
+# Noms typiques des réseaux de « dépannage » qui achètent des leads (souvent
+# des arnaques, jamais de vrais artisans indépendants). Recherche sans accents
+# ni majuscules, sur des mots entiers.
+noms_exclus = ["sos", "24h", "24h/24", "24/24", "7j/7", "urgence", "urgent", "depannage express"]
+# Un lien vers ces sites ne compte PAS comme un vrai site internet :
+# l'artisan reste un bon prospect.
+domaines_sans_vrai_site = [
+  "facebook.com", "fb.com", "instagram.com", "tiktok.com", "linkedin.com",
+  "youtube.com", "linktr.ee", "wa.me", "whatsapp.com",
+  "business.site", "g.page", "goo.gl", "google.com", "maps.app.goo.gl",
+  "pagesjaunes.fr", "yelp.fr", "houzz.fr", "habitatpresto.com", "travaux.com",
+  "starofservice.com", "allovoisins.com", "leboncoin.fr", "malt.fr",
+]
+# Types Google qui ne sont pas des artisans (magasins, etc.)
+types_exclus = [
+  "hardware_store", "home_improvement_store", "home_goods_store",
+  "furniture_store", "store", "shopping_mall", "real_estate_agency",
+  "car_repair", "car_dealer", "storage", "insurance_agency",
+]
+
+[recherche]
+# Chaque jour le script reprend là où il s'était arrêté : toute l'Île-de-France
+# d'abord (Paris → petite couronne → grande couronne), puis les grandes villes.
+metiers = [
+  "plombier", "chauffagiste", "électricien", "maçon", "couvreur",
+  "peintre en bâtiment", "carreleur", "menuisier", "plaquiste",
+  "entreprise de rénovation", "charpentier", "serrurier",
+  "installateur climatisation", "façadier", "entreprise de terrassement",
+]
+zones = [
+  # Paris
+  "Paris 1er", "Paris 2e", "Paris 3e", "Paris 4e", "Paris 5e", "Paris 6e",
+  "Paris 7e", "Paris 8e", "Paris 9e", "Paris 10e", "Paris 11e", "Paris 12e",
+  "Paris 13e", "Paris 14e", "Paris 15e", "Paris 16e", "Paris 17e", "Paris 18e",
+  "Paris 19e", "Paris 20e",
+  # Hauts-de-Seine
+  "Boulogne-Billancourt", "Nanterre", "Courbevoie", "Colombes", "Asnières-sur-Seine",
+  "Rueil-Malmaison", "Issy-les-Moulineaux", "Levallois-Perret", "Neuilly-sur-Seine",
+  "Antony", "Clamart", "Clichy", "Montrouge", "Meudon", "Puteaux", "Suresnes",
+  "Gennevilliers",
+  # Seine-Saint-Denis
+  "Saint-Denis", "Montreuil", "Aubervilliers", "Aulnay-sous-Bois", "Drancy",
+  "Noisy-le-Grand", "Pantin", "Bondy", "Épinay-sur-Seine", "Sevran",
+  "Le Blanc-Mesnil", "Bobigny", "Rosny-sous-Bois", "Livry-Gargan", "Noisy-le-Sec",
+  # Val-de-Marne
+  "Vitry-sur-Seine", "Créteil", "Champigny-sur-Marne", "Saint-Maur-des-Fossés",
+  "Ivry-sur-Seine", "Maisons-Alfort", "Fontenay-sous-Bois", "Villejuif",
+  "Vincennes", "Nogent-sur-Marne", "Choisy-le-Roi", "Alfortville",
+  # Grande couronne
+  "Argenteuil", "Cergy", "Sarcelles", "Versailles", "Saint-Germain-en-Laye",
+  "Poissy", "Mantes-la-Jolie", "Trappes", "Évry-Courcouronnes", "Massy",
+  "Corbeil-Essonnes", "Palaiseau", "Meaux", "Melun", "Chelles",
+  "Pontault-Combault", "Torcy",
+  # Reste de la France
+  "Lyon", "Marseille", "Toulouse", "Lille", "Bordeaux", "Nantes", "Nice",
+  "Strasbourg", "Montpellier", "Rennes", "Reims", "Le Havre", "Saint-Étienne",
+  "Toulon", "Grenoble", "Dijon", "Angers", "Nîmes", "Clermont-Ferrand", "Tours",
+  "Orléans", "Rouen", "Metz", "Nancy", "Caen", "Amiens", "Limoges", "Perpignan",
+  "Besançon", "Brest",
+]

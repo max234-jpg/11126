@@ -1,0 +1,3 @@
+# Numéros à ne JAMAIS contacter, un par ligne (n'importe quel format : 06 12 34 56 78).
+# Ajoute ici ceux qui t'ont répondu STOP sur ton WhatsApp en mode "liens".
+# En mode "api", les STOP sont ajoutés automatiquement.

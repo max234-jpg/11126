@@ -1,0 +1,63 @@
+name: Prospection quotidienne
+
+on:
+  schedule:
+    # GitHub ne connaît que l'heure UTC : deux créneaux pour couvrir l'heure
+    # d'hiver et l'heure d'été. Le script ne travaille qu'une fois par jour,
+    # entre 8h30 et 12h heure de Paris (≈ 9h).
+    - cron: "55 6 * * *"
+    - cron: "55 7 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Lancer maintenant (ignorer le créneau de 9h)"
+        type: boolean
+        default: true
+      dry_run:
+        description: "Test à blanc : ne rien envoyer, ne rien sauvegarder"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # sauvegarder data/ (historique, STOP)
+  issues: write     # publier le rapport du matin
+
+concurrency:
+  group: prospection
+  cancel-in-progress: false
+
+jobs:
+  prospection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tests
+        run: python3 -m unittest discover -s tests
+
+      - name: Recherche + messages
+        env:
+          GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
+          WHATSAPP_TOKEN: ${{ secrets.WHATSAPP_TOKEN }}
+          WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.WHATSAPP_PHONE_NUMBER_ID }}
+          REPONSES_URL: ${{ secrets.REPONSES_URL }}
+          REPONSES_TOKEN: ${{ secrets.REPONSES_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >
+          python3 -m prospection.run
+          ${{ inputs.force && '--force' || '' }}
+          ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      # Toujours exécuté, même si l'étape précédente a planté en plein envoi :
+      # l'historique est la garantie qu'aucun artisan ne reçoit deux messages.
+      - name: Sauvegarder l'historique
+        if: always() && !inputs.dry_run
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if ! git diff --cached --quiet; then
+            git commit -m "Prospection du $(TZ=Europe/Paris date +%F)"
+            git push
+          fi

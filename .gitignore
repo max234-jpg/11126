@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+rapport_test.md
+rapport_du_jour.md
+data/*.tmp
+webhook/.wrangler/
+node_modules/
