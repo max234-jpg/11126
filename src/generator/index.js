@@ -53,7 +53,7 @@ export async function generateSite(prospect, { theme, mode, port } = {}) {
   let themeKey = theme || prospect.theme || trade.theme || 'editorial';
   let html;
 
-  if (effectiveMode !== 'template' && !aiAvailable()) throw new Error('Mode IA demandé mais ANTHROPIC_API_KEY absente (voir .env).');
+  if (effectiveMode !== 'template' && !aiAvailable()) throw new Error('Mode IA demandé mais aucune clé API : colle-la dans Réglages → IA Claude.');
 
   if (effectiveMode === 'copy' || (effectiveMode === 'full' && !copy)) {
     const ai = await aiCopy({ prospect, trade, settings });

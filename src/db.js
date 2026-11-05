@@ -32,6 +32,7 @@ export const DEFAULT_SETTINGS = {
   },
   search: { countryCodes: 'fr,be,ch', maxResults: 60 },
   ai: {
+    apiKey: '', // clé Anthropic collée dans Réglages (stockée seulement dans data/db.json, jamais commitée)
     enabled: true,
     model: 'claude-opus-5-5',
     effort: 'high',
@@ -88,6 +89,7 @@ export function flush() {
   fs.renameSync(tmp, DB_FILE);
 }
 process.on('exit', flush);
+for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => process.exit(0)); // Ctrl+C : sauvegarde avant de quitter
 
 export const db = state;
 export const id = (p = '') => p + crypto.randomBytes(6).toString('hex');

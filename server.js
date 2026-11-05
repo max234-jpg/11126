@@ -8,7 +8,7 @@ import { TRADES, tradeInfo } from './src/trades.js';
 import { searchBusinesses } from './src/osm.js';
 import { generateSite, THEMES } from './src/generator/index.js';
 import { stripRibbon } from './src/generator/render.js';
-import { aiAvailable } from './src/generator/ai.js';
+import { aiAvailable, testKey } from './src/generator/ai.js';
 import { discoverSkills } from './src/skills.js';
 import { verifySmtp, smtpConfigured, deliver, buildEmail } from './src/mailer.js';
 import {
@@ -85,6 +85,7 @@ const findOr404 = (list, key, res) => {
 const publicSettings = () => {
   const s = structuredClone(db.settings);
   s.smtp.pass = s.smtp.pass ? '••••••••' : '';
+  s.ai.apiKey = s.ai.apiKey ? s.ai.apiKey.slice(0, 10) + '••••••••' + s.ai.apiKey.slice(-4) : '';
   return s;
 };
 
@@ -119,6 +120,8 @@ api.get('/state', (req, res) => {
 api.post('/settings', wrap((req, res) => {
   const patch = req.body || {};
   if (patch.smtp && patch.smtp.pass === '••••••••') delete patch.smtp.pass;
+  if (patch.ai && String(patch.ai.apiKey || '').includes('••••')) delete patch.ai.apiKey;
+  if (patch.ai?.apiKey) patch.ai.apiKey = patch.ai.apiKey.trim();
   updateSettings(patch);
   res.json({ settings: publicSettings() });
 }));
@@ -303,6 +306,8 @@ api.get('/messages/:id/preview', (req, res) => {
   res.type('html').send(mail.html.replace('cid:preview@websell', `/s/${p.siteSlug}/preview.png`));
 });
 
+api.post('/ai/test', wrap(async (req, res) => res.json({ model: await testKey(db.settings.ai.model) })));
+
 // --- SMTP
 api.post('/smtp/verify', wrap(async (req, res) => { await verifySmtp(); res.json({ ok: true }); }));
 api.post('/smtp/test', wrap(async (req, res) => {
@@ -319,6 +324,6 @@ app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.ht
 startScheduler();
 app.listen(PORT, HOST, () => {
   console.log(`\n  ✦ WebSell Local prêt → http://localhost:${PORT}\n`);
-  console.log(`    IA Claude : ${aiAvailable() ? 'activée' : 'désactivée (ajoute ANTHROPIC_API_KEY dans .env)'}`);
+  console.log(`    IA Claude : ${aiAvailable() ? 'activée' : 'désactivée (colle ta clé dans Réglages → IA Claude)'}`);
   console.log(`    Emails    : ${db.settings.dryRun || !smtpConfigured() ? 'mode SIMULATION (data/outbox)' : 'SMTP réel'}\n`);
 });

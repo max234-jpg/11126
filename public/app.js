@@ -69,7 +69,7 @@ views.home = () => {
   const steps = [
     { done: !!set.sender.email && !!set.sender.name, t: 'Renseigne ton identité d’expéditeur', d: 'Nom, email, téléphone, mentions légales.', href: '#/reglages' },
     { done: S.state.smtpConfigured, t: 'Branche ton SMTP', d: 'Gmail, OVH, Brevo, Mailjet… (sinon, mode simulation).', href: '#/reglages' },
-    { done: S.state.aiAvailable, t: 'Active Claude (optionnel)', d: 'ANTHROPIC_API_KEY dans .env : textes et design sur mesure.', href: '#/reglages' },
+    { done: S.state.aiAvailable, t: 'Active Claude (optionnel)', d: 'Colle ta clé API dans Réglages : textes et design sur mesure.', href: '#/reglages' },
     { done: S.campaigns.length > 0, t: 'Lance ta première campagne', d: 'Un métier, une ville. Les prospects arrivent.', href: '#/campagnes' },
     { done: s.sites > 0, t: 'Génère les sites', d: 'Un site design par commerce, en un clic.', href: '#/prospects' },
     { done: s.sent > 0, t: 'Valide et envoie', d: 'Rien ne part sans ton accord.', href: '#/envois' },
@@ -327,8 +327,11 @@ views.reglages = () => {
     </div></div>
 
     <div class="card reveal hl"><h2 class="sub">IA Claude</h2>
-      <p class="muted">${S.state.aiAvailable ? '<span class="pill ok">Clé API détectée</span>' : '<span class="pill warn">Ajoute ANTHROPIC_API_KEY dans .env puis relance</span>'}</p>
+      <p class="muted">${S.state.aiAvailable ? '<span class="pill ok">Clé API active</span>' : '<span class="pill warn">Aucune clé : colle-la ci-dessous</span>'}</p>
       <div class="form mt-s">
+      ${inp('ai.apiKey', s.ai.apiKey, 'Clé API Anthropic', 'password', 'sk-ant-…')}
+      <div class="row"><button class="btn sm" data-act="ai-test" data-busy="Vérification…">Enregistrer et tester la clé</button><a class="btn sm ghost" href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">Créer une clé ↗</a></div>
+      <p class="note">La clé reste sur ton ordinateur (fichier <span class="mono">data/db.json</span>, jamais envoyé sur GitHub). L’usage de l’API est facturé par Anthropic à ton compte.</p>
       ${sw('ai.enabled', s.ai.enabled, 'Utiliser Claude pour générer les sites')}
       <label class="f">Mode<select class="in" data-path="ai.mode">
         <option value="copy" ${s.ai.mode === 'copy' ? 'selected' : ''}>Textes sur mesure + thèmes maison (rapide, fiable)</option>
@@ -577,6 +580,7 @@ const A = {
   'save-settings': (el) => busy(el, saveSettings),
   'reset-libs': async () => { await api('/settings/reset-libs', {}); await refresh(); toast('Bibliothèques réinitialisées.'); },
   'smtp-verify': (el) => busy(el, async () => { await saveSettings(true); await api('/smtp/verify', {}); toast('Connexion SMTP OK ✓'); }),
+  'ai-test': (el) => busy(el, async () => { await saveSettings(true); const r = await api('/ai/test', {}); toast(`Clé valide ✓ (${r.model})`); render(false); }),
   'smtp-test': (el) => busy(el, async () => { await saveSettings(true); const r = await api('/smtp/test', {}); toast(r.simulated ? 'Simulation : email écrit dans data/outbox (désactive le mode simulation pour un vrai envoi).' : 'Email de test envoyé ✓'); }),
 };
 

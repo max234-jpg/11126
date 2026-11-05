@@ -2,12 +2,35 @@
 // guidé par les skills (SKILL.md) que tu as installés.
 import Anthropic from '@anthropic-ai/sdk';
 import { loadSkillTexts } from '../skills.js';
+import { db } from '../db.js';
+
+// Priorité : clé saisie dans Réglages, sinon ANTHROPIC_API_KEY / ANTHROPIC_AUTH_TOKEN du fichier .env
+const settingsKey = () => (db.settings.ai.apiKey || '').trim();
+export const aiAvailable = () => !!(settingsKey() || process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
 
 let client;
-export const aiAvailable = () => !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
+let clientKey = null;
 function getClient() {
-  if (!client) client = new Anthropic();
+  const key = settingsKey();
+  if (!client || clientKey !== key) {
+    client = key ? new Anthropic({ apiKey: key }) : new Anthropic();
+    clientKey = key;
+  }
   return client;
+}
+
+/** Vérifie la clé sans consommer de tokens (lecture des infos du modèle). */
+export async function testKey(model) {
+  if (!aiAvailable()) throw new Error('Aucune clé API renseignée.');
+  try {
+    const m = await getClient().models.retrieve(model || 'claude-opus-5-5');
+    return m.display_name || m.id;
+  } catch (e) {
+    if (e instanceof Anthropic.AuthenticationError) throw new Error('Clé API refusée : vérifie-la sur console.anthropic.com.');
+    if (e instanceof Anthropic.NotFoundError) throw new Error(`Modèle « ${model} » introuvable pour cette clé.`);
+    if (e instanceof Anthropic.APIConnectionError) throw new Error('Impossible de joindre l’API Anthropic (connexion internet ?).');
+    throw e;
+  }
 }
 
 const HONESTY = `Règles d'honnêteté NON négociables :
