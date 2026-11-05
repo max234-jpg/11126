@@ -21,12 +21,6 @@ npx playwright install chromium
 (optionnel : captures des sites jointes aux emails)
 
 ```bash
-cp .env.example .env
-```
-
-(optionnel : ajoute ta clé `ANTHROPIC_API_KEY` pour activer Claude)
-
-```bash
 npm start
 ```
 
@@ -63,7 +57,7 @@ Depuis l'extérieur, seuls `/s/…` (les sites) et `/u/…` (la désinscription)
 
 ## IA et skills
 
-Avec `ANTHROPIC_API_KEY` dans `.env` :
+Colle ta clé API dans **Réglages → IA Claude** (bouton « Enregistrer et tester la clé »). Elle reste dans `data/db.json`, sur ton ordinateur. Tu peux aussi la mettre dans un fichier `.env` (`ANTHROPIC_API_KEY=…`, voir `.env.example`).
 
 - **Textes sur mesure** : Claude écrit l'accroche, l'intro et la description des prestations, et choisit le thème le plus adapté.
 - **Design complet** : Claude produit un fichier HTML unique avec les bibliothèques configurées, en suivant les skills cochés dans Réglages.
